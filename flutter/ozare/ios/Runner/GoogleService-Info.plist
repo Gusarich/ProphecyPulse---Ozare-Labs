@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>577898555257-gt8hh3aniii0u8v284l70iai69cvat76.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.577898555257-gt8hh3aniii0u8v284l70iai69cvat76</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>577898555257-6obmfg1j38cqpit7lo9h9jptklqmfr94.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyA2IE7ejIkmwEopOkMz97ie3oEJt1JKDVc</string>
+	<key>GCM_SENDER_ID</key>
+	<string>577898555257</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.verygoodcore.ozare</string>
+	<key>PROJECT_ID</key>
+	<string>ozare-e8ed6</string>
+	<key>STORAGE_BUCKET</key>
+	<string>ozare-e8ed6.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:577898555257:ios:906c88833dd04efab371a8</string>
+</dict>
+</plist>

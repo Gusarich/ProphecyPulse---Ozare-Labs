@@ -1,0 +1,91 @@
+name: ozare
+description: A social platform betting app on Ton blockchain
+version: 1.0.0+1
+publish_to: none
+
+environment:
+  sdk: ">=2.19.0 <3.0.0"
+
+dependencies:
+  authentication_repository:
+    path: ./packages/authentication_repository
+  auto_size_text: ^3.0.0
+  bloc: ^8.1.1
+  cached_network_image: ^3.2.3
+  carousel_slider: ^4.2.1
+  dotted_border: ^2.0.0+3
+  dotted_line: ^3.1.0
+  fastor_app_ui_widget: ^1.0.128
+  firebase_dynamic_links: ^5.0.16
+  flag: ^6.0.0
+  flutter:
+    sdk: flutter
+  flutter_animate: ^4.1.0
+  flutter_bloc: ^8.1.2
+  flutter_localizations:
+    sdk: flutter
+  flutter_phoenix: ^1.1.0
+  fluttericon: ^2.0.0
+  freezed: ^2.3.2
+  get: ^4.6.5
+  get_it: ^7.2.0
+  image_picker: ^0.8.7
+  image_picker_web: ^3.0.0+1
+  intl: ^0.17.0
+  livescore_api:
+    path: ./packages/livescore_api
+  livescore_repository:
+    path: ./packages/livescore_repository
+  local_api:
+    path: ./packages/local_api
+  ozare_repository:
+    path: ./packages/ozare_repository
+  permission_handler: ^10.2.0
+  shared_preferences: ^2.0.18
+  url_launcher: ^6.1.10
+  uuid: ^3.0.7
+
+dependency_overrides:
+  # flutter_svg: ^2.0.2
+  # tuple: ^1.0.3
+  quiver: ^3.0.0
+  ffi: ^2.0.0
+
+dev_dependencies:
+  bip39: ^1.0.5
+  bloc_test: ^9.1.1
+  change_app_package_name: ^1.1.0
+  flutter_test:
+    sdk: flutter
+  mocktail: ^0.3.0
+  ton_client_dart: ^0.1.0
+  very_good_analysis: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  generate: true
+  assets:
+    - assets/images/
+    - assets/icons/
+
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/Poppins-ExtraLight.ttf
+          weight: 200
+        - asset: assets/fonts/Poppins-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Poppins-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Poppins-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Poppins-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Poppins-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Poppins-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/Poppins-Black.ttf
+          weight: 900

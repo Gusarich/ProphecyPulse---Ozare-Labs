@@ -1,0 +1,27 @@
+name: livescore_repository
+description: A livescore repository  dart package.
+version: 0.1.0+1
+publish_to: none
+
+environment:
+  sdk: ">=2.19.0 <3.0.0"
+  flutter: 3.7.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  json_annotation: ^4.8.0
+  livescore_api:
+    path: ../livescore_api
+  local_api:
+    path: ../local_api
+
+dev_dependencies:
+  build_runner: ^2.3.3
+  flutter_test:
+    sdk: flutter
+  freezed: ^2.3.2
+  freezed_annotation: ^2.2.0
+  json_serializable: ^6.6.1
+  mocktail: ^0.3.0
+  very_good_analysis: ^4.0.0
