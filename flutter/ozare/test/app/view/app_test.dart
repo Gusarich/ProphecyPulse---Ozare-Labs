@@ -5,10 +5,4 @@ import 'package:bip39/bip39.dart' as bip39;
 import 'package:ton_client_dart/ton_client_dart.dart';
 
 void main() {
-  group('App', () {
-    testWidgets('renders CounterPage', (tester) async {
-      // await tester.pumpWidget(const App());
-      // expect(find.byType(CounterPage), findsOneWidget);
-    });
-  });
 }
