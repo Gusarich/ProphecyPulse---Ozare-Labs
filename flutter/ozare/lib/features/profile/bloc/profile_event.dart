@@ -45,3 +45,11 @@ class ProfilePhotoUploadRequested extends ProfileEvent {
   @override
   List<Object> get props => [imageFile];
 }
+
+class ProfileWalletChanged extends ProfileEvent {
+  const ProfileWalletChanged(this.wallet);
+  final List<Wallet> wallet;
+
+  @override
+  List<Object> get props => [wallet!];
+}

@@ -19,6 +19,7 @@ class ProfileState extends Equatable {
     this.message = '',
     this.history = const [],
     this.notifications = const [],
+    this.wallet = const [],
   });
 
   final ProfileStatus status;
@@ -27,6 +28,7 @@ class ProfileState extends Equatable {
   final String message;
   final List<Bet> history;
   final List<Bet> notifications;
+  final List<Wallet> wallet;
 
   ProfileState copyWith({
     ProfileStatus? status,
@@ -35,6 +37,7 @@ class ProfileState extends Equatable {
     String? message,
     List<Bet>? history,
     List<Bet>? notifications,
+    List<Wallet>? wallet,
   }) {
     return ProfileState(
       status: status ?? this.status,
@@ -43,10 +46,11 @@ class ProfileState extends Equatable {
       message: message ?? this.message,
       history: history ?? this.history,
       notifications: notifications ?? this.notifications,
+      wallet: wallet ?? this.wallet,
     );
   }
 
   @override
   List<Object> get props =>
-      [status, page, message, history, notifications, user];
+      [status, page, message, history, notifications, user, wallet];
 }
