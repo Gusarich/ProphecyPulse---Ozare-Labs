@@ -1,11 +1,19 @@
-import { TonConnectButton, useTonAddress } from "@tonconnect/ui-react";
+import {
+  TonConnectButton,
+  useTonWallet,
+  useTonAddress,
+} from "@tonconnect/ui-react";
 
 function Home() {
   const userFriendlyAddress = useTonAddress();
+  const wallet = useTonWallet();
 
   function redirect() {
-    if (userFriendlyAddress?.length > 0) {
-      window.parent.postMessage({ address: userFriendlyAddress }, "*");
+    if (userFriendlyAddress?.length > 0 && wallet?.name) {
+      window.parent.postMessage(
+        { address: userFriendlyAddress, walletName: wallet?.name },
+        "*"
+      );
     }
   }
 
@@ -17,11 +25,15 @@ function Home() {
         </div>
 
         <div className="flex flex-col">
-          <span className="py-4 text-center">
+          <span className="pt-4 text-center">
             Address:
             {userFriendlyAddress
               ? userFriendlyAddress
               : " Please Connect wallet"}
+          </span>
+          <span className="pb-4 text-center">
+            Wallet Name:
+            {wallet ? wallet?.name : " Please Connect wallet"}
           </span>
           <div className="flex justify-center">
             <button
