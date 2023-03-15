@@ -1,0 +1,70 @@
+{-
+    storage#_ owner:MsgAddressInt event:MsgAddressInt outcome:Bool amount:uint256 = Storage;
+-}
+
+(slice, slice, int, int) load_data () inline {
+    slice ds = get_data().begin_parse();
+    return (ds~load_msg_addr(), ds~load_msg_addr(), ds~load_uint(1), ds~load_uint(256));
+}
+
+() save_data (slice owner, slice event, int outcome, int amount) impure {
+    set_data(begin_cell()
+        .store_slice(owner)
+        .store_slice(event)
+        .store_uint(outcome, 1)
+        .store_uint(amount, 256)
+    .end_cell());
+}
+
+() recv_internal (int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
+    slice cs = in_msg_full.begin_parse();
+    int flags = cs~load_uint(4);
+    if (flags & 1) { ;; ignore bounced messages
+        return ();
+    }
+
+    slice sender = cs~load_msg_addr();
+    (slice owner, slice event, int outcome, int amount) = load_data();
+
+    int op = in_msg_body~load_uint(32);
+
+    if (op == op::close) {
+        throw_unless(701, equal_slice_bits(sender, owner)); ;; only allow owner to close the bet
+        send_raw_message(begin_cell()
+            .store_uint(0x18, 6)
+            .store_slice(event)
+            .store_coins(0)
+            .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+            .store_uint(op::process_bet, 32)
+            .store_slice(owner)
+            .store_uint(outcome, 1)
+            .store_uint(amount, 256)
+        .end_cell(), 128);
+    }
+    
+    elseif (op == op::deposit) {
+        throw_unless(701, equal_slice_bits(sender, event)); ;; only allow event contract to deposit funds
+        amount += in_msg_body~load_uint(256);
+        save_data(owner, event, outcome, amount);
+    }
+}
+
+slice get_owner () method_id {
+    (slice owner, _, _, _) = load_data();
+    return owner;
+}
+
+slice get_event () method_id {
+    (_, slice event, _, _) = load_data();
+    return event;
+}
+
+int get_outcome () method_id {
+    (_, _, int outcome, _) = load_data();
+    return outcome;
+}
+
+int get_amount () method_id {
+    (_, _, _, int amount) = load_data();
+    return amount;
+}

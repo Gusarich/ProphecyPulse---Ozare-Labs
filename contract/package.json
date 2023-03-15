@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+    "@ton-community/func-js": "^0.4.1",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^18.13.0",
+    "mocha": "^10.2.0",
+    "ton": "^13.3.0",
+    "ton-core": "^0.47.1",
+    "ton-crypto": "^3.2.0",
+    "ton-emulator": "^2.1.1",
+    "typescript": "^4.9.5"
+  },
+  "scripts": {
+    "build": "yarn tsc --build --clean && yarn tsc --build",
+    "test": "yarn build && mocha dist/test/test.js"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.3.4",
+    "chai": "^4.3.7"
+  }
+}
