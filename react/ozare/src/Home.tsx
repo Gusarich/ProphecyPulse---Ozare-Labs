@@ -27,7 +27,7 @@ function Home() {
             <button
               disabled={!(userFriendlyAddress?.length > 0)}
               onClick={() => redirect()}
-              className="px-8 rounded-2xl py-4 bg-green-600 text-white disabled:bg-gray-300"
+              className="px-8 rounded-2xl py-4 bg-blue-500 text-white disabled:bg-gray-300"
             >
               Continue
             </button>
