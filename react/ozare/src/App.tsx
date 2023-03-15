@@ -4,7 +4,7 @@ import Home from "./Home";
 
 function App() {
   return (
-    <TonConnectUIProvider manifestUrl="https://ozare-react.vercel.app/tonconnect-manifest.json">
+    <TonConnectUIProvider manifestUrl="https://ozare-final.vercel.app/tonconnect-manifest.json">
       <Home />
     </TonConnectUIProvider>
   );
