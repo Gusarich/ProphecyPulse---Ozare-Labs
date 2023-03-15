@@ -1,0 +1,6 @@
+const int op::bet = 0x60e6b243;
+const int op::process_bet = 0x733c3caa;
+const int op::start_event = 0x380ce405;
+const int op::finish_event = 0x54a94f2a;
+const int op::close = 0x12d4de36;
+const int op::deposit = 0x49d59d40;
