@@ -91,7 +91,7 @@ export class Event implements Contract {
                         payload: beginCell()
                             .storeUint(0x60e6b243, 32)
                             .storeBit(outcome)
-                            .storeUint(toNano(amount), 256)
+                            .storeUint(amount, 256)
                             .endCell()
                             .toBoc()
                             .toString('base64'),
@@ -102,11 +102,11 @@ export class Event implements Contract {
             await via.send({
                 to: this.address,
                 init: this.init,
-                value: toNano(amount) + toNano('0.25'),
+                value: amount + toNano('0.25'),
                 body: beginCell()
                     .storeUint(0x60e6b243, 32)
                     .storeBit(outcome)
-                    .storeUint(toNano(amount), 256)
+                    .storeUint(amount, 256)
                     .endCell(),
             });
         }
