@@ -1,14 +1,14 @@
 // ignore_for_file: depend_on_referenced_packages
 
 import 'dart:async';
-import 'dart:io';
-import 'dart:typed_data';
+import 'dart:developer';
 
 import 'package:authentication_repository/authentication_repository.dart'
     as auth;
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:ozare/features/profile/models/models.dart';
 import 'package:ozare_repository/ozare_repository.dart';
 
 part 'profile_event.dart';
@@ -29,6 +29,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<ProfileNotificationsRequested>(_onProfileNotificationsRequested);
     on<ProfileUpdateRequested>(_onProfileUpdateRequested);
     on<ProfilePhotoUploadRequested>(_onProfilePhotoUploadRequested);
+    on<ProfileWalletChanged>(_onProfileWalletChanged);
     _oUserSubscription = _profileRepository
         .oUserStream(oUser.uid!)
         .listen((user) => add(ProfileChanged(oUser: oUser)));
@@ -103,7 +104,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   Future<void> _onProfilePhotoUploadRequested(
     ProfilePhotoUploadRequested event,
     Emitter<ProfileState> emit,
-) async {
+  ) async {
     emit(state.copyWith(status: ProfileStatus.loading));
 
     final photoUrl = await _profileRepository.uploadPhoto(
@@ -115,5 +116,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     await _profileRepository.updateProfile(oUser);
     emit(state.copyWith(user: oUser, status: ProfileStatus.loaded));
+  }
+
+  Future<void> _onProfileWalletChanged(
+    ProfileWalletChanged event,
+    Emitter<ProfileState> emit,
+  ) async {
+    log('ProfileBloc: Wallet changed: ${event.wallet[0].name}');
+    emit(state.copyWith(wallet: event.wallet));
   }
 }

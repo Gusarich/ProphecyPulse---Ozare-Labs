@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ozare/app/routes.dart';
+import 'package:ozare/features/profile/bloc/profile_bloc.dart';
+import 'package:ozare/features/profile/models/models.dart';
 
 import 'package:ozare/features/profile/widgets/widgets.dart';
+import 'package:ozare/styles/common/widgets/dialogs/dialogs.dart';
 
 class PaymentsPage extends StatelessWidget {
   const PaymentsPage({super.key});
@@ -26,28 +30,42 @@ class PaymentsPage extends StatelessWidget {
             ),
           ),
         ),
+        BlocConsumer<ProfileBloc, ProfileState>(
+          listener: (context, state) {
+            if (state.wallet.isNotEmpty && state.wallet.length == 1) {
+              showAlertDialog(
+                context: context,
+                title: 'Success',
+                content: 'Wallet connected successfully',
+              );
+            }
+          },
+          bloc: context.read<ProfileBloc>(),
+          builder: (context, state) {
+            if (state.wallet.isNotEmpty) {
+              return Expanded(
+                child: ListView.builder(
+                  itemBuilder: (context, index) => WalletTile(
+                    wallet: Wallet(
+                      name: state.wallet[index].name,
+                      key: state.wallet[index].key,
+                      iconPath: state.wallet[index].iconPath,
+                    ),
+                  ),
+                  itemCount: state.wallet.length,
+                ),
+              );
+            } else {
+              //FIXME - Show no wallet {widget}
+              // return const Center(
+              //   child: Text('Add wallet'),
+              // );
 
-        // Expanded(
-        //   child: ListView.builder(
-        //     itemBuilder: (context, index) => WalletTile(
-        //       wallet: wallets[index],
-        //     ),
-        //     itemCount: wallets.length,
-        //   ),
-        // )
+              return const SizedBox();
+            }
+          },
+        )
       ],
     );
   }
-}
-
-class Wallet {
-  final String name;
-  final String iconPath;
-  final String key;
-
-  Wallet({
-    required this.name,
-    required this.iconPath,
-    required this.key,
-  });
 }

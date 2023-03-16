@@ -17,10 +17,10 @@ class LivescoreApiClient {
 
   final _apiHeadersLivescore = {
     'x-rapidapi-host': 'livescore6.p.rapidapi.com',
-    // 'x-rapidapi-key':
-    //     '07585b4120mshbc941a57c6ebd11p11de9bjsn089233df6ab2', //(tomer)
+    'x-rapidapi-key':
+        '07585b4120mshbc941a57c6ebd11p11de9bjsn089233df6ab2', //(tomer)
     // 'x-rapidapi-key': '677ef2cd77msha0f0a52eab478a1p1cef4fjsn2932c3c06fef', (4xmafole)
-    'x-rapidapi-key': '331091ac02msh9add992454a91b5p1a80dbjsn1d51b2ec3971',
+    // 'x-rapidapi-key': '331091ac02msh9add992454a91b5p1a80dbjsn1d51b2ec3971',
   };
   final _apiHeadersApiFootball = {
     'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
@@ -40,7 +40,8 @@ class LivescoreApiClient {
   /// Returns a map of leagues on [category].
   Future<Map<String, dynamic>> defaultLeagues(String category) async {
     try {
-      final url = '$_baseUrlLivescore/matches/v2/list-live?Category=$category';
+      final url =
+          '$_baseUrlLivescore/matches/v2/list-live?Category=$category&Date=20230316';
 
       final response = await _httpClient.get(
         Uri.parse(url),
