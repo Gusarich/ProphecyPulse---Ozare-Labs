@@ -22,8 +22,6 @@ class LiveBetBloc extends Bloc<LiveBetEvent, LiveBetState> {
 
   final LiveBetRepository _livescoreRepository;
   late OUser oUser;
-  //FIXME - Add the data from the local storage.
-  // final OUser oUser = OUser.fromJson(auth.OzareRepository().owner!);
 
   /// This method is called when the LiveBetsRequested event is added.
   Future<void> _onLiveBetsRequested(
@@ -37,7 +35,6 @@ class LiveBetBloc extends Bloc<LiveBetEvent, LiveBetState> {
   }
 
   /// This method is called when the LiveBetsUpdated event is added.
-  /// FIXME - Avoid calling everytime the method.
   Future<void> _onLiveBetsUpdated(
     LiveBetsUpdated event,
     Emitter<LiveBetState> emit,

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:livescore_repository/livescore_repository.dart';
 import 'package:ozare/styles/common/common.dart';
 
-
 class EventTile extends StatelessWidget {
   const EventTile({
     super.key,
@@ -44,10 +43,18 @@ class EventTile extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.network(
-                  event.logo1,
-                  height: size.height * 0.07,
-                ),
+                if (event.logo1.isEmpty &&
+                    event.category.contains('cricket')) ...[
+                  Image.asset(
+                    'assets/images/cricket_logo.png',
+                    height: size.height * 0.07,
+                  ),
+                ] else ...[
+                  Image.network(
+                    event.logo1,
+                    height: size.height * 0.07,
+                  ),
+                ],
                 const SizedBox(height: 2),
                 SizedBox(
                   height: size.height * 0.04,
@@ -88,7 +95,7 @@ class EventTile extends StatelessWidget {
                 ),
               ),
               const Spacer(),
-              if (event.score1 != '')
+              if (event.score1 != '' && event.score2 != '') ...[
                 Text(
                   '${event.score1} : ${event.score2}',
                   style: const TextStyle(
@@ -97,8 +104,18 @@ class EventTile extends StatelessWidget {
                     fontSize: 20,
                   ),
                 ),
+              ] else ...[
+                const Text(
+                  'VS',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+              ],
               Text(
-                '${event.time}`',
+                event.time,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   color: Colors.white,
@@ -113,10 +130,18 @@ class EventTile extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.network(
-                  event.logo2,
-                  height: size.height * 0.07,
-                ),
+                if (event.logo2.isEmpty &&
+                    event.category.contains('cricket')) ...[
+                  Image.asset(
+                    'assets/images/cricket_logo.png',
+                    height: size.height * 0.07,
+                  )
+                ] else ...[
+                  Image.network(
+                    event.logo2,
+                    height: size.height * 0.07,
+                  ),
+                ],
                 const SizedBox(height: 2),
                 SizedBox(
                   height: size.height * 0.04,

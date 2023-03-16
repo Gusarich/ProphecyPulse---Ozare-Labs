@@ -16,7 +16,7 @@ class BetHeader extends StatelessWidget {
           SizedBox(
             width: size.width * 0.4,
             child: const Text(
-              "Name",
+              'Name',
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.w500,
@@ -27,7 +27,7 @@ class BetHeader extends StatelessWidget {
             width: size.width * 0.2,
             child: const Center(
               child: Text(
-                "TON",
+                'TON',
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.w500,
@@ -39,7 +39,7 @@ class BetHeader extends StatelessWidget {
             width: size.width * 0.2,
             child: const Center(
               child: Text(
-                "Tokens",
+                'Tokens',
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.w500,

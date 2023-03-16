@@ -34,8 +34,13 @@ class ProfileRepository {
         .doc(uid)
         .collection('history')
         .snapshots()
-        .map((snapshot) =>
-            snapshot.docs.map((doc) => Bet.fromJson(doc.data())).toList());
+        .map(
+          (snapshot) =>
+              snapshot.docs.map((doc) => Bet.fromJson(doc.data())).toList()
+                ..sort(
+                  (a, b) => b.createdAt.compareTo(a.createdAt),
+                ),
+        );
   }
 
   /// User's notifications stream
@@ -45,15 +50,19 @@ class ProfileRepository {
         .doc(uid)
         .collection('notification')
         .snapshots()
-        .map((snapshot) =>
-            snapshot.docs.map((doc) => Bet.fromJson(doc.data())).toList());
+        .map(
+          (snapshot) =>
+              snapshot.docs.map((doc) => Bet.fromJson(doc.data())).toList()
+                ..sort(
+                  (a, b) => b.createdAt.compareTo(a.createdAt),
+                ),
+        );
   }
 
   /// Update the user's profile
   Future<void> updateProfile(OUser oUser) async {
     await _firestore.collection('users').doc(oUser.uid).update(oUser.toJson());
   }
-
 
   /// Upload the user's profile image to firebase storage
   Future<String> uploadPhoto(String uid, XFile imageFile) async {
@@ -68,5 +77,4 @@ class ProfileRepository {
 
     return ref.getDownloadURL();
   }
-
 }

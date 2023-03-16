@@ -92,8 +92,12 @@ class LivescoreRepository {
             id2: event['T2'][0]['ID'] as String,
             logo1: '',
             logo2: '',
-            score1: event['Tr1C1'].toString(),
-            score2: event['Tr1C1'].toString(),
+            score1: event['Tr1C2'].toString().contains('null')
+                ? ''
+                : event['Tr1C2'].toString(),
+            score2: event['Tr2C2'].toString().contains('null')
+                ? ''
+                : event['Tr2C2'].toString(),
             time: event['Eps'] as String,
           );
         }
