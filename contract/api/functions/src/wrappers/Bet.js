@@ -18,11 +18,29 @@ class Bet {
         }
     }
     async close(via) {
-        await via.send({
-            to: this.address,
-            value: (0, ton_core_1.toNano)('0.25'),
-            body: (0, ton_core_1.beginCell)().storeUint(0x12d4de36, 32).endCell(),
-        });
+        if ('sendTransaction' in via) {
+            await via.sendTransaction({
+                validUntil: Math.floor(Date.now() / 1000) + 600,
+                messages: [
+                    {
+                        address: this.address.toRawString(),
+                        amount: (0, ton_core_1.toNano)('0.25').toString(),
+                        payload: (0, ton_core_1.beginCell)()
+                            .storeUint(0x12d4de36, 32)
+                            .endCell()
+                            .toBoc()
+                            .toString('base64'),
+                    },
+                ],
+            });
+        }
+        else {
+            await via.send({
+                to: this.address,
+                value: (0, ton_core_1.toNano)('0.25'),
+                body: (0, ton_core_1.beginCell)().storeUint(0x12d4de36, 32).endCell(),
+            });
+        }
     }
     async runGetMethod(method, stack) {
         var res;

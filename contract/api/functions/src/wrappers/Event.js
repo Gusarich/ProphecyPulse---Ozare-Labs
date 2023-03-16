@@ -4,6 +4,7 @@ exports.Event = void 0;
 const func_js_1 = require("@ton-community/func-js");
 const fs_1 = require("fs");
 const ton_core_1 = require("ton-core");
+const StateInit_1 = require("ton-core/dist/types/StateInit");
 const Bet_1 = require("./Bet");
 class Event {
     address;
@@ -29,42 +30,132 @@ class Event {
         return new Event(address, stateInit, system);
     }
     async deploy(via) {
-        await via.send({
-            to: this.address,
-            init: this.init,
-            value: (0, ton_core_1.toNano)('0.25'),
-        });
+        if ('sendTransaction' in via) {
+            await via.sendTransaction({
+                validUntil: Math.floor(Date.now() / 1000) + 600,
+                messages: [
+                    {
+                        address: this.address.toRawString(),
+                        amount: (0, ton_core_1.toNano)('0.25').toString(),
+                        stateInit: (0, ton_core_1.beginCell)()
+                            .store((0, StateInit_1.storeStateInit)(this.init))
+                            .endCell()
+                            .toBoc()
+                            .toString('base64'),
+                    },
+                ],
+            });
+        }
+        else {
+            await via.send({
+                to: this.address,
+                init: this.init,
+                value: (0, ton_core_1.toNano)('0.25'),
+            });
+        }
     }
     async bet(via, outcome, amount) {
-        await via.send({
-            to: this.address,
-            init: this.init,
-            value: (0, ton_core_1.toNano)(amount) + (0, ton_core_1.toNano)('0.25'),
-            body: (0, ton_core_1.beginCell)()
-                .storeUint(0x60e6b243, 32)
-                .storeBit(outcome)
-                .storeUint((0, ton_core_1.toNano)(amount), 256)
-                .endCell(),
-        });
+        if ('sendTransaction' in via) {
+            await via.sendTransaction({
+                validUntil: Math.floor(Date.now() / 1000) + 600,
+                messages: [
+                    {
+                        address: this.address.toRawString(),
+                        amount: (0, ton_core_1.toNano)('0.25').toString(),
+                        stateInit: (0, ton_core_1.beginCell)()
+                            .store((0, StateInit_1.storeStateInit)(this.init))
+                            .endCell()
+                            .toBoc()
+                            .toString('base64'),
+                        payload: (0, ton_core_1.beginCell)()
+                            .storeUint(0x60e6b243, 32)
+                            .storeBit(outcome)
+                            .storeUint(amount, 256)
+                            .endCell()
+                            .toBoc()
+                            .toString('base64'),
+                    },
+                ],
+            });
+        }
+        else {
+            await via.send({
+                to: this.address,
+                init: this.init,
+                value: amount + (0, ton_core_1.toNano)('0.25'),
+                body: (0, ton_core_1.beginCell)()
+                    .storeUint(0x60e6b243, 32)
+                    .storeBit(outcome)
+                    .storeUint(amount, 256)
+                    .endCell(),
+            });
+        }
     }
     async startEvent(via) {
-        await via.send({
-            to: this.address,
-            init: this.init,
-            value: (0, ton_core_1.toNano)('0.05'),
-            body: (0, ton_core_1.beginCell)().storeUint(0x380ce405, 32).endCell(),
-        });
+        if ('sendTransaction' in via) {
+            await via.sendTransaction({
+                validUntil: Math.floor(Date.now() / 1000) + 600,
+                messages: [
+                    {
+                        address: this.address.toRawString(),
+                        amount: (0, ton_core_1.toNano)('0.05').toString(),
+                        stateInit: (0, ton_core_1.beginCell)()
+                            .store((0, StateInit_1.storeStateInit)(this.init))
+                            .endCell()
+                            .toBoc()
+                            .toString('base64'),
+                        payload: (0, ton_core_1.beginCell)()
+                            .storeUint(0x380ce405, 32)
+                            .endCell()
+                            .toBoc()
+                            .toString('base64'),
+                    },
+                ],
+            });
+        }
+        else {
+            await via.send({
+                to: this.address,
+                init: this.init,
+                value: (0, ton_core_1.toNano)('0.05'),
+                body: (0, ton_core_1.beginCell)().storeUint(0x380ce405, 32).endCell(),
+            });
+        }
     }
     async finishEvent(via, winner) {
-        await via.send({
-            to: this.address,
-            init: this.init,
-            value: (0, ton_core_1.toNano)('0.05'),
-            body: (0, ton_core_1.beginCell)()
-                .storeUint(0x54a94f2a, 32)
-                .storeBit(winner)
-                .endCell(),
-        });
+        if ('sendTransaction' in via) {
+            await via.sendTransaction({
+                validUntil: Math.floor(Date.now() / 1000) + 600,
+                messages: [
+                    {
+                        address: this.address.toRawString(),
+                        amount: (0, ton_core_1.toNano)('0.05').toString(),
+                        stateInit: (0, ton_core_1.beginCell)()
+                            .store((0, StateInit_1.storeStateInit)(this.init))
+                            .endCell()
+                            .toBoc()
+                            .toString('base64'),
+                        payload: (0, ton_core_1.beginCell)()
+                            .storeUint(0x54a94f2a, 32)
+                            .storeBit(winner)
+                            .endCell()
+                            .toBoc()
+                            .toString('base64'),
+                    },
+                ],
+            });
+        }
+        else {
+            await via.send({
+                to: this.address,
+                init: this.init,
+                value: (0, ton_core_1.toNano)('0.05'),
+                body: (0, ton_core_1.beginCell)()
+                    .storeUint(0x54a94f2a, 32)
+                    .storeBit(winner)
+                    .endCell(),
+            });
+        }
     }
     async runGetMethod(method, stack) {
         var res;
