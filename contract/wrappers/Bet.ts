@@ -7,6 +7,7 @@ import {
     toNano,
     TupleItem,
 } from 'ton-core';
+import TonConnect from '@tonconnect/sdk';
 import { compileFunc } from '@ton-community/func-js';
 import { readFileSync } from 'fs';
 import { ContractExecutor } from 'ton-emulator';
@@ -26,12 +27,29 @@ export class Bet implements Contract {
         }
     }
 
-    async close(via: Sender) {
-        await via.send({
-            to: this.address,
-            value: toNano('0.25'),
-            body: beginCell().storeUint(0x12d4de36, 32).endCell(),
-        });
+    async close(via: Sender | TonConnect) {
+        if ('sendTransaction' in via) {
+            await via.sendTransaction({
+                validUntil: Math.floor(Date.now() / 1000) + 600,
+                messages: [
+                    {
+                        address: this.address.toRawString(),
+                        amount: toNano('0.25').toString(),
+                        payload: beginCell()
+                            .storeUint(0x12d4de36, 32)
+                            .endCell()
+                            .toBoc()
+                            .toString('base64'),
+                    },
+                ],
+            });
+        } else {
+            await via.send({
+                to: this.address,
+                value: toNano('0.25'),
+                body: beginCell().storeUint(0x12d4de36, 32).endCell(),
+            });
+        }
     }
 
     private async runGetMethod(

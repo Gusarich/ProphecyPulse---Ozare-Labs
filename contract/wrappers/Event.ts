@@ -1,4 +1,5 @@
 import { compileFunc } from '@ton-community/func-js';
+import TonConnect from '@tonconnect/sdk';
 import { readFileSync } from 'fs';
 import { TonClient } from 'ton';
 import {
@@ -11,6 +12,7 @@ import {
     toNano,
     TupleItem,
 } from 'ton-core';
+import { storeStateInit } from 'ton-core/dist/types/StateInit';
 import { ContractExecutor, ContractSystem } from 'ton-emulator';
 
 import { Bet } from './Bet';
@@ -48,46 +50,132 @@ export class Event implements Contract {
         return new Event(address, stateInit, system);
     }
 
-    async deploy(via: Sender) {
-        await via.send({
-            to: this.address,
-            init: this.init,
-            value: toNano('0.25'),
-        });
+    async deploy(via: Sender | TonConnect) {
+        if ('sendTransaction' in via) {
+            await via.sendTransaction({
+                validUntil: Math.floor(Date.now() / 1000) + 600,
+                messages: [
+                    {
+                        address: this.address.toRawString(),
+                        amount: toNano('0.25').toString(),
+                        stateInit: beginCell()
+                            .store(storeStateInit(this.init))
+                            .endCell()
+                            .toBoc()
+                            .toString('base64'),
+                    },
+                ],
+            });
+        } else {
+            await via.send({
+                to: this.address,
+                init: this.init,
+                value: toNano('0.25'),
+            });
+        }
     }
 
-    async bet(via: Sender, outcome: boolean, amount: bigint) {
-        await via.send({
-            to: this.address,
-            init: this.init,
-            value: toNano(amount) + toNano('0.25'),
-            body: beginCell()
-                .storeUint(0x60e6b243, 32)
-                .storeBit(outcome)
-                .storeUint(toNano(amount), 256)
-                .endCell(),
-        });
+    async bet(via: Sender | TonConnect, outcome: boolean, amount: bigint) {
+        if ('sendTransaction' in via) {
+            await via.sendTransaction({
+                validUntil: Math.floor(Date.now() / 1000) + 600,
+                messages: [
+                    {
+                        address: this.address.toRawString(),
+                        amount: toNano('0.25').toString(),
+                        stateInit: beginCell()
+                            .store(storeStateInit(this.init))
+                            .endCell()
+                            .toBoc()
+                            .toString('base64'),
+                        payload: beginCell()
+                            .storeUint(0x60e6b243, 32)
+                            .storeBit(outcome)
+                            .storeUint(toNano(amount), 256)
+                            .endCell()
+                            .toBoc()
+                            .toString('base64'),
+                    },
+                ],
+            });
+        } else {
+            await via.send({
+                to: this.address,
+                init: this.init,
+                value: toNano(amount) + toNano('0.25'),
+                body: beginCell()
+                    .storeUint(0x60e6b243, 32)
+                    .storeBit(outcome)
+                    .storeUint(toNano(amount), 256)
+                    .endCell(),
+            });
+        }
     }
 
-    async startEvent(via: Sender) {
-        await via.send({
-            to: this.address,
-            init: this.init,
-            value: toNano('0.05'),
-            body: beginCell().storeUint(0x380ce405, 32).endCell(),
-        });
+    async startEvent(via: Sender | TonConnect) {
+        if ('sendTransaction' in via) {
+            await via.sendTransaction({
+                validUntil: Math.floor(Date.now() / 1000) + 600,
+                messages: [
+                    {
+                        address: this.address.toRawString(),
+                        amount: toNano('0.05').toString(),
+                        stateInit: beginCell()
+                            .store(storeStateInit(this.init))
+                            .endCell()
+                            .toBoc()
+                            .toString('base64'),
+                        payload: beginCell()
+                            .storeUint(0x380ce405, 32)
+                            .endCell()
+                            .toBoc()
+                            .toString('base64'),
+                    },
+                ],
+            });
+        } else {
+            await via.send({
+                to: this.address,
+                init: this.init,
+                value: toNano('0.05'),
+                body: beginCell().storeUint(0x380ce405, 32).endCell(),
+            });
+        }
     }
 
-    async finishEvent(via: Sender, winner: boolean) {
-        await via.send({
-            to: this.address,
-            init: this.init,
-            value: toNano('0.05'),
-            body: beginCell()
-                .storeUint(0x54a94f2a, 32)
-                .storeBit(winner)
-                .endCell(),
-        });
+    async finishEvent(via: Sender | TonConnect, winner: boolean) {
+        if ('sendTransaction' in via) {
+            await via.sendTransaction({
+                validUntil: Math.floor(Date.now() / 1000) + 600,
+                messages: [
+                    {
+                        address: this.address.toRawString(),
+                        amount: toNano('0.05').toString(),
+                        stateInit: beginCell()
+                            .store(storeStateInit(this.init))
+                            .endCell()
+                            .toBoc()
+                            .toString('base64'),
+                        payload: beginCell()
+                            .storeUint(0x54a94f2a, 32)
+                            .storeBit(winner)
+                            .endCell()
+                            .toBoc()
+                            .toString('base64'),
+                    },
+                ],
+            });
+        } else {
+            await via.send({
+                to: this.address,
+                init: this.init,
+                value: toNano('0.05'),
+                body: beginCell()
+                    .storeUint(0x54a94f2a, 32)
+                    .storeBit(winner)
+                    .endCell(),
+            });
+        }
     }
 
     private async runGetMethod(
@@ -148,20 +236,15 @@ export class Event implements Contract {
     static async getInstance(
         client: TonClient,
         address: Address
-      ): Promise<Event> {
+    ): Promise<Event> {
         const contractState = await client.getContractState(address);
         if (!contractState || !contractState.code || !contractState.data)
             throw new Error('Contract not found');
         const init = {
-            code: Cell.fromBoc(contractState.code)[0] ,
+            code: Cell.fromBoc(contractState.code)[0],
             data: Cell.fromBoc(contractState.data)[0],
         };
-        const contract = new Event(
-            address,
-            init,
-            client
-        );
+        const contract = new Event(address, init, client);
         return new Event(contract.address, contract.init, client);
-      }
-      
+    }
 }
