@@ -23,7 +23,6 @@ function Home() {
         <div className="flex my-10 justify-center w-full">
           <TonConnectButton />
         </div>
-        dsvdf
         <div className="flex flex-col">
           <span className="pt-4 text-center">
             Address:
