@@ -39,11 +39,11 @@ class Event {
         await via.send({
             to: this.address,
             init: this.init,
-            value: ton_core_1.toNano(amount) + (0, ton_core_1.toNano)('0.25'),
+            value: (0, ton_core_1.toNano)(amount) + (0, ton_core_1.toNano)('0.25'),
             body: (0, ton_core_1.beginCell)()
                 .storeUint(0x60e6b243, 32)
                 .storeBit(outcome)
-                .storeUint(ton_core_1.toNano(amount), 256)
+                .storeUint((0, ton_core_1.toNano)(amount), 256)
                 .endCell(),
         });
     }
@@ -110,7 +110,7 @@ class Event {
                 .endCell(),
         };
     }
-
+    // retrieve existing contract from blockchain
     static async getInstance(client, address) {
         const contractState = await client.getContractState(address);
         if (!contractState || !contractState.code || !contractState.data)
