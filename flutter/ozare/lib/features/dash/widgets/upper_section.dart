@@ -68,18 +68,9 @@ class _UpperSectionState extends State<UpperSection> {
             right: 24,
             left: 24,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: const [
-                _TrophyIcon(),
-
                 _Title(),
-                SizedBox(width: 32),
-
-                // CircleAvatar(
-                //   radius: 20,
-                //   backgroundColor: Colors.white30,
-                //   child: Icon(Icons.more_vert, color: Colors.white),
-                // ),
               ],
             ),
           ),
@@ -182,22 +173,6 @@ class _Title extends StatelessWidget {
         color: Colors.white,
         fontSize: 22,
         fontWeight: FontWeight.w600,
-      ),
-    );
-  }
-}
-
-class _TrophyIcon extends StatelessWidget {
-  const _TrophyIcon();
-
-  @override
-  Widget build(BuildContext context) {
-    return const CircleAvatar(
-      radius: 20,
-      backgroundColor: Colors.white30,
-      child: Icon(
-        FontAwesome.award,
-        color: Colors.white,
       ),
     );
   }

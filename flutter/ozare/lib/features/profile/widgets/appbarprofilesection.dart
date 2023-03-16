@@ -77,12 +77,9 @@ class AppBarProfileSection extends StatelessWidget {
               children: [
                 if (page == ProfileRoutes.profile || singlePage)
                   const CircleAvatar(
+                    backgroundColor: Colors.transparent,
                     radius: 20,
-                    backgroundColor: Colors.white30,
-                    child: Icon(
-                      FontAwesome.award,
-                      color: Colors.white,
-                    ),
+                    child: SizedBox(),
                   ),
                 if (page != ProfileRoutes.profile)
                   GestureDetector(

@@ -73,17 +73,17 @@ class OzareRepository {
     }
   }
 
-  Stream<OUser> getOwner(String uid) {
-    try {
-      return _firestore
-          .collection('users')
-          .doc(uid)
-          .snapshots()
-          .map((event) => OUser.fromJson(event.data()!));
-    } catch (e) {
-      throw OzareGetOwnerException(e.toString());
-    }
-  }
+  // Stream<OUser> getOwner(String uid) {
+  //   try {
+  //     return _firestore
+  //         .collection('users')
+  //         .doc(uid)
+  //         .snapshots()
+  //         .map((event) => OUser.fromJson(event.data()!));
+  //   } catch (e) {
+  //     throw OzareGetOwnerException(e.toString());
+  //   }
+  // }
 
   Future<OUser> signInWithGoogle() async {
     try {

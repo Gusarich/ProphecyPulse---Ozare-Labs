@@ -36,8 +36,7 @@ class PaymentsPage extends StatelessWidget {
               showAlertDialog(
                 context: context,
                 title: 'Success',
-                // content: 'Wallet connected successfully',
-                content: state.wallet[0].key,
+                content: 'Wallet connected successfully',
               );
             }
           },
@@ -57,10 +56,12 @@ class PaymentsPage extends StatelessWidget {
                 ),
               );
             } else {
-              //FIXME - Show no wallet
-              return const Center(
-                child: Text('Add wallet'),
-              );
+              //FIXME - Show no wallet {widget}
+              // return const Center(
+              //   child: Text('Add wallet'),
+              // );
+
+              return const SizedBox();
             }
           },
         )
