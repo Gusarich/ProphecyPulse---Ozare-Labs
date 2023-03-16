@@ -12,10 +12,13 @@
   },
   "scripts": {
     "build": "yarn tsc --build --clean && yarn tsc --build",
+    "migrate": "ncp dist/wrappers api/functions/src/wrappers && ncp func api/functions/src/func",
+    "start-api": "node api/functions/src/server-local",
     "test": "yarn build && mocha dist/test/test.js"
   },
   "devDependencies": {
     "@types/chai": "^4.3.4",
-    "chai": "^4.3.7"
+    "chai": "^4.3.7",
+    "ncp": "^2.0.0"
   }
 }

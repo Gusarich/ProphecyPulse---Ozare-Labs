@@ -60,11 +60,11 @@ export class Event implements Contract {
         await via.send({
             to: this.address,
             init: this.init,
-            value: BigInt(amount) + toNano('0.25'),
+            value: toNano(amount) + toNano('0.25'),
             body: beginCell()
                 .storeUint(0x60e6b243, 32)
                 .storeBit(outcome)
-                .storeUint(amount, 256)
+                .storeUint(toNano(amount), 256)
                 .endCell(),
         });
     }
@@ -150,8 +150,6 @@ export class Event implements Contract {
         address: Address
       ): Promise<Event> {
         const contractState = await client.getContractState(address);
-        console.log("Contract State: ");
-        console.log(contractState);
         if (!contractState || !contractState.code || !contractState.data)
             throw new Error('Contract not found');
         const init = {
