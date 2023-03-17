@@ -28,22 +28,26 @@ function Home() {
     }
   }
 
-  async function handleClick() {
+  const handleClick = async () => {
     const response = await handleRequest(
-      (payload as any),
+      payload as any,
       (tonConnectUI as any).connector,
       userFriendlyAddress
     );
-    if (response) {
+    if (response.status === "success") {
+      console.log(response);
       setTransactionComplete(true);
       redirect(response);
+    } else {
+      alert("You have either cancelled the transaction or an error occured");
+      console.log(response);
     }
-  }
+  };
 
   useEffect(() => {
     // get the transaction details from the parent window
     const first: any = window.addEventListener("message", (event) => {
-      if (event.data) {
+      if (event.data && event.data.from === "ozare") {
         setPayload(event.data);
       }
     });
