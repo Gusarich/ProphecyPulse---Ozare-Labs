@@ -6,15 +6,16 @@ import {
   useTonConnectUI,
 } from "@tonconnect/ui-react";
 import handleRequest from "./HandleRequests";
+import { Payload, Response } from "./IPayloadResponse";
 
 function Home() {
   const userFriendlyAddress = useTonAddress();
   const wallet = useTonWallet();
   const [tonConnectUI] = useTonConnectUI();
-  const [payload, setPayload] = useState<any>(null);
+  const [payload, setPayload] = useState<Payload>();
   const [transactionComplete, setTransactionComplete] = useState(false);
 
-  function redirect(response: any) {
+  function redirect(response: Response) {
     if (userFriendlyAddress?.length > 0 && wallet?.name) {
       window.parent.postMessage(
         {
@@ -29,7 +30,7 @@ function Home() {
 
   async function handleClick() {
     const response = await handleRequest(
-      payload,
+      (payload as any),
       (tonConnectUI as any).connector,
       userFriendlyAddress
     );
@@ -59,7 +60,7 @@ function Home() {
           Redirecting back to parent window...
         </span>
       </div>
-    </div> 
+    </div>
   ) : (
     <div className="flex bg-white justify-center items-center h-screen w-screen">
       <div>

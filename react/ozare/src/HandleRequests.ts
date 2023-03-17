@@ -1,5 +1,6 @@
 import { TonConnect } from "@tonconnect/sdk";
 import { TonClient, Address } from "ton";
+import { Payload, Response } from "./IPayloadResponse";
 import { Event } from "./wrappers/Event";
 
 const getClient = async () => {
@@ -12,10 +13,10 @@ const getClient = async () => {
 };
 
 async function handleRequest(
-  payload: any,
+  payload: Payload,
   sender: TonConnect,
   address: string,
-) {
+): Promise<Response> {
   const client = await getClient();
   let type = "create_event";
   if (payload && payload.type) type = payload.type;
@@ -24,16 +25,27 @@ async function handleRequest(
       const uid = payload?.uid || Math.floor(Math.random() * 1000000);
       const event = await Event.create(client, Address.parse(address), uid);
       await event.deploy(sender);
-      return event.address.toRawString();
+      return {
+        status: "success",
+        message: "Event created successfully",
+        data: {
+          address: event.address.toString(),
+          uid,
+        },
+      }
     } catch (e) {
       console.log(e);
-      return null;
+      return {
+        status: "error",
+        message: "Error creating event",
+        data: e,
+      };
     }
   }
 
-  const event = await Event.getInstance(client, payload.event_address);
+  const event = await Event.getInstance(client, Address.parse(payload.address || ''));
 
-  let result: any;
+  let result: Response;
 
   switch (type) {
     case "start_event": {
@@ -52,7 +64,7 @@ async function handleRequest(
     }
     case "finish_event": {
       try {
-        const resultData = payload?.result;
+        const resultData = (payload as any).result;
         await event.finishEvent(sender, resultData);
         result = {
           status: "success",
@@ -71,7 +83,7 @@ async function handleRequest(
     }
     case "place_bet": {
       try {
-        const { outcome, amount } = payload;
+        const { outcome, amount } = (payload as any);
         await event.bet(sender, outcome, amount);
         result = {
           status: "success",
