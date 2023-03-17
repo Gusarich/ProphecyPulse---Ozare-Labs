@@ -14,7 +14,7 @@
   "scripts": {
     "build": "yarn tsc --build --clean && yarn tsc --build",
     "migrate": "ncp dist/wrappers api/functions/src/wrappers && ncp func api/functions/src/func",
-    "start-api": "node api/functions/src/server-local",
+    "start-api": "node api/functions/src/server-new",
     "test": "yarn build && mocha dist/test/test.js"
   },
   "devDependencies": {
