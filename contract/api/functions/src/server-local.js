@@ -1,6 +1,4 @@
-
 const bodyParser = require('body-parser');
-
 const express = require('express');
 const index_1 = require("ton-crypto");
 const index_2 = require("ton");

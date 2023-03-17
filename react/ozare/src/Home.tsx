@@ -1,40 +1,49 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import {
   TonConnectButton,
   useTonWallet,
   useTonAddress,
   useTonConnectUI,
 } from "@tonconnect/ui-react";
+import handleRequest from "./HandleRequests";
 
 function Home() {
   const userFriendlyAddress = useTonAddress();
   const wallet = useTonWallet();
   const [tonConnectUI] = useTonConnectUI();
-  const [transaction, setTransaction] = useState<any>(null);
-  function redirect() {
+  const [payload, setPayload] = useState<any>(null);
+  const [transactionComplete, setTransactionComplete] = useState(false);
+
+  function redirect(response: any) {
     if (userFriendlyAddress?.length > 0 && wallet?.name) {
       window.parent.postMessage(
-        { address: userFriendlyAddress, walletName: wallet?.name },
+        {
+          address: userFriendlyAddress,
+          walletName: wallet?.name,
+          response,
+        },
         "*"
       );
     }
   }
 
   async function handleClick() {
-    const serverURL = "http://localhost:8000";
-    const response = await axios.post(`${serverURL}/event`, {
-      via: tonConnectUI.connector,
-      address: userFriendlyAddress,
-    });
-    console.log(response.data);
+    const response = await handleRequest(
+      payload,
+      (tonConnectUI as any).connector,
+      userFriendlyAddress
+    );
+    if (response) {
+      setTransactionComplete(true);
+      redirect(response);
+    }
   }
 
   useEffect(() => {
     // get the transaction details from the parent window
     const first: any = window.addEventListener("message", (event) => {
       if (event.data) {
-        setTransaction(event.data);
+        setPayload(event.data);
       }
     });
     return () => {
@@ -42,7 +51,16 @@ function Home() {
     };
   }, []);
 
-  return (
+  return transactionComplete ? (
+    <div className="flex bg-white justify-center items-center h-screen w-screen">
+      <div className="flex flex-col">
+        <span className="text-4xl text-center">Transaction complete</span>
+        <span className="text-md text-center">
+          Redirecting back to parent window...
+        </span>
+      </div>
+    </div> 
+  ) : (
     <div className="flex bg-white justify-center items-center h-screen w-screen">
       <div>
         <div className="flex my-10 justify-center w-full">
