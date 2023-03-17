@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:developer';
+import 'package:intl/intl.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:livescore_api/src/exceptions/exceptions.dart';
@@ -41,7 +41,7 @@ class LivescoreApiClient {
   Future<Map<String, dynamic>> defaultLeagues(String category) async {
     try {
       final url =
-          '$_baseUrlLivescore/matches/v2/list-live?Category=$category&Date=20230316';
+          '$_baseUrlLivescore/matches/v2/list-by-date?Category=$category&Date=${DateFormat('yyyyMMdd').format(DateTime.now())}';
 
       final response = await _httpClient.get(
         Uri.parse(url),
