@@ -35,7 +35,15 @@
     "soccer": "Fußball",
     "basketball": "Basketball",
     "cricket": "Cricket",
-    "searchTeams": "Suche Teams",
+    "searchTeams": "Suche {category} Teams",
+    "@searchTeams": {
+        "placeholders": {
+            "category": {
+                "type": "String",
+                "example": "soccer"
+            }
+        }
+    },
     "settings": "Settings",
     "wins": "Wins",
     "languages": "Sprachen",

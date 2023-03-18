@@ -56,7 +56,7 @@ class _DashViewState extends State<DashView> {
                     context
                         .read<SoccerBloc>()
                         .add(const SoccerLeaguesRequested(isNew: true));
-            
+
                     setState(() {
                       selectedTab = 0;
                     });
@@ -73,7 +73,7 @@ class _DashViewState extends State<DashView> {
                     context
                         .read<BasketBloc>()
                         .add(const BasketLeaguesRequested(isNew: true));
-                  
+
                     setState(() {
                       selectedTab = 1;
                     });
@@ -87,7 +87,7 @@ class _DashViewState extends State<DashView> {
                     if (selectedTab == 2) return;
                     context.read<SoccerBloc>().add(const SoccerToggleLive());
                     context.read<BasketBloc>().add(const BasketToggleLive());
-                 
+
                     context
                         .read<CricketBloc>()
                         .add(const CricketLeaguesRequested(isNew: true));
@@ -95,7 +95,7 @@ class _DashViewState extends State<DashView> {
                       selectedTab = 2;
                     });
                   },
-                  icon: FontAwesome5.bowling_ball,
+                  icon: Icons.sports_cricket_rounded,
                 ),
               ],
             ),

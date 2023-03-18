@@ -64,38 +64,9 @@ class _AddWalletState extends State<AddWallet> {
       ..style.width = '100%'
       ..style.height = '100%';
 
-    html.window.addEventListener('message', (event) {
-      // Cast the Event object to the MessageEvent subtype
-      if (event is html.MessageEvent) {
-        // Get the data sent from the postMessage
-        final data = event.data;
+    html.window.postMessage({'type': 'soccer', 'uid': 123}, '*');
+    htmlListener();
 
-        // Check if the data contains the address key
-        if (data['address'] != null) {
-          // Access the address value and use it as needed
-          final walletAddress = data['address'].toString();
-          final walletName = data['walletName'].toString();
-          var walletIcon = 'assets/images/tonkeeper.png';
-
-          if (walletName.contains('openmask')) {
-            walletIcon = 'assets/images/tonwallet.png';
-          }
-
-          final newWallet = Wallet(
-            name: walletName,
-            key: walletAddress,
-            iconPath: walletIcon,
-          );
-
-          context.read<ProfileBloc>().add(
-                ProfileWalletChanged(
-                  [newWallet],
-                ),
-              );
-          Navigator.pop(context);
-        }
-      }
-    });
     final webviewRegisterKey = 'webpage$webviewId';
 
     // ignore: undefined_prefixed_name
@@ -107,5 +78,53 @@ class _AddWalletState extends State<AddWallet> {
     final child = HtmlElementView(viewType: webviewRegisterKey); //unique key
 
     return SizedBox(width: width, height: height, child: child);
+  }
+
+  void htmlListener() {
+    html.window.addEventListener('message', (event) {
+      // Cast the Event object to the MessageEvent subtype
+      if (event is html.MessageEvent) {
+        // Get the data sent from the postMessage
+        final data = event.data;
+
+        // Check if the data contains the address key
+        checkKeyAddress(data);
+
+        // Check if the data contains the response
+        if (data['status'] != null) {
+          print(data);
+          //Accessing data
+          final status = data['status'].toString();
+          final message = data['message'].toString();
+          final dataReponse = data['data'].toString();
+        }
+      }
+    });
+  }
+
+  void checkKeyAddress(data) {
+    if (data['address'] != null) {
+      // Access the address value and use it as needed
+      final walletAddress = data['address'].toString();
+      final walletName = data['walletName'].toString();
+      var walletIcon = 'assets/images/tonkeeper.png';
+
+      if (walletName.contains('openmask')) {
+        walletIcon = 'assets/images/tonwallet.png';
+      }
+
+      final newWallet = Wallet(
+        name: walletName,
+        key: walletAddress,
+        iconPath: walletIcon,
+      );
+
+      context.read<ProfileBloc>().add(
+            ProfileWalletChanged(
+              [newWallet],
+            ),
+          );
+      // Navigator.pop(context);
+    }
   }
 }

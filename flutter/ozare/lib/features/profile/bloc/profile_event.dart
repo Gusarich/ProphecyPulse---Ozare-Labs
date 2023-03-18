@@ -51,5 +51,5 @@ class ProfileWalletChanged extends ProfileEvent {
   final List<Wallet> wallet;
 
   @override
-  List<Object> get props => [wallet!];
+  List<Object> get props => [wallet];
 }

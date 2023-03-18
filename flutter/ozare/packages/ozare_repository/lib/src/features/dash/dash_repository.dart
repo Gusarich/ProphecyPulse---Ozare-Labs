@@ -25,7 +25,10 @@ class DashRepository {
         .collection('bets')
         .snapshots()
         .map((snapshot) {
-      return snapshot.docs.map((doc) => Bet.fromJson(doc.data())).toList();
+      return snapshot.docs.map((doc) => Bet.fromJson(doc.data())).toList()
+        ..sort(
+          (a, b) => b.createdAt.compareTo(a.createdAt),
+        );
     });
   }
 
@@ -60,8 +63,10 @@ class DashRepository {
   }
 
   /// Gets the livescore data.
-  Future<List<League>?> getLeagues(String category,
-      {required int refresherInMinutes}) async {
+  Future<List<League>?> getLeagues(
+    String category, {
+    required int refresherInMinutes,
+  }) async {
     final collection =
         _firestore.collection('leagues').doc(category).collection('temporary');
 
@@ -82,19 +87,21 @@ class DashRepository {
           id: doc.id,
           name: leagueData['name'].toString(),
           events: (leagueData['events'] as List<dynamic>)
-              .map((eventData) => Event(
-                    id: eventData['id'].toString(),
-                    id1: eventData['id1'].toString(),
-                    id2: eventData['id2'].toString(),
-                    score1: eventData['score1'].toString(),
-                    score2: eventData['score2'].toString(),
-                    team1: eventData['team1'].toString(),
-                    team2: eventData['team2'].toString(),
-                    time: eventData['time'].toString(),
-                    logo1: eventData['logo1'].toString(),
-                    logo2: eventData['logo2'].toString(),
-                    category: eventData['category'].toString(),
-                  ))
+              .map(
+                (eventData) => Event(
+                  id: eventData['id'].toString(),
+                  id1: eventData['id1'].toString(),
+                  id2: eventData['id2'].toString(),
+                  score1: eventData['score1'].toString(),
+                  score2: eventData['score2'].toString(),
+                  team1: eventData['team1'].toString(),
+                  team2: eventData['team2'].toString(),
+                  time: eventData['time'].toString(),
+                  logo1: eventData['logo1'].toString(),
+                  logo2: eventData['logo2'].toString(),
+                  category: eventData['category'].toString(),
+                ),
+              )
               .toList(),
         );
         leagues.add(league);

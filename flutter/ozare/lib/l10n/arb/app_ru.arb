@@ -35,7 +35,15 @@
     "soccer": "Футбол",
     "basketball": "Баскетбол",
     "cricket": "Крикет",
-    "searchTeams": "Поиск команд",
+    "searchTeams": "Поиск {category} команд",
+    "@searchTeams": {
+        "placeholders": {
+            "category": {
+                "type": "String",
+                "example": "soccer"
+            }
+        }
+    },
     "settings": "Настройки",
     "wins": "Победы",
     "languages": "Языки",

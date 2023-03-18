@@ -15,6 +15,7 @@ dependencies:
   carousel_slider: ^4.2.1
   dotted_border: ^2.0.0+3
   dotted_line: ^3.1.0
+  dropdown_search: ^5.0.6
   fastor_app_ui_widget: ^1.0.128
   firebase_dynamic_links: ^5.0.16
   flag: ^6.0.0
@@ -44,6 +45,7 @@ dependencies:
   shared_preferences: ^2.0.18
   url_launcher: ^6.1.10
   uuid: ^3.0.7
+
 
 dependency_overrides:
   # flutter_svg: ^2.0.2

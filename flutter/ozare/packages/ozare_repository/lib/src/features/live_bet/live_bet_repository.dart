@@ -12,7 +12,7 @@ class LiveBetRepository {
   final FirebaseFirestore _firestore;
   final LivescoreRepository _livescoreRepository;
 
-  // Get live bets for current user
+  /// Get live bets for current user
   Stream<List<Bet>> liveBetStream(String userId) {
     return _firestore
         .collection('users')
@@ -20,7 +20,10 @@ class LiveBetRepository {
         .collection('bets')
         .snapshots()
         .map((snapshot) {
-      return snapshot.docs.map((doc) => Bet.fromJson(doc.data())).toList();
+      return snapshot.docs.map((doc) => Bet.fromJson(doc.data())).toList()
+        ..sort(
+          (a, b) => b.createdAt.compareTo(a.createdAt),
+        );
     });
   }
 

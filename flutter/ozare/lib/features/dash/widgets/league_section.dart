@@ -64,14 +64,9 @@ class LeagueSection extends StatelessWidget {
 
                 return GestureDetector(
                   onTap: () {
-                    context.read<EventBloc>()
-                      ..add(EventInitializedRequested(event: event))
-                      ..add(
-                        EventLiveRequested(
-                          event: event,
-                          category: category,
-                        ),
-                      );
+                    context
+                        .read<EventBloc>()
+                        .add(EventInitializedRequested(event: event));
                     Navigator.push(
                       context,
                       MaterialPageRoute(

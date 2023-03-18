@@ -32,7 +32,6 @@ class EventBloc extends Bloc<EventEvent, EventState> {
           ),
         ) {
     on<EventInitializedRequested>(_onEventInitializedRequested);
-    on<EventLiveRequested>(_onEventLiveRequested);
     on<EventToggleLive>(_onEventToggleLive);
   }
 
@@ -45,22 +44,6 @@ class EventBloc extends Bloc<EventEvent, EventState> {
     Emitter<EventState> emit,
   ) async {
     await _eventRepository.initializeEvent(event.event.toJson());
-  }
-
-  /// EventLiveRequested
-  Future<void> _onEventLiveRequested(
-    EventLiveRequested event,
-    Emitter<EventState> emit,
-  ) async {
-    emit(state.copyWith(event: event.event));
-
-    final updatedEvent = await _livescoreRepository.getEventScoreboard(
-      eid: event.event.id,
-      category: event.category,
-    );
-    emit(state.copyWith(event: updatedEvent, isLive: true));
-
-    await Future<void>.delayed(const Duration(seconds: 30));
   }
 
   /// EventToggleLive

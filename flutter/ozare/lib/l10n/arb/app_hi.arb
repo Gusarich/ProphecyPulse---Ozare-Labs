@@ -35,7 +35,15 @@
 "soccer": "फुटबॉल",
 "basketball": "बास्केटबॉल",
 "cricket": "क्रिकेट",
-"searchTeams": "टीमों की खोज करें",
+"searchTeams": "टीमों की खोज करें : {category}",
+"@searchTeams": {
+    "placeholders": {
+        "category": {
+            "type": "String",
+            "example": "soccer"
+        }
+    }
+},
 "settings": "सेटिंग्स",
 "wins": "जीतें",
 "languages": "भाषाएं",
