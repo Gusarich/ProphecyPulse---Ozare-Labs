@@ -20,9 +20,7 @@ app.get("/api/contract/bet", async (req, res) => {
     let result = await compileFunc({
       targets: ["stdlib.fc", "opcodes.fc", "bet.fc"],
       sources: (target) =>
-        readFileSync(
-          path.join(__dirname, "src/func/") + target
-        ).toString(),
+        readFileSync(path.join(__dirname, "src/func/") + target).toString(),
     });
     if (result.status === "error") {
       throw result.message;
@@ -39,9 +37,7 @@ app.get("/api/contract/event", async (req, res) => {
     let result = await compileFunc({
       targets: ["stdlib.fc", "opcodes.fc", "event.fc"],
       sources: (target) =>
-        readFileSync(
-          path.join(__dirname, "src/func/") + target
-        ).toString(),
+        readFileSync(path.join(__dirname, "src/func/") + target).toString(),
     });
     if (result.status === "error") {
       throw result.message;
@@ -49,24 +45,13 @@ app.get("/api/contract/event", async (req, res) => {
     res.send(result.codeBoc);
   } catch (err) {
     console.error(err);
-    // list contents of directory
-    readdir('.', (err, files) => {
-        if (err) {
-            console.error('An error occurred:', err);
-        } else {
-            console.log('Directory contents:');
-            files.forEach((file) => {
-                console.log(file);
-            });
-        }
-    });
-    res.status(404).send(err);
+    res.status(500).send("Internal server error");
   }
 });
 
 // Start the server
 app.get("/", (req, res) => {
-    res.send("This server is an API for contracts");
+  res.send("This server is an API for contracts");
 });
 
 exports.app = functions.https.onRequest(app);
