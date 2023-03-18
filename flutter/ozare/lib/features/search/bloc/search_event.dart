@@ -24,9 +24,10 @@ class SearchStatusChanged extends SearchEvent {
 }
 
 class SearchTeamMatchRequested extends SearchEvent {
-  const SearchTeamMatchRequested(this.team);
+  const SearchTeamMatchRequested(this.team, this.category);
 
   final Team team;
+  final String category;
 
   @override
   List<Object> get props => [team];

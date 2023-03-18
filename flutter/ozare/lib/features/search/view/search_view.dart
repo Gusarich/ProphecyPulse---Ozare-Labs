@@ -42,7 +42,7 @@ class SearchView extends StatelessWidget {
               final team = teams[index];
               return Padding(
                 padding: const EdgeInsets.only(bottom: 8),
-                child: TeamTile(team: team),
+                child: TeamTile(team: team, category: state.category),
               );
             },
           ),

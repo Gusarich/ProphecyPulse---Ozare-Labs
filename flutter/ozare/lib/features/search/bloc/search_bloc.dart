@@ -45,7 +45,15 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     Emitter<SearchState> emit,
   ) async {
     emit(state.copyWith(status: SearchStatus.loading));
-    final fixtures = await _repo.getLiveMatchByTeam(event.team.id);
+    var fixtures = <Fixture>[];
+    if (event.category.contains('soccer')) {
+      fixtures = await _repo.getLiveMatchByTeam(event.team.id);
+    } else {
+      fixtures = await _repo.getScheduleMatchByCategory(
+        event.team.id,
+        event.category,
+      );
+    }
     emit(
       state.copyWith(
         status: SearchStatus.fixtures,
@@ -66,9 +74,18 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       ),
     );
 
+    var teams = <Team>[];
     //FIXME - Add category upon searching.
     try {
-      final teams = await _repo.getTeams(event.query);
+      if (event.searchCategory.contains('soccer')) {
+        teams = await _repo.getTeams(event.query);
+      } else {
+        teams = await _repo.searchTeamsByCategory(
+          event.query,
+          event.searchCategory,
+        );
+      }
+
       if (teams.isNotEmpty) {
         emit(
           state.copyWith(
@@ -88,10 +105,18 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         );
       }
     } catch (error) {
+      // emit(
+      //   state.copyWith(
+      //     status: SearchStatus.failure,
+      //     message: error.toString(),
+      //   ),
+      // );
       emit(
         state.copyWith(
-          status: SearchStatus.failure,
-          message: error.toString(),
+          status: SearchStatus.none,
+          message:
+              'No Teams found for ${event.query} on ${event.searchCategory}',
+          query: event.query,
         ),
       );
     }
