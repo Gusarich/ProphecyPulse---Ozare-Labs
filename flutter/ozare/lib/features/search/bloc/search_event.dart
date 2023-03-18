@@ -5,12 +5,13 @@ abstract class SearchEvent extends Equatable {
 }
 
 class SearchRequested extends SearchEvent {
-  const SearchRequested(this.query);
+  const SearchRequested(this.query, this.searchCategory);
 
   final String query;
+  final String searchCategory;
 
   @override
-  List<Object> get props => [query];
+  List<Object> get props => [query, searchCategory];
 }
 
 class SearchStatusChanged extends SearchEvent {

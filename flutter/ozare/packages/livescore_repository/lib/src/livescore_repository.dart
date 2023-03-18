@@ -28,7 +28,6 @@ class LivescoreRepository {
         category,
       );
 
-      print('category:$remoteData');
       return defaultLeague(remoteData, parsedLeagues, category);
     } catch (e) {
       return parsedLeagues;
@@ -63,70 +62,62 @@ class LivescoreRepository {
 
   List<Event> _parseEvents(List<dynamic> events, String category) {
     final matches = <Event>[];
+
     for (final event in events) {
-      final Event match;
       try {
-        if (event['T1'][0]['Img'] != null && event['T2'][0]['Img'] != null) {
-          match = Event(
-            id: event['Eid'] as String,
-            category: category,
-            team1: event['T1'][0]['Nm'] as String,
-            team2: event['T2'][0]['Nm'] as String,
-            id1: event['T1'][0]['ID'] as String,
-            id2: event['T2'][0]['ID'] as String,
-            logo1: LivescoreApiClient.logoBaseUrl +
-                (event['T1'][0]['Img'] as String),
-            logo2: LivescoreApiClient.logoBaseUrl +
-                (event['T2'][0]['Img'] as String),
-            score1: event['Tr1'] as String,
-            score2: event['Tr2'] as String,
-            time: (event['Eps'] as String).replaceAll('\'', ''),
-          );
-        } else {
-          match = Event(
-            id: event['Eid'] as String,
-            category: category,
-            team1: event['T1'][0]['Nm'] as String,
-            team2: event['T2'][0]['Nm'] as String,
-            id1: event['T1'][0]['ID'] as String,
-            id2: event['T2'][0]['ID'] as String,
-            logo1: '',
-            logo2: '',
-            score1: event['Tr1C2'].toString().contains('null')
-                ? ''
-                : event['Tr1C2'].toString(),
-            score2: event['Tr2C2'].toString().contains('null')
-                ? ''
-                : event['Tr2C2'].toString(),
-            time: event['Eps'] as String,
-          );
-        }
+        final match = _parseEventDefault(event, category);
         matches.add(match);
       } catch (e) {
         throw LivescoreRepoParseEventsException(e.toString());
       }
     }
+
     return matches;
   }
 
+  Event _parseEventDefault(dynamic event, String category) {
+    final hasLogos =
+        event['T1'][0]['Img'] != null && event['T2'][0]['Img'] != null;
+    final notStarted = event['Eps'].toString().contains('NS');
+    final postponed = event['Eps'].toString().contains('Postp.');
+
+    return Event(
+      id: event['Eid'].toString(),
+      category: category,
+      team1: event['T1'][0]['Nm'].toString(),
+      team2: event['T2'][0]['Nm'].toString(),
+      id1: event['T1'][0]['ID'].toString(),
+      id2: event['T2'][0]['ID'].toString(),
+      logo1: hasLogos
+          ? LivescoreApiClient.logoBaseUrl + event['T1'][0]['Img'].toString()
+          : '',
+      logo2: hasLogos
+          ? LivescoreApiClient.logoBaseUrl + event['T2'][0]['Img'].toString()
+          : '',
+      score1: event['Tr1'].toString().contains('null')
+          ? ''
+          : event['Tr1'].toString(),
+      score2: event['Tr2'].toString().contains('null')
+          ? ''
+          : event['Tr2'].toString(),
+      time: notStarted
+          ? ''
+          : postponed
+              ? 'Postponed'
+              : event['Eps'].toString(),
+    );
+  }
+
+  //FIXME - Rework on this to get data from the database not
   Future<Event?> getEventScoreboard({
     required String eid,
     required String category,
   }) async {
     try {
-      var event = _localLivescoreClient.getEventScoreboard(eid, category);
-      if (event == null) {
-        final remoteData = await _livescoreApiClient.getEventScoreboard(
-          eid: eid,
-          category: category,
-        );
-        await _localLivescoreClient.setEventScoreboard(
-          remoteData,
-          eid,
-          category,
-        );
-        event = remoteData;
-      }
+      var event = await _livescoreApiClient.getEventScoreboard(
+        eid: eid,
+        category: category,
+      );
 
       final match = Event(
         category: category,

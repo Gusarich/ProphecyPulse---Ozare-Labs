@@ -39,7 +39,6 @@ class _MatchViewState extends State<EventView> {
 
   @override
   void initState() {
-    log('Bet Provider');
     _tabs = [
       BlocProvider(
         create: (context) => ChatBloc(

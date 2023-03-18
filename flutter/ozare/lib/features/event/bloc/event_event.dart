@@ -27,18 +27,6 @@ class EventBetRequested extends EventEvent {
   List<Object> get props => [event];
 }
 
-class EventLiveRequested extends EventEvent {
-  final livescore.Event event;
-  final String category;
-
-  const EventLiveRequested({
-    required this.event,
-    required this.category,
-  });
-
-  @override
-  List<Object> get props => [event, category];
-}
 
 class EventToggleLive extends EventEvent {
   const EventToggleLive();

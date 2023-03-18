@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:livescore_repository/livescore_repository.dart';
+import 'package:ozare/features/dash/widgets/widgets.dart';
 import 'package:ozare/styles/common/common.dart';
 
 class EventTile extends StatelessWidget {
@@ -73,27 +74,7 @@ class EventTile extends StatelessWidget {
           ),
           Column(
             children: [
-              Container(
-                height: 22,
-                width: 52,
-                decoration: const BoxDecoration(
-                  color: Colors.green,
-                  // add border circle only to bottom
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(12),
-                    bottomRight: Radius.circular(12),
-                  ),
-                ),
-                child: const Center(
-                  child: Text(
-                    'Live',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
-              ),
+              const UpcomingBadge(),
               const Spacer(),
               if (event.score1 != '' && event.score2 != '') ...[
                 Text(

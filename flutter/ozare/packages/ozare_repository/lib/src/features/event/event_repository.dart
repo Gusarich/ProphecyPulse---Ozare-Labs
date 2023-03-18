@@ -8,6 +8,9 @@ class EventRepository {
 
   // create new document with id of the event in events collection
   Future<void> initializeEvent(Map<String, dynamic> event) async {
-    await _firestore.collection('events').doc(event['id'] as String).set(event);
+    await _firestore
+        .collection('events')
+        .doc(event['id'].toString())
+        .set(event);
   }
 }

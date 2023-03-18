@@ -8,6 +8,7 @@ class SearchState extends Equatable {
     this.teams = const [],
     this.message = '',
     this.query = '',
+    this.category = '',
     this.fixtures = const [],
     this.team,
   });
@@ -17,6 +18,7 @@ class SearchState extends Equatable {
   final List<Team> teams;
   final String message;
   final String query;
+  final String category;
   final Team? team;
 
   SearchState copyWith({
@@ -24,6 +26,7 @@ class SearchState extends Equatable {
     List<Team>? teams,
     String? message,
     String? query,
+    String? category,
     List<Fixture>? fixtures,
     Team? team,
   }) {
@@ -32,11 +35,12 @@ class SearchState extends Equatable {
       status: status ?? this.status,
       message: message ?? this.message,
       query: query ?? this.query,
+      category: category ?? this.category,
       fixtures: fixtures ?? this.fixtures,
       team: team ?? this.team,
     );
   }
 
   @override
-  List<Object> get props => [status, teams, message, query, fixtures];
+  List<Object> get props => [status, teams, message, query, category, fixtures];
 }

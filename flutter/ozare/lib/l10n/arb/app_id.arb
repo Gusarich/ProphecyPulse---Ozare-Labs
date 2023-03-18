@@ -35,7 +35,15 @@
     "soccer": "Sepak bola",
     "basketball": "Basket",
     "cricket": "Cricket",
-    "searchTeams": "Cari tim",
+    "searchTeams": "Cari {category} tim",
+    "@searchTeams": {
+        "placeholders": {
+            "category": {
+                "type": "String",
+                "example": "soccer"
+            }
+        }
+    },
     "settings": "Pengaturan",
     "wins": "Menang",
     "languages": "Bahasa",

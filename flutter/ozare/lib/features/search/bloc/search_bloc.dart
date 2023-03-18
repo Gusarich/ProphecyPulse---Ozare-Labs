@@ -59,8 +59,14 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     SearchRequested event,
     Emitter<SearchState> emit,
   ) async {
-    emit(state.copyWith(status: SearchStatus.loading));
+    emit(
+      state.copyWith(
+        status: SearchStatus.loading,
+        category: event.searchCategory,
+      ),
+    );
 
+    //FIXME - Add category upon searching.
     try {
       final teams = await _repo.getTeams(event.query);
       if (teams.isNotEmpty) {
@@ -75,7 +81,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         emit(
           state.copyWith(
             status: SearchStatus.none,
-            message: 'No Teams found for ${event.query}',
+            message:
+                'No Teams found for ${event.query} on ${event.searchCategory}',
             query: event.query,
           ),
         );
