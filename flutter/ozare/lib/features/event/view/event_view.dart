@@ -42,14 +42,16 @@ class _MatchViewState extends State<EventView> {
     _tabs = [
       BlocProvider(
         create: (context) => ChatBloc(
-          chatRepository: ozare.ChatRepository(firestore: FirebaseFirestore.instance),
+          chatRepository:
+              ozare.ChatRepository(firestore: FirebaseFirestore.instance),
           eventId: widget.event.id,
         )..add(ChatSubscriptionRequested()),
         child: const ChatView(),
       ),
       BlocProvider(
         create: (context) => BetBloc(
-          betRepository: ozare.BetRepository(firestore: FirebaseFirestore.instance),
+          betRepository:
+              ozare.BetRepository(firestore: FirebaseFirestore.instance),
           eventId: widget.event.id,
         )..add(const BetSubscriptionRequested()),
         child: BetView(event: widget.event),
@@ -200,21 +202,14 @@ class UpperSection extends StatelessWidget {
               height: size.height * 0.155,
               width: size.width,
               padding: const EdgeInsets.symmetric(horizontal: 18),
-              child: BlocBuilder<EventBloc, EventState>(
-                buildWhen: (previous, current) =>
-                    previous.event.id == current.event.id,
-                builder: (context, state) {
-                  final event = state.event;
-                  return isLive
-                      ? EventTile(
-                          event: event,
-                        )
-                      : ScheduleTile(
-                          fixture: fixture!,
-                          fromEvent: true,
-                        );
-                },
-              ),
+              child: isLive
+                  ? EventTile(
+                      event: event,
+                    )
+                  : ScheduleTile(
+                      fixture: fixture!,
+                      fromEvent: true,
+                    ),
             ),
           ),
         ],

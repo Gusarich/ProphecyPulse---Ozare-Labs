@@ -74,7 +74,6 @@ class _SearchBarState extends State<SearchBar> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         PopupMenuButton<String>(
-                          tooltip: null,
                           onSelected: (String value) {
                             setState(() {
                               selectedSport = value;

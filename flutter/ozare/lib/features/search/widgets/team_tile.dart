@@ -15,9 +15,13 @@ class TeamTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return GestureDetector(
       onTap: () {
-        context.read<SearchBloc>().add(SearchTeamMatchRequested(team, category));
+        context
+            .read<SearchBloc>()
+            .add(SearchTeamMatchRequested(team, category));
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
@@ -34,7 +38,10 @@ class TeamTile extends StatelessWidget {
                 color: Colors.grey[300],
                 shape: BoxShape.circle,
               ),
-              child: Image.network(team.logo),
+              child: Image.network(
+                team.logo,
+                height: size.height * 0.05,
+              ),
             ),
             const SizedBox(width: 16),
             Flexible(

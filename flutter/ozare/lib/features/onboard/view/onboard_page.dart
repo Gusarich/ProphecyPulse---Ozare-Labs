@@ -53,13 +53,14 @@ class _OnboardPageState extends State<OnboardPage> {
                       duration: Duration(milliseconds: 500),
                     )
                   ],
+                  // child: Positioned(
+                  //   top: size.height * (isSmallScreen ? 0.1 : 0.15),
+                  //   right: 0,
+                  //   bottom: size.height * (isSmallScreen ? 0.05 : 0.1),
+                  //   child: Image.asset(contents[_currentPage].bgImage),
+                  // ),
                   child: Center(
-                    child: Positioned(
-                      top: size.height * (isSmallScreen ? 0.1 : 0.15),
-                      right: 0,
-                      bottom: size.height * (isSmallScreen ? 0.05 : 0.1),
-                      child: Image.asset(contents[_currentPage].bgImage),
-                    ),
+                    child: Image.asset(contents[_currentPage].bgImage),
                   ),
                 ),
                 Animate(

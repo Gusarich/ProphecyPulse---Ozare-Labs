@@ -74,9 +74,9 @@ class EventTile extends StatelessWidget {
           ),
           Column(
             children: [
-              const UpcomingBadge(),
-              const Spacer(),
               if (event.score1 != '' && event.score2 != '') ...[
+              const LiveBadge(),
+              const Spacer(),
                 Text(
                   '${event.score1} : ${event.score2}',
                   style: const TextStyle(
@@ -86,6 +86,8 @@ class EventTile extends StatelessWidget {
                   ),
                 ),
               ] else ...[
+              const UpcomingBadge(),
+              const Spacer(),
                 const Text(
                   'VS',
                   style: TextStyle(
