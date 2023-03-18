@@ -14,9 +14,14 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
+const betCache = {};
+const eventCache = {};
 // Define routes for each file
 app.get("/api/contract/bet", async (req, res) => {
   try {
+    if (betCache.codeBoc) {
+        return res.send(betCache.codeBoc);
+    }
     let result = await compileFunc({
       targets: ["stdlib.fc", "opcodes.fc", "bet.fc"],
       sources: (target) =>
@@ -25,6 +30,7 @@ app.get("/api/contract/bet", async (req, res) => {
     if (result.status === "error") {
       throw result.message;
     }
+    betCache.codeBoc = result.codeBoc;
     res.send(result.codeBoc);
   } catch (err) {
     console.error(err);
@@ -34,6 +40,9 @@ app.get("/api/contract/bet", async (req, res) => {
 
 app.get("/api/contract/event", async (req, res) => {
   try {
+    if (eventCache.codeBoc) {
+        return res.send(eventCache.codeBoc);
+    }
     let result = await compileFunc({
       targets: ["stdlib.fc", "opcodes.fc", "event.fc"],
       sources: (target) =>
@@ -42,6 +51,7 @@ app.get("/api/contract/event", async (req, res) => {
     if (result.status === "error") {
       throw result.message;
     }
+    eventCache.codeBoc = result.codeBoc;
     res.send(result.codeBoc);
   } catch (err) {
     console.error(err);
