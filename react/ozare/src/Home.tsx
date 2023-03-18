@@ -14,6 +14,7 @@ function Home() {
   const [tonConnectUI] = useTonConnectUI();
   const [payload, setPayload] = useState<Payload>();
   const [transactionComplete, setTransactionComplete] = useState(false);
+  const [transactionOnGoing, setTransactionOnGoing] = useState(false);
 
   function redirect(response: Response) {
     if (userFriendlyAddress?.length > 0 && wallet?.name) {
@@ -29,6 +30,7 @@ function Home() {
   }
 
   const handleClick = async () => {
+    setTransactionOnGoing(true);
     const response = await handleRequest(
       payload as any,
       (tonConnectUI as any).connector,
@@ -42,6 +44,7 @@ function Home() {
       alert("You have either cancelled the transaction or an error occured");
       console.log(response);
     }
+    setTransactionOnGoing(false);
   };
 
   useEffect(() => {
@@ -84,11 +87,11 @@ function Home() {
           </span>
           <div className="flex justify-center">
             <button
-              disabled={!(userFriendlyAddress?.length > 0)}
+              disabled={!(userFriendlyAddress?.length > 0) || transactionOnGoing}
               onClick={handleClick}
               className="px-8 rounded-2xl py-4 bg-blue-500 text-white disabled:bg-gray-300"
             >
-              Continue
+              {transactionOnGoing ? "Processing..." : "Send transaction"}
             </button>
           </div>
         </div>
