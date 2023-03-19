@@ -8,9 +8,10 @@ const bot = new Telegraf(API_TOKEN);
 
 const languages = [
   { code: "en", name: "English" },
-  { code: "es", name: "Español" },
-  { code: "fr", name: "Français" },
+  { code: "hi", name: "हिंदी" },
   { code: "ru", name: "Русский" },
+  { code: "ur", name: "اردو" },
+  { code: "pt", name: "Português" },
 ];
 
 const userLanguage = {};
@@ -30,6 +31,7 @@ bot.start((ctx) => {
     { parse_mode: "Markdown" }
   );
 });
+
 bot.help((ctx) => {
   ctx.reply(
     "Welcome! Here are the available commands:\n\n/language - Set your preferred language\n/website - Visit our website\n/twitter - Follow us on Twitter\n/docs - Read our documentation",
@@ -64,12 +66,14 @@ bot.command("language", async (ctx) => {
     userLanguage[ctx.from.id] = selectedLanguage;
     if (language.code === "en") {
       ctx.reply(`Your language has been set to ${language.name}.`);
-    } else if (language.code === "es") {
-      ctx.reply(`Su idioma ha sido establecido en ${language.name}.`);
-    } else if (language.code === "fr") {
-      ctx.reply(`Votre langue a été définie sur ${language.name}.`);
+    } else if (language.code === "hi") {
+      ctx.reply(`आपकी भाषा ${language.name} के रूप में सेट की गई है।`);
     } else if (language.code === "ru") {
-      ctx.reply(`Ваш язык был установлен на ${language.name}.`);
+      ctx.reply(`Ваш язык установлен на ${language.name}.`);
+    } else if (language.code === "ur") {
+      ctx.reply(`آپ کی زبان ${language.name} کے طور پر ترتیب دی گئی ہے۔`);
+    } else if (language.code === "pt") {
+      ctx.reply(`Sua língua foi definida para ${language.name}.`);
     }
   };
 
@@ -114,12 +118,7 @@ async function checkMessageForBets(input: string): Promise<any[]> {
 
 bot.hears(/.*/, async (ctx) => {
   // Process message and check for potential bets via an API
-  const message = ctx.message.text;
-  if ((await checkMessageForBets(message)).length) {
-    ctx.reply("You have a bet!");
-  }
+  console.log("Message received: ", ctx.message?.text);
 });
 
-bot.launch().then(() => {
-  console.log("Bot started!");
-});
+bot.launch();
