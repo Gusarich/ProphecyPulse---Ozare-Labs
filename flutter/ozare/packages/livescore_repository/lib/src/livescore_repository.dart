@@ -35,7 +35,10 @@ class LivescoreRepository {
   }
 
   List<League> defaultLeague(
-      Map<String, dynamic> data, List<League> parsedLeagues, String category) {
+    Map<String, dynamic> data,
+    List<League> parsedLeagues,
+    String category,
+  ) {
     // Check if the data contains any leagues before parsing it
     if (data['Stages'] == null ||
         (data['Stages'] as Iterable<dynamic>).isEmpty) {
@@ -66,7 +69,9 @@ class LivescoreRepository {
     for (final event in events) {
       try {
         final match = _parseEventDefault(event, category);
-        matches.add(match);
+        if (match != null) {
+          matches.add(match);
+        }
       } catch (e) {
         throw LivescoreRepoParseEventsException(e.toString());
       }
@@ -75,11 +80,16 @@ class LivescoreRepository {
     return matches;
   }
 
-  Event _parseEventDefault(dynamic event, String category) {
+  Event? _parseEventDefault(dynamic event, String category) {
     final hasLogos =
         event['T1'][0]['Img'] != null && event['T2'][0]['Img'] != null;
     final notStarted = event['Eps'].toString().contains('NS');
     final postponed = event['Eps'].toString().contains('Postp.');
+
+    // Return null if neither notStarted nor postponed are true
+    if (!notStarted && !postponed) {
+      return null;
+    }
 
     return Event(
       id: event['Eid'].toString(),
@@ -114,7 +124,7 @@ class LivescoreRepository {
     required String category,
   }) async {
     try {
-      var event = await _livescoreApiClient.getEventScoreboard(
+      final event = await _livescoreApiClient.getEventScoreboard(
         eid: eid,
         category: category,
       );
@@ -141,16 +151,10 @@ class LivescoreRepository {
   }
 
   /// Returns a list of team when searched with a [query].
-  Future<List<Team>> getTeams(String query) async {
+  Future<List<Team>> getSoccerTeams(String query) async {
     final parsedTeams = <Team>[];
-    const defaultQuery = 'manchester';
     try {
-      var teams = _localLivescoreClient.getTeams(defaultQuery);
-      if (teams == null) {
-        final remoteData = await _livescoreApiClient.getTeams(defaultQuery);
-        await _localLivescoreClient.setTeam(remoteData, defaultQuery);
-        teams = remoteData;
-      }
+      final teams = await _livescoreApiClient.getTeams(query);
 
       final responses = teams['response'] as Iterable<dynamic>;
 
@@ -167,17 +171,117 @@ class LivescoreRepository {
     }
   }
 
+  /// Returns a list of [Team] when searched with a [query] and [category].
+  Future<List<Team>> searchTeamsByCategory(
+    String query,
+    String category,
+  ) async {
+    try {
+      final teamFutures = <Future<Team>>[];
+      final teamsJson = await _livescoreApiClient.searchTeam(query, category);
+      final responses = teamsJson['results'] as Iterable<dynamic>;
+
+      for (final result in responses) {
+        if (result['type'].toString().contains('team')) {
+          teamFutures.add(
+            () async {
+              final entity = result['entity'] as Map<String, dynamic>;
+              final logo = await _livescoreApiClient.getTeamImage(
+                category,
+                entity['id'] as int,
+              );
+
+              // Extract the country name if available
+              final country =
+                  entity['country']['name'].toString().contains('null')
+                      ? ''
+                      : entity['country']['name'].toString();
+
+              return Team(
+                id: entity['id'] as int,
+                name: entity['name'].toString(),
+                country: country,
+                logo: '',
+              );
+            }(),
+          );
+        }
+      }
+
+      final teams = await Future.wait(teamFutures);
+
+      return teams;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  /// Returns a list of fixtures related to the team with [teamId] and [category]
+  Future<List<Fixture>> getScheduleMatchByCategory(
+      int teamId, String category) async {
+    final fixtures = <Fixture>[];
+
+    try {
+      final data = await _livescoreApiClient.getScheduleMatchByCategory(
+        teamId,
+        category,
+      );
+      final responses = data['events'] as Iterable<dynamic>;
+
+      for (final result in responses) {
+        try {
+          final startTimestamp = result['startTimestamp'] as int;
+          final date =
+              DateTime.fromMillisecondsSinceEpoch(startTimestamp * 1000);
+          final team1Json = result['homeTeam'] as Map<String, dynamic>;
+          final team2Json = result['awayTeam'] as Map<String, dynamic>;
+          final team1ID = team1Json['id'] as int;
+          final team2ID = team2Json['id'] as int;
+          final team1Name = team1Json['name'] as String;
+          final team2Name = team2Json['name'] as String;
+          final team1Logo =
+              await _livescoreApiClient.getTeamImage(category, team1ID);
+          final team2Logo =
+              await _livescoreApiClient.getTeamImage(category, team2ID);
+
+          if (date.isBefore(DateTime.now())) {
+            continue;
+          }
+
+          final fixture = Fixture(
+            id: result['id'] as int,
+            date: date.toString(),
+            venueName: '',
+            venueCity: '',
+            team1ID: team1ID,
+            team2ID: team2ID,
+            team1Name: team1Name,
+            team2Name: team2Name,
+            team1Logo: team1Logo,
+            team2Logo: team2Logo,
+          );
+
+          fixtures.add(fixture);
+        } catch (_) {
+          continue;
+        }
+      }
+    } catch (_) {}
+
+    return fixtures;
+  }
+
   /// Returns a list of fixtures related to the team with [teamId]
   Future<List<Fixture>> getLiveMatchByTeam(int teamId) async {
     final fixtures = <Fixture>[];
     final currentDate = DateTime.now();
-    const defaultTeamId = 33;
-    var data = _localLivescoreClient.getLiveMatchByTeam(defaultTeamId);
-    if (data == null) {
-      final remoteData =
-          await _livescoreApiClient.getLiveMatchByTeam(defaultTeamId);
 
-      await _localLivescoreClient.setLiveMatchByTeam(remoteData, defaultTeamId);
+    //FIXME - Add expiry for local data storage
+    var data = _localLivescoreClient.getLiveMatchByTeam(teamId);
+    if (data == null) {
+      final remoteData = await _livescoreApiClient.getLiveMatchByTeam(teamId);
+
+      await _localLivescoreClient.setLiveMatchByTeam(remoteData, teamId);
       data = remoteData;
     }
     try {
@@ -188,21 +292,19 @@ class LivescoreRepository {
       for (final response in responses) {
         try {
           // extract Event Fields
-          final int id = response['fixture']['id'] as int;
+          final id = response['fixture']['id'] as int;
 
-          final String venueName =
-              response['fixture']['venue']['name'] as String;
-          final String venueCity =
-              response['fixture']['venue']['city'] as String;
-          final String date = response['fixture']['date'] as String;
+          final venueName = response['fixture']['venue']['name'] as String;
+          final venueCity = response['fixture']['venue']['city'] as String;
+          final date = response['fixture']['date'] as String;
 
-          final String team1 = response['teams']['home']['name'] as String;
-          final String logo1 = response['teams']['home']['logo'] as String;
-          final int id1 = response['teams']['home']['id'] as int;
+          final team1 = response['teams']['home']['name'] as String;
+          final logo1 = response['teams']['home']['logo'] as String;
+          final id1 = response['teams']['home']['id'] as int;
 
-          final String team2 = response['teams']['away']['name'] as String;
-          final String logo2 = response['teams']['away']['logo'] as String;
-          final int id2 = response['teams']['away']['id'] as int;
+          final team2 = response['teams']['away']['name'] as String;
+          final logo2 = response['teams']['away']['logo'] as String;
+          final id2 = response['teams']['away']['id'] as int;
 
           ///
           final d = DateTime.parse(date);

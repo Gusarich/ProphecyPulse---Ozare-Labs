@@ -23,24 +23,26 @@ class BetView extends StatelessWidget {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          /// show input dialog
-          showDialog(
-            context: context,
-            builder: (_) => BlocProvider<BetBloc>.value(
-              value: context.read<BetBloc>(),
-              child: BetDialog(event: event),
+      floatingActionButton: (event.score1 != '' && event.score2 != '')
+          ? null
+          : FloatingActionButton.extended(
+              onPressed: () {
+                /// show input dialog
+                showDialog(
+                  context: context,
+                  builder: (_) => BlocProvider<BetBloc>.value(
+                    value: context.read<BetBloc>(),
+                    child: BetDialog(event: event),
+                  ),
+                );
+              },
+              backgroundColor: primary2Color,
+              label: const Text('Place a Bet'),
+              icon: const Icon(
+                FontAwesome.award,
+                color: Colors.white,
+              ),
             ),
-          );
-        },
-        backgroundColor: primary2Color,
-        label: const Text('Place a Bet'),
-        icon: const Icon(
-          FontAwesome.award,
-          color: Colors.white,
-        ),
-      ),
       body: SizedBox(
         height: size.height * 0.55,
         child: Column(
@@ -53,6 +55,7 @@ class BetView extends StatelessWidget {
             BlocConsumer<BetBloc, BetState>(
               listener: (context, state) {
                 if (state.betStatus == CreateBetStatus.exists) {
+                  Navigator.pop(context);
                   showSnackBar(context, 'You already betted on this match');
                 }
               },

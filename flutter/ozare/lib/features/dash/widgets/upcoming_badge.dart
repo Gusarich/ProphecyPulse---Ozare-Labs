@@ -3,15 +3,15 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:ozare/styles/common/common.dart';
 
-class LiveBadge extends StatelessWidget {
-  const LiveBadge({super.key});
+class UpcomingBadge extends StatelessWidget {
+  const UpcomingBadge({super.key});
 
   @override
   Widget build(BuildContext context) {
     return const DecoratedBox(
       decoration: BoxDecoration(
-        color: Colors.green,
-        // color: primary2Color,
+        // color: Colors.green,
+        color: primary2Color,
         // add border circle only to bottom
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(12),
@@ -22,7 +22,7 @@ class LiveBadge extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.all(4),
           child: Text(
-            'Live',
+            'Upcoming',
             style: TextStyle(
               color: Colors.white,
               fontSize: 12,

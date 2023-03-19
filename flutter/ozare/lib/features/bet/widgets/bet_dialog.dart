@@ -2,8 +2,11 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:livescore_repository/livescore_repository.dart';
+import 'package:ozare/app/routes.dart';
 import 'package:ozare/features/bet/bloc/bet_bloc.dart';
 import 'package:ozare/features/profile/bloc/profile_bloc.dart';
+import 'package:ozare/features/wallet/bloc/wallet_bloc.dart';
+import 'package:ozare/features/wallet/models/models.dart';
 import 'package:ozare/styles/common/common.dart';
 import 'package:ozare_repository/ozare_repository.dart' as ozare;
 
@@ -37,6 +40,7 @@ class _BetDialogState extends State<BetDialog> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final user = context.read<ProfileBloc>().state.user;
+    final wallet = context.read<WalletBloc>();
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -163,6 +167,16 @@ class _BetDialogState extends State<BetDialog> {
                       ),
                     );
                 Navigator.pop(context);
+
+                wallet.add(
+                  CreateEventRequested(
+                    Payload(
+                      type: 'create_event',
+                      uid: int.parse(widget.event.id),
+                    ),
+                  ),
+                );
+                Navigator.pushNamed(context, Routes.addWallet);
               },
               child: Container(
                 height: 50,

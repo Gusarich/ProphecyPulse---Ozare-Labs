@@ -11,11 +11,13 @@ dependencies:
     path: ./packages/authentication_repository
   auto_size_text: ^3.0.0
   bloc: ^8.1.1
+  build_runner: ^2.3.3
   cached_network_image: ^3.2.3
   carousel_slider: ^4.2.1
   dotted_border: ^2.0.0+3
   dotted_line: ^3.1.0
   dropdown_search: ^5.0.6
+  equatable: ^2.0.5
   fastor_app_ui_widget: ^1.0.128
   firebase_dynamic_links: ^5.0.16
   flag: ^6.0.0
@@ -33,6 +35,8 @@ dependencies:
   image_picker: ^0.8.7
   image_picker_web: ^3.0.0+1
   intl: ^0.17.0
+  json_annotation: ^4.8.0
+  json_serializable: ^6.6.1
   livescore_api:
     path: ./packages/livescore_api
   livescore_repository:
@@ -46,7 +50,6 @@ dependencies:
   url_launcher: ^6.1.10
   uuid: ^3.0.7
 
-
 dependency_overrides:
   # flutter_svg: ^2.0.2
   # tuple: ^1.0.3
@@ -54,13 +57,11 @@ dependency_overrides:
   ffi: ^2.0.0
 
 dev_dependencies:
-  bip39: ^1.0.5
   bloc_test: ^9.1.1
   change_app_package_name: ^1.1.0
   flutter_test:
     sdk: flutter
   mocktail: ^0.3.0
-  ton_client_dart: ^0.1.0
   very_good_analysis: ^4.0.0
 
 flutter:

@@ -84,7 +84,6 @@ class _UpperSectionState extends State<UpperSection> {
               height: 40,
               width: size.width,
               padding: const EdgeInsets.symmetric(horizontal: 28),
-              // child: _SearchBox(searchController: searchController),
               child: SearchBar(searchController: searchController,),
             ),
           ),

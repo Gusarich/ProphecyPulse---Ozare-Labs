@@ -28,6 +28,13 @@ class LivescoreApiClient {
     'x-rapidapi-key': '07585b4120mshbc941a57c6ebd11p11de9bjsn089233df6ab2',
   };
 
+  final _apiAllSportsHeader = <String, String>{
+    // 'X-RapidAPI-Key': '677ef2cd77msha0f0a52eab478a1p1cef4fjsn2932c3c06fef', // (4xmafole)
+    'X-RapidAPI-Key':
+        '07585b4120mshbc941a57c6ebd11p11de9bjsn089233df6ab2', // (tomer)
+    'X-RapidAPI-Host': 'allsportsapi2.p.rapidapi.com',
+  };
+
   /// Creates a new instance of the LivescoreApiClient class.
   ///
   /// Takes an optional [httpClient] parameter, which defaults to a new
@@ -113,6 +120,65 @@ class LivescoreApiClient {
       return jsonDecode(response.body) as Map<String, dynamic>;
     } catch (e) {
       throw const LivescoreGetLiveMatchByTeamException();
+    }
+  }
+
+  // -----------------------------
+  // All-Sports API Methods
+  // -----------------------------
+
+  /// Returns a list of [Map] when searched with a [query] and [category].
+  Future<Map<String, dynamic>> searchTeam(String query, String category) async {
+    final url =
+        'https://allsportsapi2.p.rapidapi.com/api/$category/search/$query';
+
+    try {
+      final response =
+          await _httpClient.get(Uri.parse(url), headers: _apiAllSportsHeader);
+
+      final jsonMap = jsonDecode(response.body) as Map<String, dynamic>;
+
+      return jsonMap;
+    } catch (e) {
+      throw Exception();
+    }
+  }
+
+  /// Returns an image url for a team using [category] and [teamId].
+  Future<String> getTeamImage(String category, int teamId) async {
+    final url =
+        'https://allsportsapi2.p.rapidapi.com/api/$category/team/$teamId/image';
+
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+        headers: _apiAllSportsHeader,
+      );
+      final base64Image = base64Encode(response.bodyBytes);
+      final imageUrl = 'data:image/png;base64,$base64Image';
+
+      return imageUrl;
+    } catch (e) {
+      throw Exception('Failed to load image');
+    }
+  }
+
+  Future<Map<String, dynamic>> getScheduleMatchByCategory(
+    int teamId,
+    String category,
+  ) async {
+    final url =
+        'https://allsportsapi2.p.rapidapi.com/api/$category/team/$teamId/matches/next/0';
+
+    try {
+      final response =
+          await _httpClient.get(Uri.parse(url), headers: _apiAllSportsHeader);
+
+      final jsonMap = jsonDecode(response.body) as Map<String, dynamic>;
+
+      return jsonMap;
+    } catch (e) {
+      throw Exception();
     }
   }
 }

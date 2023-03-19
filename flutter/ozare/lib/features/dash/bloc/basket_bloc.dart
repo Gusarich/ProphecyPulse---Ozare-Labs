@@ -50,7 +50,7 @@ class BasketBloc extends Bloc<BasketEvent, BasketState> {
         //Saves it to firestore
         await _dashRepository.saveLeagues('basketball', leagues);
       } else {
-        leagues = state.leagues;
+        leagues = leagueData;
       }
 
       emit(

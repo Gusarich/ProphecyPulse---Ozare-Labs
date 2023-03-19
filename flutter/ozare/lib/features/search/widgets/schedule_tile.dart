@@ -29,7 +29,7 @@ class ScheduleTile extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (context) => EventPage(
                     event: Event(
-                      category: 'soccer',
+                      category: 'event',
                       id: fixture.id.toString(),
                       id1: fixture.team1ID.toString(),
                       id2: fixture.team2ID.toString(),

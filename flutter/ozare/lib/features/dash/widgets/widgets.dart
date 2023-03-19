@@ -5,4 +5,6 @@ export 'loading_match_tile.dart';
 export 'loading_section.dart';
 export 'match_category_tab_item.dart';
 export 'no_events_tile.dart';
+export 'upcoming_badge.dart';
+export 'upcoming_badge.dart';
 export 'upper_section.dart';
