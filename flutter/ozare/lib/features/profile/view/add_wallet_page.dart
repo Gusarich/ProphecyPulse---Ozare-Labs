@@ -1,19 +1,16 @@
 import 'dart:convert';
 import 'dart:html' as html;
-import 'package:fastor_app_ui_widget/fastor_app_ui_widget.dart'
-    if (dart.library.html) 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fastor_app_ui_widget/fastor_app_ui_widget.dart'
+    if (dart.library.html) 'dart:ui' as ui;
 import 'package:ozare/app/routes.dart';
-import 'package:ozare/features/bet/bet.dart';
-import 'package:ozare/features/profile/bloc/profile_bloc.dart';
-import 'package:ozare/features/profile/models/models.dart';
 import 'package:ozare/features/wallet/bloc/wallet_bloc.dart' as wallet;
-import 'package:ozare/features/wallet/bloc/wallet_bloc.dart';
 import 'package:ozare/features/wallet/models/models.dart';
+import 'package:ozare/styles/common/widgets/dialogs/dialogs.dart';
 
 class AddWallet extends StatefulWidget {
-  const AddWallet({super.key});
+  const AddWallet({Key? key}) : super(key: key);
 
   @override
   State<AddWallet> createState() => _AddWalletState();
@@ -23,16 +20,18 @@ class _AddWalletState extends State<AddWallet> {
   @override
   void initState() {
     super.initState();
+    htmlListener();
   }
 
   @override
   void dispose() {
+    html.window.removeEventListener('message', handleMessage);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<WalletBloc, WalletState>(
+    return BlocBuilder<wallet.WalletBloc, wallet.WalletState>(
       buildWhen: (previous, current) => previous.betStatus != current.betStatus,
       builder: (context, state) {
         return Scaffold(
@@ -46,18 +45,17 @@ class _AddWalletState extends State<AddWallet> {
               },
             ),
             centerTitle: true,
-            title: Text(
-              'My Wallet ${state.betStatus.name}',
-              style: const TextStyle(color: Colors.black, fontSize: 18),
+            title: const Text(
+              'My Wallet',
+              style: TextStyle(color: Colors.black, fontSize: 18),
             ),
             elevation: 0,
           ),
           body: webViewPlatformWebsite(
             webviewId: 12,
             url: 'https://ozare-final.vercel.app/',
-            width: 700,
-            height: 4000,
-            payload: state.payload,
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
           ),
         );
       },
@@ -68,7 +66,6 @@ class _AddWalletState extends State<AddWallet> {
     required int webviewId,
     required String url,
     required double width,
-    required Payload payload,
     required double height,
     Key? key,
   }) {
@@ -77,9 +74,6 @@ class _AddWalletState extends State<AddWallet> {
       ..style.border = 'none'
       ..style.width = '100%'
       ..style.height = '100%';
-
-    html.window.postMessage(payload.toJson(), '*');
-    htmlListener();
 
     final webviewRegisterKey = 'webpage$webviewId';
 
@@ -95,59 +89,25 @@ class _AddWalletState extends State<AddWallet> {
   }
 
   void htmlListener() {
-    html.window.addEventListener('message', (event) {
-      // Cast the Event object to the MessageEvent subtype
-      if (event is html.MessageEvent) {
-        // Get the data sent from the postMessage
-        final data = event.data;
-
-        // Check if the data contains the response
-        if (data['response'] != null) {
-          final dataJson = data['response'] as Map<dynamic, dynamic>;
-          final status = dataJson['status'].toString();
-          final message = dataJson['message'].toString();
-          final innerData = dataJson['data'] as Map<dynamic, dynamic>;
-          final dataAddress = innerData['address'].toString();
-          final dataUid = innerData['uid'] as int;
-
-          context.read<wallet.WalletBloc>().add(
-                wallet.StartEventRequested(
-                  Payload(
-                    type: 'start_event',
-                    uid: dataUid,
-                    address: dataAddress,
-                  ),
-                ),
-              );
-          Navigator.pushReplacementNamed(context, Routes.addWallet);
-        }
-      }
-    });
+    html.window.addEventListener('message', handleMessage);
   }
 
-  void checkKeyAddress(data) {
-    if (data['address'] != null) {
-      // Access the address value and use it as needed
-      final walletAddress = data['address'].toString();
-      final walletName = data['walletName'].toString();
-      var walletIcon = 'assets/images/tonkeeper.png';
+  void handleMessage(html.Event event) {
+    if (event is html.MessageEvent) {
+      final data = event.data;
 
-      if (walletName.contains('openmask')) {
-        walletIcon = 'assets/images/tonwallet.png';
+      if (data['response'] != null) {
+        final dataJson = data['response'] as Map<dynamic, dynamic>;
+        final status = dataJson['status'].toString();
+        final message = dataJson['message'].toString();
+        final innerData = dataJson['data'] as Map<dynamic, dynamic>;
+        final dataAddress = innerData['address'].toString();
+        final dataUid = innerData['uid'] as int;
+
+        Navigator.pop(context);
+        showAlertDialog(context: context, title: status, content: message);
+        // Post the updated message
       }
-
-      final newWallet = Wallet(
-        name: walletName,
-        key: walletAddress,
-        iconPath: walletIcon,
-      );
-
-      context.read<ProfileBloc>().add(
-            ProfileWalletChanged(
-              [newWallet],
-            ),
-          );
-      Navigator.pop(context);
     }
   }
 }
