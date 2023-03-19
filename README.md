@@ -1,3 +1,5 @@
-# Ozare-Final
+# ProphecyPulse 
 
-The first 
+The first decentralized predictive markets platform on TON. The only decentralized market directly integrated into telegram.
+
+
