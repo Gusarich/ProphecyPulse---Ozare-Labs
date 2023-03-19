@@ -1,10 +1,16 @@
+import 'dart:convert';
 import 'dart:html' as html;
 import 'package:fastor_app_ui_widget/fastor_app_ui_widget.dart'
     if (dart.library.html) 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ozare/app/routes.dart';
+import 'package:ozare/features/bet/bet.dart';
 import 'package:ozare/features/profile/bloc/profile_bloc.dart';
 import 'package:ozare/features/profile/models/models.dart';
+import 'package:ozare/features/wallet/bloc/wallet_bloc.dart' as wallet;
+import 'package:ozare/features/wallet/bloc/wallet_bloc.dart';
+import 'package:ozare/features/wallet/models/models.dart';
 
 class AddWallet extends StatefulWidget {
   const AddWallet({super.key});
@@ -26,29 +32,35 @@ class _AddWalletState extends State<AddWallet> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Colors.black),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        centerTitle: true,
-        title: const Text(
-          'Add New Wallet',
-          style: TextStyle(color: Colors.black, fontSize: 18),
-        ),
-        elevation: 0,
-      ),
-      body: webViewPlatformWebsite(
-        webviewId: 12,
-        url: 'https://ozare-final.vercel.app/',
-        width: 700,
-        height: 4000,
-      ),
+    return BlocBuilder<WalletBloc, WalletState>(
+      buildWhen: (previous, current) => previous.betStatus != current.betStatus,
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            iconTheme: const IconThemeData(color: Colors.black),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            centerTitle: true,
+            title: Text(
+              'My Wallet ${state.betStatus.name}',
+              style: const TextStyle(color: Colors.black, fontSize: 18),
+            ),
+            elevation: 0,
+          ),
+          body: webViewPlatformWebsite(
+            webviewId: 12,
+            url: 'https://ozare-final.vercel.app/',
+            width: 700,
+            height: 4000,
+            payload: state.payload,
+          ),
+        );
+      },
     );
   }
 
@@ -56,7 +68,9 @@ class _AddWalletState extends State<AddWallet> {
     required int webviewId,
     required String url,
     required double width,
+    required Payload payload,
     required double height,
+    Key? key,
   }) {
     final iFrameElement = html.IFrameElement()
       ..src = url
@@ -64,7 +78,7 @@ class _AddWalletState extends State<AddWallet> {
       ..style.width = '100%'
       ..style.height = '100%';
 
-    html.window.postMessage({'type': 'soccer', 'uid': 123}, '*');
+    html.window.postMessage(payload.toJson(), '*');
     htmlListener();
 
     final webviewRegisterKey = 'webpage$webviewId';
@@ -87,16 +101,25 @@ class _AddWalletState extends State<AddWallet> {
         // Get the data sent from the postMessage
         final data = event.data;
 
-        // Check if the data contains the address key
-        checkKeyAddress(data);
-
         // Check if the data contains the response
-        if (data['status'] != null) {
-          print(data);
-          //Accessing data
-          final status = data['status'].toString();
-          final message = data['message'].toString();
-          final dataReponse = data['data'].toString();
+        if (data['response'] != null) {
+          final dataJson = data['response'] as Map<dynamic, dynamic>;
+          final status = dataJson['status'].toString();
+          final message = dataJson['message'].toString();
+          final innerData = dataJson['data'] as Map<dynamic, dynamic>;
+          final dataAddress = innerData['address'].toString();
+          final dataUid = innerData['uid'] as int;
+
+          context.read<wallet.WalletBloc>().add(
+                wallet.StartEventRequested(
+                  Payload(
+                    type: 'start_event',
+                    uid: dataUid,
+                    address: dataAddress,
+                  ),
+                ),
+              );
+          Navigator.pushReplacementNamed(context, Routes.addWallet);
         }
       }
     });
@@ -124,7 +147,7 @@ class _AddWalletState extends State<AddWallet> {
               [newWallet],
             ),
           );
-      // Navigator.pop(context);
+      Navigator.pop(context);
     }
   }
 }

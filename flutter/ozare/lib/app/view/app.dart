@@ -19,6 +19,7 @@ import 'package:ozare/features/livebet/livebet.dart';
 import 'package:ozare/features/profile/profile.dart';
 import 'package:ozare/features/search/search.dart';
 import 'package:ozare/features/splash/view/splash_page.dart';
+import 'package:ozare/features/wallet/bloc/wallet_bloc.dart';
 import 'package:ozare/l10n/l10n.dart';
 import 'package:ozare_repository/ozare_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -143,6 +144,10 @@ class App extends StatelessWidget {
               liveBetRepository: context.read<LiveBetRepository>(),
               authRepository: context.read<OzareRepository>(),
             ),
+          ),
+          // Wallet Bloc
+          BlocProvider<WalletBloc>(
+            create: (context) => WalletBloc(),
           ),
         ],
         child: MaterialApp(
