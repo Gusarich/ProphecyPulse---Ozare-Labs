@@ -86,15 +86,30 @@ class _SearchBarState extends State<SearchBar> {
                             return [
                               const PopupMenuItem<String>(
                                 value: 'soccer',
-                                child: Text('Soccer'),
+                                child: Text(
+                                  'Soccer',
+                                  style: TextStyle(
+                                    color: primary2Color,
+                                  ),
+                                ),
                               ),
                               const PopupMenuItem<String>(
                                 value: 'basketball',
-                                child: Text('Basketball'),
+                                child: Text(
+                                  'Basketball',
+                                  style: TextStyle(
+                                    color: primary2Color,
+                                  ),
+                                ),
                               ),
                               const PopupMenuItem<String>(
                                 value: 'cricket',
-                                child: Text('Cricket'),
+                                child: Text(
+                                  'Cricket',
+                                  style: TextStyle(
+                                    color: primary2Color,
+                                  ),
+                                ),
                               ),
                             ];
                           },

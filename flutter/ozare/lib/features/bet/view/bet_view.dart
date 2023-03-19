@@ -55,6 +55,7 @@ class BetView extends StatelessWidget {
             BlocConsumer<BetBloc, BetState>(
               listener: (context, state) {
                 if (state.betStatus == CreateBetStatus.exists) {
+                  Navigator.pop(context);
                   showSnackBar(context, 'You already betted on this match');
                 }
               },
