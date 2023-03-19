@@ -79,7 +79,7 @@ export class Event implements Contract {
                 messages: [
                     {
                         address: this.address.toRawString(),
-                        amount: toNano('0.25').toString(),
+                        amount: amount.toString(),
                         stateInit: beginCell()
                             .store(storeStateInit(this.init))
                             .endCell()
@@ -239,5 +239,72 @@ export class Event implements Contract {
         };
         const contract = new Event(address, init, client);
         return new Event(contract.address, contract.init, client);
+    }
+
+    // get address from uid
+    static async getContractAddress(
+        oracle: Address,
+        uid: number
+    ): Promise<Address> {
+        const stateInit = await this.getStateInit(oracle, uid);
+        const address = contractAddress(0, stateInit);
+        return address;
+    }
+
+    // squash .create(), .deploy() and .bet() into one transaction
+    static async createDeployBet(
+        system: TonClient | ContractSystem,
+        via: Sender | TonConnect,
+        oracle: Address,
+        uid: number,
+        outcome: boolean,
+        amount: bigint,
+    ): Promise<Event> {
+        const stateInit = await this.getStateInit(oracle, uid);
+        const address = contractAddress(0, stateInit);
+        if ('sendTransaction' in via) {
+            await via.sendTransaction({
+                validUntil: Math.floor(Date.now() / 1000) + 600,
+                messages: [
+                    {
+                        address: address.toRawString(),
+                        amount: toNano('0.25').toString(),
+                        stateInit: beginCell()
+                            .store(storeStateInit(stateInit))
+                            .endCell()
+                            .toBoc()
+                            .toString('base64'),
+                    },
+                    {
+                        address: address.toRawString(),
+                        amount: amount.toString(),
+                        stateInit: beginCell()
+                            .store(storeStateInit(stateInit))
+                            .endCell()
+                            .toBoc()
+                            .toString('base64'),
+                        payload: beginCell()
+                            .storeUint(0x60e6b243, 32)
+                            .storeBit(outcome)
+                            .storeUint(amount, 256)
+                            .endCell()
+                            .toBoc()
+                            .toString('base64'),
+                    },
+                ],
+            });
+        } else {
+            await via.send({
+                to: address,
+                init: stateInit,
+                value: amount + toNano('0.25'),
+                body: beginCell()
+                    .storeUint(0x60e6b243, 32)
+                    .storeBit(outcome)
+                    .storeUint(amount, 256)
+                    .endCell(),
+            });
+        }
+        return new Event(address, stateInit, 'contract' in system ? system.contract(address) : system);
     }
 }

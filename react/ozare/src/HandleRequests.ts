@@ -15,15 +15,72 @@ const getClient = async () => {
 async function handleRequest(
   payload: Payload,
   sender: TonConnect,
-  address: string,
+  sender_address: string
 ): Promise<Response> {
   const client = await getClient();
+
+  let event_exists = true;
+  try {
+    const contract_address = await Event.getContractAddress(
+      Address.parse(sender_address),
+      payload?.uid || Math.floor(Math.random() * 1000000)
+    );
+    await Event.getInstance(client, contract_address);
+  } catch (e) {
+    console.log(e);
+    event_exists = false;
+  }
+
+  if (!event_exists) {
+    try {
+      const uid = payload?.uid || Math.floor(Math.random() * 1000000);
+      console.log(uid);
+      const event = await Event.createDeployBet(
+        client,
+        sender,
+        Address.parse(sender_address),
+        uid,
+        false,
+        BigInt((payload?.amount || 0) * 1e9)
+      );
+      console.log(event.address.toString());
+      return {
+        status: "success",
+        message: "Event created successfully",
+        data: {
+          address: event.address.toString(),
+          uid,
+        },
+      };
+    } catch (e) {
+      console.log(e);
+      return {
+        status: "error",
+        message: "Error creating event",
+        data: e,
+      };
+    }
+  } else {
+    // place the bet
+    const contract_address = await Event.getContractAddress(
+      Address.parse(sender_address),
+      payload?.uid || Math.floor(Math.random() * 1000000)
+    );
+    const event = await Event.getInstance(client, contract_address);
+    const { outcome, amount } = payload as any;
+    await event.bet(sender, outcome, BigInt(amount * 1e9));
+    return {
+      status: "success",
+      message: "Bet placed successfully",
+    };
+  }
+  /*
   let type = "create_event";
   if (payload && payload.type) type = payload.type;
   if (type === "create_event") {
     try {
       const uid = payload?.uid || Math.floor(Math.random() * 1000000);
-      const event = await Event.create(client, Address.parse(address), uid);
+      const event = await Event.create(client, Address.parse(sender_address), uid);
       await event.deploy(sender);
       return {
         status: "success",
@@ -32,7 +89,7 @@ async function handleRequest(
           address: event.address.toString(),
           uid,
         },
-      }
+      };
     } catch (e) {
       console.log(e);
       return {
@@ -43,7 +100,10 @@ async function handleRequest(
     }
   }
 
-  const event = await Event.getInstance(client, Address.parse(payload.address || ''));
+  const event = await Event.getInstance(
+    client,
+    Address.parse(payload.address || "")
+  );
 
   let result: Response;
 
@@ -83,7 +143,7 @@ async function handleRequest(
     }
     case "place_bet": {
       try {
-        const { outcome, amount } = (payload as any);
+        const { outcome, amount } = payload as any;
         await event.bet(sender, outcome, amount);
         result = {
           status: "success",
@@ -159,6 +219,7 @@ async function handleRequest(
   }
 
   return result;
+  */
 }
 
 export default handleRequest;
