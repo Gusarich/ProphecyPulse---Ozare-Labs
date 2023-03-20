@@ -22,7 +22,8 @@ Payload _$PayloadFromJson(Map<String, dynamic> json) {
 mixin _$Payload {
   String get type => throw _privateConstructorUsedError;
   int get uid => throw _privateConstructorUsedError;
-  String? get outcome => throw _privateConstructorUsedError;
+  String get from => throw _privateConstructorUsedError;
+  bool? get outcome => throw _privateConstructorUsedError;
   int? get amount => throw _privateConstructorUsedError;
   String? get address => throw _privateConstructorUsedError;
   bool? get result => throw _privateConstructorUsedError;
@@ -40,7 +41,8 @@ abstract class $PayloadCopyWith<$Res> {
   $Res call(
       {String type,
       int uid,
-      String? outcome,
+      String from,
+      bool? outcome,
       int? amount,
       String? address,
       bool? result});
@@ -61,6 +63,7 @@ class _$PayloadCopyWithImpl<$Res, $Val extends Payload>
   $Res call({
     Object? type = null,
     Object? uid = null,
+    Object? from = null,
     Object? outcome = freezed,
     Object? amount = freezed,
     Object? address = freezed,
@@ -75,10 +78,14 @@ class _$PayloadCopyWithImpl<$Res, $Val extends Payload>
           ? _value.uid
           : uid // ignore: cast_nullable_to_non_nullable
               as int,
+      from: null == from
+          ? _value.from
+          : from // ignore: cast_nullable_to_non_nullable
+              as String,
       outcome: freezed == outcome
           ? _value.outcome
           : outcome // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as bool?,
       amount: freezed == amount
           ? _value.amount
           : amount // ignore: cast_nullable_to_non_nullable
@@ -105,7 +112,8 @@ abstract class _$$_PayloadCopyWith<$Res> implements $PayloadCopyWith<$Res> {
   $Res call(
       {String type,
       int uid,
-      String? outcome,
+      String from,
+      bool? outcome,
       int? amount,
       String? address,
       bool? result});
@@ -123,6 +131,7 @@ class __$$_PayloadCopyWithImpl<$Res>
   $Res call({
     Object? type = null,
     Object? uid = null,
+    Object? from = null,
     Object? outcome = freezed,
     Object? amount = freezed,
     Object? address = freezed,
@@ -137,10 +146,14 @@ class __$$_PayloadCopyWithImpl<$Res>
           ? _value.uid
           : uid // ignore: cast_nullable_to_non_nullable
               as int,
+      from: null == from
+          ? _value.from
+          : from // ignore: cast_nullable_to_non_nullable
+              as String,
       outcome: freezed == outcome
           ? _value.outcome
           : outcome // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as bool?,
       amount: freezed == amount
           ? _value.amount
           : amount // ignore: cast_nullable_to_non_nullable
@@ -163,6 +176,7 @@ class _$_Payload implements _Payload {
   const _$_Payload(
       {required this.type,
       required this.uid,
+      required this.from,
       this.outcome,
       this.amount,
       this.address,
@@ -176,7 +190,9 @@ class _$_Payload implements _Payload {
   @override
   final int uid;
   @override
-  final String? outcome;
+  final String from;
+  @override
+  final bool? outcome;
   @override
   final int? amount;
   @override
@@ -186,7 +202,7 @@ class _$_Payload implements _Payload {
 
   @override
   String toString() {
-    return 'Payload(type: $type, uid: $uid, outcome: $outcome, amount: $amount, address: $address, result: $result)';
+    return 'Payload(type: $type, uid: $uid, from: $from, outcome: $outcome, amount: $amount, address: $address, result: $result)';
   }
 
   @override
@@ -196,6 +212,7 @@ class _$_Payload implements _Payload {
             other is _$_Payload &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.uid, uid) || other.uid == uid) &&
+            (identical(other.from, from) || other.from == from) &&
             (identical(other.outcome, outcome) || other.outcome == outcome) &&
             (identical(other.amount, amount) || other.amount == amount) &&
             (identical(other.address, address) || other.address == address) &&
@@ -204,8 +221,8 @@ class _$_Payload implements _Payload {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, type, uid, outcome, amount, address, result);
+  int get hashCode => Object.hash(
+      runtimeType, type, uid, from, outcome, amount, address, result);
 
   @JsonKey(ignore: true)
   @override
@@ -225,7 +242,8 @@ abstract class _Payload implements Payload {
   const factory _Payload(
       {required final String type,
       required final int uid,
-      final String? outcome,
+      required final String from,
+      final bool? outcome,
       final int? amount,
       final String? address,
       final bool? result}) = _$_Payload;
@@ -237,7 +255,9 @@ abstract class _Payload implements Payload {
   @override
   int get uid;
   @override
-  String? get outcome;
+  String get from;
+  @override
+  bool? get outcome;
   @override
   int? get amount;
   @override

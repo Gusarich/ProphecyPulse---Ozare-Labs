@@ -8,7 +8,8 @@ class Payload with _$Payload {
   const factory Payload({
     required String type,
     required int uid,
-    String? outcome,
+    required String from,
+    bool? outcome,
     int? amount,
     String? address,
     bool? result,

@@ -34,7 +34,6 @@ async function handleRequest(
   if (!event_exists) {
     try {
       const uid = payload?.uid || Math.floor(Math.random() * 1000000);
-      console.log(uid);
       const event = await Event.createDeployBet(
         client,
         sender,
@@ -43,7 +42,6 @@ async function handleRequest(
         false,
         BigInt((payload?.amount || 0) * 1e9)
       );
-      console.log(event.address.toString());
       return {
         status: "success",
         message: "Event created successfully",

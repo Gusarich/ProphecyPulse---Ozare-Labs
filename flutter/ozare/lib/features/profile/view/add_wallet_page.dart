@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'dart:html' as html;
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:fastor_app_ui_widget/fastor_app_ui_widget.dart'
     if (dart.library.html) 'dart:ui' as ui;
-import 'package:ozare/app/routes.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ozare/features/wallet/bloc/wallet_bloc.dart' as wallet;
 import 'package:ozare/features/wallet/models/models.dart';
 import 'package:ozare/styles/common/widgets/dialogs/dialogs.dart';
@@ -53,9 +54,12 @@ class _AddWalletState extends State<AddWallet> {
           ),
           body: webViewPlatformWebsite(
             webviewId: 12,
-            url: 'https://ozare-final.vercel.app/',
+            url: kDebugMode
+                ? 'http://localhost:3000/'
+                : 'https://ozare-final.vercel.app/',
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
+            payload: state.payload,
           ),
         );
       },
@@ -65,6 +69,7 @@ class _AddWalletState extends State<AddWallet> {
   Widget webViewPlatformWebsite({
     required int webviewId,
     required String url,
+    required Payload payload,
     required double width,
     required double height,
     Key? key,
@@ -74,7 +79,6 @@ class _AddWalletState extends State<AddWallet> {
       ..style.border = 'none'
       ..style.width = '100%'
       ..style.height = '100%';
-
     final webviewRegisterKey = 'webpage$webviewId';
 
     // ignore: undefined_prefixed_name
@@ -84,6 +88,14 @@ class _AddWalletState extends State<AddWallet> {
     );
 
     final child = HtmlElementView(viewType: webviewRegisterKey); //unique key
+
+    // postMessage to the iframe on load
+    iFrameElement.onLoad.listen((_) {
+      iFrameElement.contentWindow!.postMessage(
+        payload.toJson(),
+        '*',
+      );
+    });
 
     return SizedBox(width: width, height: height, child: child);
   }
