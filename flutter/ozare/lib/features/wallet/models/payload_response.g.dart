@@ -9,7 +9,8 @@ part of 'payload_response.dart';
 _$_Payload _$$_PayloadFromJson(Map<String, dynamic> json) => _$_Payload(
       type: json['type'] as String,
       uid: json['uid'] as int,
-      outcome: json['outcome'] as String?,
+      from: json['from'] as String,
+      outcome: json['outcome'] as bool?,
       amount: json['amount'] as int?,
       address: json['address'] as String?,
       result: json['result'] as bool?,
@@ -19,6 +20,7 @@ Map<String, dynamic> _$$_PayloadToJson(_$_Payload instance) =>
     <String, dynamic>{
       'type': instance.type,
       'uid': instance.uid,
+      'from': instance.from,
       'outcome': instance.outcome,
       'amount': instance.amount,
       'address': instance.address,

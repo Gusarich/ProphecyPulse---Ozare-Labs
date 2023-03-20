@@ -173,6 +173,9 @@ class _BetDialogState extends State<BetDialog> {
                     Payload(
                       type: 'create_event',
                       uid: int.parse(widget.event.id),
+                      from: 'ozare',
+                      amount: int.parse(betController.text),
+                      outcome: selectedTeam != 0,
                     ),
                   ),
                 );

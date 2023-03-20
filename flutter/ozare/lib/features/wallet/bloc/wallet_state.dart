@@ -7,6 +7,7 @@ enum BetStatus { createdEvent, startedEvent, finishedEvent, placedBet, none }
 class WalletState extends Equatable {
   const WalletState({
     this.payload = const Payload(
+      from: 'ozare',
       type: '',
       uid: 0,
     ),
