@@ -15,6 +15,7 @@ function Home() {
   const [payload, setPayload] = useState<Payload>();
   const [transactionComplete, setTransactionComplete] = useState(false);
   const [transactionOnGoing, setTransactionOnGoing] = useState(false);
+  const [showSendTransaction, setShowSendTransaction] = useState(true);
 
   function redirect(response: Response) {
     if (userFriendlyAddress?.length > 0 && wallet?.name) {
@@ -57,6 +58,11 @@ function Home() {
 
     // if there are any query params, set them as the payload
     const urlParams = new URLSearchParams(window.location.search);
+    // if the url has a connect param, hide the send transaction button
+    // url sample: http://localhost:3000/?connect=true
+    if (urlParams.get("connect")) {
+      setShowSendTransaction(false);
+    }
  
     let amount: any = urlParams.get("amount") ;
     if (amount) {
@@ -114,6 +120,7 @@ function Home() {
             {wallet ? wallet?.name : " Please Connect wallet"}
           </span>
           <div className="flex justify-center">
+            {showSendTransaction && (
             <button
               disabled={!(userFriendlyAddress?.length > 0) || transactionOnGoing}
               onClick={handleClick}
@@ -121,6 +128,7 @@ function Home() {
             >
               {transactionOnGoing ? "Processing..." : "Send transaction"}
             </button>
+            )}
           </div>
         </div>
       </div>
