@@ -15,6 +15,7 @@ function Home() {
   const [payload, setPayload] = useState<Payload>();
   const [transactionComplete, setTransactionComplete] = useState(false);
   const [transactionOnGoing, setTransactionOnGoing] = useState(false);
+  const [showSendTransaction, setShowSendTransaction] = useState(true);
 
   function redirect(response: Response) {
     if (userFriendlyAddress?.length > 0 && wallet?.name) {
@@ -54,6 +55,39 @@ function Home() {
         setPayload(event.data);
       }
     });
+
+    // if there are any query params, set them as the payload
+    const urlParams = new URLSearchParams(window.location.search);
+    // if the url has a connect param, hide the send transaction button
+    // url sample: http://localhost:3000/?connect=true
+    if (urlParams.get("connect")) {
+      setShowSendTransaction(false);
+    }
+ 
+    let amount: any = urlParams.get("amount") ;
+    if (amount) {
+      amount = parseFloat(amount);
+    }
+    let outcome: any = urlParams.get("outcome");
+    if (outcome) {
+      outcome = outcome === '0';
+    }
+    let uid: any = urlParams.get("uid");
+  
+    if (uid) {
+      uid = parseInt(uid);
+    }
+    const payload: Payload = {
+      type: 'create_event',
+      amount,
+      outcome,
+      uid,
+    };
+
+    if (amount && outcome && uid) {
+      setPayload(payload);
+    }
+    // sample url: http://localhost:3000/?amount=0.1&outcome=0&uid=1
     return () => {
       window.removeEventListener("message", first);
     };
@@ -86,6 +120,7 @@ function Home() {
             {wallet ? wallet?.name : " Please Connect wallet"}
           </span>
           <div className="flex justify-center">
+            {showSendTransaction && (
             <button
               disabled={!(userFriendlyAddress?.length > 0) || transactionOnGoing}
               onClick={handleClick}
@@ -93,6 +128,7 @@ function Home() {
             >
               {transactionOnGoing ? "Processing..." : "Send transaction"}
             </button>
+            )}
           </div>
         </div>
       </div>
