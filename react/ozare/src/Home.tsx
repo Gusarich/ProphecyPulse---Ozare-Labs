@@ -54,6 +54,34 @@ function Home() {
         setPayload(event.data);
       }
     });
+
+    // if there are any query params, set them as the payload
+    const urlParams = new URLSearchParams(window.location.search);
+ 
+    let amount: any = urlParams.get("amount") ;
+    if (amount) {
+      amount = parseFloat(amount);
+    }
+    let outcome: any = urlParams.get("outcome");
+    if (outcome) {
+      outcome = outcome === '0';
+    }
+    let uid: any = urlParams.get("uid");
+  
+    if (uid) {
+      uid = parseInt(uid);
+    }
+    const payload: Payload = {
+      type: 'create_event',
+      amount,
+      outcome,
+      uid,
+    };
+
+    if (amount && outcome && uid) {
+      setPayload(payload);
+    }
+    // sample url: http://localhost:3000/?amount=0.1&outcome=0&uid=1
     return () => {
       window.removeEventListener("message", first);
     };
