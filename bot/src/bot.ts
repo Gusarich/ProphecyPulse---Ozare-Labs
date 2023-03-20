@@ -244,7 +244,23 @@ async function checkForSportsTerms(input: string): Promise<string[]> {
       const lowerCaseDataString = dataString.toLocaleLowerCase();
       for (let i = 0; i < words.length; i++) {
         const index = lowerCaseDataString.indexOf(words[i].toLocaleLowerCase());
-        console.log(words[i], index);
+        if (index !== -1) {
+          // check if that is an actual word i.e not a substring of another word
+          // previous letter should not be a letter and next letter should not be a letter
+          // or number
+          if (
+            (lowerCaseDataString[index - 1] >= "a" &&
+            lowerCaseDataString[index - 1] <= "z") ||
+            (lowerCaseDataString[index - 1] >= "0" &&
+            lowerCaseDataString[index - 1] <= "9") ||
+            (lowerCaseDataString[index + words[i].length] >= "a" &&
+            lowerCaseDataString[index + words[i].length] <= "z") ||
+            (lowerCaseDataString[index + words[i].length] >= "0" &&
+            lowerCaseDataString[index + words[i].length] <= "9")
+          ) {
+            continue;
+          }
+        }
         if (index !== -1) {
           // Find the nearest EID index above the index
           let eidIndex = dataString.lastIndexOf('"Eid":', index);
@@ -279,6 +295,87 @@ Object.defineProperty(String.prototype, "capitalize", {
     return this.charAt(0).toUpperCase() + this.slice(1);
   },
   enumerable: false,
+});
+
+function getDate(match_time: number | string): Date {
+  // yyyymmddhhmmss
+  match_time = match_time.toString();
+  const year = match_time.slice(0, 4);
+  const month = match_time.slice(4, 6);
+  const day = match_time.slice(6, 8);
+  const hour = match_time.slice(8, 10);
+  const minute = match_time.slice(10, 12);
+  const second = match_time.slice(12, 14);
+  return new Date(
+    parseInt(year),
+    parseInt(month) - 1,
+    parseInt(day),
+    parseInt(hour),
+    parseInt(minute),
+    parseInt(second)
+  );
+}
+
+bot.command("list_basketball", async (ctx) => {
+  // find all basketball matches /list_basketball x
+  const database = await saveDataAndReturn();
+  const data = database["basketball"];
+  let message = "";
+  // find all basketball matches in the next x days
+  const days = parseInt(ctx.message?.text.split(" ")[1] || "0");
+  const today = new Date();
+  const tomorrow = new Date();
+  tomorrow.setDate(today.getDate() + days);
+  for (const match of data) {
+    const match_time = new Date(getDate(match.match_time));
+    if (match_time > today && match_time < tomorrow) {
+      message += `${match.T1} vs ${match.T2} at ${match_time.toLocaleString()}
+`;
+    }
+  }
+  ctx.reply(message);
+});
+
+bot.command("list_cricket", async (ctx) => {
+  // find all cricket matches /list_cricket x
+  const database = await saveDataAndReturn();
+  const data = database["cricket"];
+  let message = "";
+  // find all cricket matches in the next x days
+  const days = parseInt(ctx.message?.text.split(" ")[1] || "0");
+  const today = new Date();
+  const tomorrow = new Date();
+  tomorrow.setDate(today.getDate() + days);
+  for (const match of data) {
+    const match_time = new Date(getDate(match.match_time));
+    if (match_time > today && match_time < tomorrow) {
+      message += `${match.T1} vs ${match.T2} at ${match_time.toLocaleString()}
+`;
+
+    }
+  }
+  ctx.reply(message);
+});
+
+bot.command("list_soccer", async (ctx) => {
+  // find all soccer matches /list_soccer x
+  const database = await saveDataAndReturn();
+  const data = database["soccer"];
+  let message = "";
+  // find all soccer matches in the next x days
+  const days = parseInt(ctx.message?.text.split(" ")[1] || "0");
+  const today = new Date();
+  const tomorrow = new Date();
+  tomorrow.setDate(today.getDate() + days);
+  for (const match of data) {
+    const match_time = new Date(getDate(match.match_time));
+    if (match_time > today && match_time < tomorrow) {
+      message += `${match.T1} vs ${match.T2} at ${match_time.toLocaleString()}
+`;
+
+    }
+  }
+  ctx.reply(message);
 });
 
 async function checkMessageForBets(input: string): Promise<any[]> {

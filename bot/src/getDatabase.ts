@@ -26,37 +26,37 @@ async function getCombinedData(date: string, sport: Sport) {
     const t2 = event.T2[0].Nm;
 
     // Get lineup data
-    const lineupResponse = await axios({
-      method: "GET",
-      url: "https://livescore6.p.rapidapi.com/matches/v2/get-lineups",
-      params: { Eid: eid, Category: sport },
-      headers: {
-        "X-RapidAPI-Key": process.env.RAPID_API_KEY,
-        "X-RapidAPI-Host": "livescore6.p.rapidapi.com",
-      },
-    });
+    // const lineupResponse = await axios({
+    //   method: "GET",
+    //   url: "https://livescore6.p.rapidapi.com/matches/v2/get-lineups",
+    //   params: { Eid: eid, Category: sport },
+    //   headers: {
+    //     "X-RapidAPI-Key": process.env.RAPID_API_KEY,
+    //     "X-RapidAPI-Host": "livescore6.p.rapidapi.com",
+    //   },
+    // });
 
-    const lineupData = lineupResponse.data.Lu;
-    console.log(lineupData, sport);
-    if (!lineupData) continue;
-    const players_t1 = lineupData
-      .filter((item: any) => item.Tnb === 1)
-      .flatMap((item: any) =>
-        item.Ps.map((player: any) => player.Fn + " " + player.Ln)
-      );
-    const players_t2 = lineupData
-      .filter((item: any) => item.Tnb === 2)
-      .flatMap((item: any) =>
-        item.Ps.map((player: any) => player.Fn + " " + player.Ln)
-      );
+    // const lineupData = lineupResponse.data.Lu;
+    // console.log(lineupData, sport);
+    // if (!lineupData) continue;
+    // const players_t1 = lineupData
+    //   .filter((item: any) => item.Tnb === 1)
+    //   .flatMap((item: any) =>
+    //     item.Ps.map((player: any) => player.Fn + " " + player.Ln)
+    //   );
+    // const players_t2 = lineupData
+    //   .filter((item: any) => item.Tnb === 2)
+    //   .flatMap((item: any) =>
+    //     item.Ps.map((player: any) => player.Fn + " " + player.Ln)
+    //   );
 
     // Add data to results
     results.push({
       Eid: eid,
       T1: t1,
       T2: t2,
-      players_t1,
-      players_t2,
+      // players_t1,
+      // players_t2,
       match_time: event.Esd,
     });
   }
@@ -72,8 +72,18 @@ async function getDataBaseCombo(sport: Sport) {
     const tomorrowStr = tomorrow.toISOString().slice(0, 10).replace(/-/g, "");
     // const todayData = await getCombinedData(todayStr, sport);
     const tomorrowData = await getCombinedData(tomorrowStr, sport);
-    // const combinedData = [...todayData, ...tomorrowData];
-    return tomorrowData;
+    let combinedData = tomorrowData;
+    // iterate for the next 14 days
+    for (let i = 0; i < 7; i++) {
+        console.log(tomorrow);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const tomorrowStr = tomorrow.toISOString().slice(0, 10).replace(/-/g, "");
+        const tomorrowData = await getCombinedData(tomorrowStr, sport);
+        console.log(tomorrowData[0].match_time);
+        combinedData = combinedData.concat(tomorrowData);
+        console.log(combinedData[combinedData.length - 1].match_time);
+    }
+    return combinedData;
 }
 
 async function getForAllSports() {
