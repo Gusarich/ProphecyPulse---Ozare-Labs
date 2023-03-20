@@ -7,6 +7,7 @@ import 'package:ozare/features/auth/view/signIn_page.dart';
 import 'package:ozare/features/auth/view/signUp_page.dart';
 import 'package:ozare/features/home/home.dart';
 import 'package:ozare/features/onboard/view/onboard_page.dart';
+import 'package:ozare/features/wallet/view/view.dart';
 import 'package:ozare/styles/common/common.dart';
 import 'package:ozare/styles/common/widgets/dialogs/dialogs.dart';
 
@@ -39,6 +40,8 @@ class AuthPage extends StatelessWidget {
           return const SignUpPage();
         } else if (state is AuthLoggedIn) {
           return const HomePage();
+        } else if (state is WalletLogin) {
+          return const ConnectWalletPage();
         }
 
         return const Loader(message: 'Loading...');

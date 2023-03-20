@@ -144,9 +144,25 @@ class _BetDialogState extends State<BetDialog> {
             const Spacer(),
             GestureDetector(
               onTap: () {
-                context.read<BetBloc>().add(
-                      BetCreated(
-                        ozare.Bet(
+                // context.read<BetBloc>().add(
+                //       BetCreated(
+                //         ,
+                //         widget.event.toJson(),
+                //       ),
+                //     );
+                Navigator.pop(context);
+
+                wallet.add(
+                  CreateEventRequested(
+                    payload: Payload(
+                      type: 'create_event',
+                      uid: int.parse(widget.event.id),
+                      from: 'ozare',
+                      amount: int.parse(betController.text),
+                      outcome: selectedTeam != 0,
+                    ),
+                    event: widget.event.toJson(),
+                    bet: ozare.Bet(
                           yourTeam: selectedTeam,
                           id: const Uuid().v4(),
                           userId: user.uid!,
@@ -162,24 +178,10 @@ class _BetDialogState extends State<BetDialog> {
                           score2: widget.event.score2,
                           category: widget.event.category,
                           time: widget.event.time,
-                        ),
-                        widget.event.toJson(),
-                      ),
-                    );
-                Navigator.pop(context);
-
-                wallet.add(
-                  CreateEventRequested(
-                    Payload(
-                      type: 'create_event',
-                      uid: int.parse(widget.event.id),
-                      from: 'ozare',
-                      amount: int.parse(betController.text),
-                      outcome: selectedTeam != 0,
-                    ),
+                        ).toJson(),
                   ),
                 );
-                Navigator.pushNamed(context, Routes.addWallet);
+                Navigator.pushNamed(context, Routes.signTransaction);
               },
               child: Container(
                 height: 50,

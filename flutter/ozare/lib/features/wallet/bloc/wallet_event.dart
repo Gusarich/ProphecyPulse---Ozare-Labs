@@ -4,10 +4,14 @@ part of 'wallet_bloc.dart';
 abstract class WalletEvent {}
 
 class CreateEventRequested extends WalletEvent {
-  CreateEventRequested(this.payload, this.bet, this.event);
+  CreateEventRequested({
+    required this.payload,
+    required this.bet,
+    required this.event,
+  });
 
   final Payload payload;
-  final Bet bet;
+  final Map<String, dynamic> bet;
   final Map<String, dynamic> event;
 }
 

@@ -36,7 +36,11 @@ class OButton extends StatelessWidget {
         ),
         child: Center(
           child: isIcon
-              ? SvgPicture.asset(iconPath)
+              ? SvgPicture.asset(
+                  iconPath,
+                  height: 32,
+                  width: 32,
+                )
               : Text(
                   label,
                   style: const TextStyle(
