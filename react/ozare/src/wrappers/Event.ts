@@ -79,7 +79,7 @@ export class Event implements Contract {
                 messages: [
                     {
                         address: this.address.toRawString(),
-                        amount: amount.toString(),
+                        amount: toNano('0.25').toString(),
                         stateInit: beginCell()
                             .store(storeStateInit(this.init))
                             .endCell()
@@ -99,7 +99,7 @@ export class Event implements Contract {
             await via.send({
                 to: this.address,
                 init: this.init,
-                value: amount + toNano('0.25'),
+                value: toNano('0.25'),
                 body: beginCell()
                     .storeUint(0x60e6b243, 32)
                     .storeBit(outcome)
@@ -260,37 +260,46 @@ export class Event implements Contract {
         outcome: boolean,
         amount: bigint,
     ): Promise<Event> {
+        // create contract
         const stateInit = await this.getStateInit(oracle, uid);
         const address = contractAddress(0, stateInit);
+        let event: Event;
+        if ('contract' in system) {
+            event = new Event(address, stateInit, system.contract(address));
+        } else event = new Event(address, stateInit, system);
+        // event.deploy(via) transaction:
+        const eventDeploymentMessage = {
+            address: event.address.toRawString(),
+            amount: toNano('0.25').toString(),
+            stateInit: beginCell()
+                .store(storeStateInit(event.init))
+                .endCell()
+                .toBoc()
+                .toString('base64'),
+        }
+        // bet transaction:
+        const betMessage = {
+            address: event.address.toRawString(),
+            amount: toNano('0.25').toString(),
+            stateInit: beginCell()
+                .store(storeStateInit(event.init))
+                .endCell()
+                .toBoc()
+                .toString('base64'),
+            payload: beginCell()
+                .storeUint(0x60e6b243, 32)
+                .storeBit(outcome)
+                .storeUint(amount, 256)
+                .endCell()
+                .toBoc()
+                .toString('base64'),
+        }
         if ('sendTransaction' in via) {
             await via.sendTransaction({
                 validUntil: Math.floor(Date.now() / 1000) + 600,
                 messages: [
-                    {
-                        address: address.toRawString(),
-                        amount: toNano('0.25').toString(),
-                        stateInit: beginCell()
-                            .store(storeStateInit(stateInit))
-                            .endCell()
-                            .toBoc()
-                            .toString('base64'),
-                    },
-                    {
-                        address: address.toRawString(),
-                        amount: amount.toString(),
-                        stateInit: beginCell()
-                            .store(storeStateInit(stateInit))
-                            .endCell()
-                            .toBoc()
-                            .toString('base64'),
-                        payload: beginCell()
-                            .storeUint(0x60e6b243, 32)
-                            .storeBit(outcome)
-                            .storeUint(amount, 256)
-                            .endCell()
-                            .toBoc()
-                            .toString('base64'),
-                    },
+                    eventDeploymentMessage,
+                    betMessage,
                 ],
             });
         } else {

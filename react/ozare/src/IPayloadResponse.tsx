@@ -1,7 +1,7 @@
 export interface Payload {
   type: string;
   uid: number; // event id
-  outcome?: string;
+  outcome?: boolean;
   amount?: number;
   address?: string; // address of the contract
   result?: boolean; // winner of the event

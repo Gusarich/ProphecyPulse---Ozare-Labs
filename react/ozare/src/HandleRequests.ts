@@ -1,7 +1,12 @@
 import { TonConnect } from "@tonconnect/sdk";
 import { TonClient, Address } from "ton";
 import { Payload, Response } from "./IPayloadResponse";
+import { Bet } from "./wrappers/Bet";
 import { Event } from "./wrappers/Event";
+
+const ORACLE = Address.parse(
+  "kQAAipGfZ0cd1PXdEV4c-PesBfiBwmMCIaZklx9Y16A_76XU"
+);
 
 const getClient = async () => {
   const client = new TonClient({
@@ -12,19 +17,33 @@ const getClient = async () => {
   return client;
 };
 
-async function handleRequest(
+async function handleCreateEvent(
   payload: Payload,
   sender: TonConnect,
   sender_address: string
-): Promise<Response> {
+) {
+  console.log(sender_address);
   const client = await getClient();
-
+  if (!payload) {
+    payload = {
+      type: "create_event",
+      uid: Math.floor(Math.random() * 1000000),
+      amount: 1,
+      outcome: false,
+    };
+  }
+  const {
+    uid,
+    amount,
+    outcome,
+  }: {
+    uid?: number;
+    amount?: any;
+    outcome?: any;
+  } = payload;
   let event_exists = true;
   try {
-    const contract_address = await Event.getContractAddress(
-      Address.parse(sender_address),
-      payload?.uid || Math.floor(Math.random() * 1000000)
-    );
+    const contract_address = await Event.getContractAddress(ORACLE, uid);
     await Event.getInstance(client, contract_address);
   } catch (e) {
     console.log(e);
@@ -33,22 +52,19 @@ async function handleRequest(
 
   if (!event_exists) {
     try {
-      const uid = payload?.uid || Math.floor(Math.random() * 1000000);
       const event = await Event.createDeployBet(
         client,
         sender,
-        Address.parse(sender_address),
+        ORACLE,
         uid,
         false,
-        BigInt((payload?.amount || 0) * 1e9)
+        BigInt((amount || 0) * 1e9)
       );
       return {
         status: "success",
         message: "Event created successfully",
-        data: {
-          address: event.address.toString(),
-          uid,
-        },
+        contract_address: event.address.toString(),
+        uid,
       };
     } catch (e) {
       console.log(e);
@@ -60,18 +76,69 @@ async function handleRequest(
     }
   } else {
     // place the bet
+    try {
+      const contract_address = await Event.getContractAddress(ORACLE, uid);
+      const event = await Event.getInstance(client, contract_address);
+      await event.bet(sender, outcome, BigInt(amount * 1e9));
+      return {
+        status: "success",
+        message: "Bet placed successfully",
+        contract_address: event.address.toString(),
+        uid,
+      };
+    } catch (e) {
+      console.log(e);
+      return {
+        status: "error",
+        message: "Error placing bet",
+        data: e,
+      };
+    }
+  }
+}
+
+async function handleClaimBet(payload: Payload, sender: TonConnect) {
+  console.log("Claiming bet", payload);
+  try {
+    const client = await getClient();
     const contract_address = await Event.getContractAddress(
-      Address.parse(sender_address),
+      ORACLE,
       payload?.uid || Math.floor(Math.random() * 1000000)
     );
-    const event = await Event.getInstance(client, contract_address);
-    const { outcome, amount } = payload as any;
-    await event.bet(sender, outcome, BigInt(amount * 1e9));
+    const bet = new Bet(contract_address, client);
+    await bet.close(sender);
     return {
       status: "success",
-      message: "Bet placed successfully",
+      message: "Bet claimed successfully",
+    };
+  } catch (e) {
+    console.log(e);
+    return {
+      status: "error",
+      message: "Error claiming bet",
+      data: e,
     };
   }
+}
+
+async function handleRequest(
+  payload: Payload,
+  sender: TonConnect,
+  sender_address: string
+): Promise<Response> {
+  console.log(payload);
+  let no_type = payload?.type === undefined;
+  if (no_type || payload?.type === "create_event") {
+    return await handleCreateEvent(payload, sender, sender_address);
+  } else if (payload?.type === "claim_bet") {
+    return await handleClaimBet(payload, sender);
+  } else {
+    return {
+      status: "error",
+      message: "Invalid request type",
+    };
+  }
+
   /*
   let type = "create_event";
   if (payload && payload.type) type = payload.type;
