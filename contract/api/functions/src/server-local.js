@@ -26,11 +26,11 @@ app.listen(port, () => {
 
 let eventNew, senderNew;
 
-const getClient = async (req) => {
+const getClient = async () => {
     const client = new index_2.TonClient({
         // endpoint: 'https://toncenter.com/api/v2/jsonRPC',
         endpoint: 'https://testnet.toncenter.com/api/v2/jsonRPC',
-        apiKey: req.body.tonApiKey,
+        apiKey: "3ee6e55a86a7d611e3670f650d4194656157ecf100d5d284dcdb9d873d8fb37d",
     });
     return client;
 }
@@ -124,11 +124,11 @@ app.post('/event/:address/start', async (req, res) => {
 });
 
 // API endpoint to finish an event
-app.post('/event/:address/finish', async (req, res) => {
+app.post('/event/finish', async (req, res) => {
     try {
         const client = await getClient(req);
         const senderNew = await getSenderFromMnemonic(process.env.MNEMONIC1, client);
-        const eventNew = await Event_1.Event.getInstance(client, req.params.address);
+        const eventNew = await Event_1.Event.getInstance(client, req.body.address);
         const result = req.body.result;
         await eventNew.finishEvent(senderNew, result);
         const response = {
