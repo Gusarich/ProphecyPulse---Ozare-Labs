@@ -11,6 +11,7 @@ part 'wallet_state.dart';
 class WalletBloc extends Bloc<WalletEvent, WalletState> {
   WalletBloc() : super(const WalletState()) {
     on<CreateEventRequested>(_onCreateEventRequested);
+    on<PayloadSubmitted>(_onPayloadSubmitted);
   }
 
   Future<void> _onCreateEventRequested(
@@ -21,10 +22,21 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
       emit(
         state.copyWith(
           payload: event.payload,
+          bet: event.bet,
+          event: event.event,
         ),
       );
     } catch (_) {
       rethrow;
     }
+  }
+
+  Future<void> _onPayloadSubmitted(
+    PayloadSubmitted event,
+    Emitter<WalletState> emit,
+  ) async {
+    emit(
+      state.copyWith(response: event.response),
+    );
   }
 }

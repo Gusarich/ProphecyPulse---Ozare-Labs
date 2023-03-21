@@ -6,13 +6,19 @@ import 'package:fastor_app_ui_widget/fastor_app_ui_widget.dart'
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ozare/features/bet/bloc/bet_bloc.dart';
 import 'package:ozare/features/wallet/bloc/wallet_bloc.dart' as wallet;
 import 'package:ozare/features/wallet/bloc/wallet_bloc.dart';
 import 'package:ozare/features/wallet/models/models.dart';
 import 'package:ozare/styles/common/widgets/dialogs/dialogs.dart';
+import 'package:ozare_repository/ozare_repository.dart';
 
 class SignTransactionPage extends StatefulWidget {
-  const SignTransactionPage({super.key});
+  final BetBloc betBloc;
+  const SignTransactionPage({
+    required this.betBloc,
+    super.key,
+  });
 
   @override
   State<SignTransactionPage> createState() => _SignTransactionPageState();
@@ -54,7 +60,7 @@ class _SignTransactionPageState extends State<SignTransactionPage> {
           ),
           body: webViewPlatformWebsite(
             webviewId: 12,
-            url: 'https://ozare-final.vercel.app/',
+            url: 'https://ozare-final.vercel.app',
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             payload: state.payload,
@@ -114,6 +120,12 @@ class _SignTransactionPageState extends State<SignTransactionPage> {
         final dataAddress = innerData['address'].toString();
         final dataUid = innerData['uid'] as int;
 
+        widget.betBloc.add(
+          BetCreated(
+            Bet.fromJson(context.read<WalletBloc>().state.bet!),
+            context.read<WalletBloc>().state.event!,
+          ),
+        );
         context.read<WalletBloc>().add(
               PayloadSubmitted(
                 Response(status: status, message: message, data: innerData),
@@ -121,7 +133,12 @@ class _SignTransactionPageState extends State<SignTransactionPage> {
             );
 
         Navigator.pop(context);
-        showAlertDialog(context: context, title: status, content: message);
+        //ANCHOR - Return the message from the iframe
+        showAlertDialog(
+          context: context,
+          title: status,
+          content: 'Bet placed successfully',
+        );
         // Post the updated message
       }
     }

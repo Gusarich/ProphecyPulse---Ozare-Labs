@@ -3,6 +3,7 @@ import 'dart:js';
 
 import 'package:flutter/material.dart';
 import 'package:ozare/features/auth/auth.dart';
+import 'package:ozare/features/bet/bet.dart';
 import 'package:ozare/features/dash/view/view.dart';
 import 'package:ozare/features/home/home.dart';
 import 'package:ozare/features/livebet/livebet.dart';
@@ -53,7 +54,8 @@ class Routes {
         return MaterialPageRoute(builder: (context) => const PaymentsPage());
       case signTransaction:
         return MaterialPageRoute(
-          builder: (context) => const SignTransactionPage(),
+          builder: (context) =>
+              SignTransactionPage(betBloc: routeSettings.arguments! as BetBloc),
         );
       case connectWallet:
         return MaterialPageRoute(
