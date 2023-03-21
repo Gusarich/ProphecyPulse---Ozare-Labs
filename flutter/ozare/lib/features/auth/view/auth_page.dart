@@ -40,8 +40,6 @@ class AuthPage extends StatelessWidget {
           return const SignUpPage();
         } else if (state is AuthLoggedIn) {
           return const HomePage();
-        } else if (state is WalletLogin) {
-          return const ConnectWalletPage();
         }
 
         return const Loader(message: 'Loading...');

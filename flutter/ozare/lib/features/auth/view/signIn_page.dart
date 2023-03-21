@@ -146,13 +146,6 @@ class _SignInPageState extends State<SignInPage> {
 
                       const SizedBox(height: 16),
 
-                      /// Social Buttons
-                      OButton.icon(
-                        onTap: () => context
-                            .read<AuthBloc>()
-                            .add(const AuthWalletLoginPageRequested()),
-                        iconPath: 'assets/icons/ton.svg',
-                      ),
                       SizedBox(height: size.height * 0.03),
                       OButton.icon(
                           onTap: () {

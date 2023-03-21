@@ -3,6 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ozare/app/routes.dart';
 import 'package:ozare/features/profile/bloc/profile_bloc.dart';
 import 'package:ozare/features/profile/models/models.dart';
+import 'dart:html' as html;
+import 'package:fastor_app_ui_widget/fastor_app_ui_widget.dart'
+    if (dart.library.html) 'dart:ui' as ui;
 
 import 'package:ozare/features/profile/widgets/widgets.dart';
 import 'package:ozare/styles/common/widgets/dialogs/dialogs.dart';
@@ -12,60 +15,77 @@ class PaymentsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Stack(
       children: [
         AppBarProfileSection.singlePage(
-          title: 'Wallets',
+          title: 'My Wallet',
           appBarAction: GestureDetector(
             onTap: () async {
-              //REVIEW - Muted the route to adding wallets.
-
               await Navigator.pushNamed(context, Routes.signTransaction);
-              // await launchUrl(Uri.parse('https://ozare-react.vercel.app/'));
             },
-            child: const CircleAvatar(
-              radius: 20,
-              backgroundColor: Colors.white30,
-              child: Icon(Icons.add, color: Colors.white),
-            ),
+            child: const SizedBox(),
           ),
         ),
-        BlocConsumer<ProfileBloc, ProfileState>(
-          listener: (context, state) {
-            if (state.wallet.isNotEmpty && state.wallet.length == 1) {
-              showAlertDialog(
-                context: context,
-                title: 'Success',
-                content: 'Wallet connected successfully',
-              );
-            }
-          },
-          bloc: context.read<ProfileBloc>(),
-          builder: (context, state) {
-            if (state.wallet.isNotEmpty) {
-              return Expanded(
-                child: ListView.builder(
-                  itemBuilder: (context, index) => WalletTile(
-                    wallet: Wallet(
-                      name: state.wallet[index].name,
-                      key: state.wallet[index].key,
-                      iconPath: state.wallet[index].iconPath,
-                    ),
-                  ),
-                  itemCount: state.wallet.length,
-                ),
-              );
-            } else {
-              //FIXME - Show no wallet {widget}
-              // return const Center(
-              //   child: Text('Add wallet'),
-              // );
-
-              return const SizedBox();
-            }
-          },
-        )
+        _buildWebView(context),
       ],
     );
+  }
+
+  Widget _buildWebView(BuildContext context) {
+    return webViewPlatformWebsite(
+      webviewId: 12,
+      url: 'https://ozare-final.vercel.app/?connect=true',
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+    );
+  }
+
+  Widget webViewPlatformWebsite({
+    required int webviewId,
+    required String url,
+    required double width,
+    required double height,
+    Key? key,
+  }) {
+    final iFrameElement = _createIFrameElement(url);
+    _registerIFrameMessageListener(iFrameElement);
+
+    final webviewRegisterKey = 'webpage$webviewId';
+    _registerViewFactory(webviewRegisterKey, iFrameElement);
+
+    final child = HtmlElementView(viewType: webviewRegisterKey);
+    return SizedBox(width: width, height: height, child: child);
+  }
+
+  html.IFrameElement _createIFrameElement(String url) {
+    return html.IFrameElement()
+      ..src = url
+      ..style.border = 'none'
+      ..style.width = '100%'
+      ..style.height = '100%';
+  }
+
+  void _registerIFrameMessageListener(html.IFrameElement iFrameElement) {
+    html.window.addEventListener('message', handleMessage);
+  }
+
+  void _registerViewFactory(
+      String webviewRegisterKey, html.IFrameElement iFrameElement) {
+    // ignore: undefined_prefixed_name
+    ui.platformViewRegistry.registerViewFactory(
+      webviewRegisterKey,
+      (int viewId) => iFrameElement,
+    );
+  }
+
+  void handleMessage(html.Event event) {
+    print('Received event: $event');
+    if (event is html.MessageEvent) {
+      final data = event.data;
+
+      if (data['address'] != null) {
+        //Do something here.
+      }
+    }
   }
 }

@@ -39,12 +39,6 @@ class AuthSignUp extends AuthState {
   List<Object> get props => [];
 }
 
-class WalletLogin extends AuthState {
-  const WalletLogin();
-
-  @override
-  List<Object> get props => [];
-}
 
 class AuthLoggedIn extends AuthState {
   const AuthLoggedIn({

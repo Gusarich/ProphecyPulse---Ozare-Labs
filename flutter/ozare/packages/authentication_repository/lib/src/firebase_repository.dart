@@ -131,6 +131,17 @@ class FirebaseRepository {
     }
   }
 
+  /// Returns user credentials after signing in anonymously
+  ///
+  /// Throws a [LoginAnonymouslyFailure] if an exception occurs.
+  Future<firebase_auth.UserCredential> signInUserAnonymously() async {
+    try {
+      return await _firebaseAuth.signInAnonymously();
+    } catch (_) {
+      throw LoginAnonymouslyFailure();
+    }
+  }
+
   /// Signs out the current user which will emit
   /// [User.empty] from the [user] Stream.
   ///

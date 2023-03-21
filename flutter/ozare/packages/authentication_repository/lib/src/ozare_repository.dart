@@ -42,6 +42,7 @@ class OzareRepository {
     }
   }
 
+
   Future<OUser> signUpWithEmailAndPassword({
     required OUser oUser,
     required String password,

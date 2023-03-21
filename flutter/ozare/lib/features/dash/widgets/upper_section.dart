@@ -5,8 +5,9 @@ import 'package:ozare/features/dash/widgets/search_bar.dart';
 import 'package:ozare/features/search/bloc/search_bloc.dart';
 import 'package:ozare/l10n/l10n.dart';
 import 'package:ozare/styles/common/common.dart';
-import 'package:ozare/styles/common/widgets/widgets.dart';
+import 'package:ozare/features/wallet/widgets/widgets.dart';
 
+import 'package:ozare/styles/common/widgets/widgets.dart';
 
 class UpperSection extends StatefulWidget {
   const UpperSection({
@@ -77,6 +78,12 @@ class _UpperSectionState extends State<UpperSection> {
             ),
           ),
 
+          Positioned(
+            top: 10,
+            right: 24,
+            child: const WalletButton(),
+          ),
+
           // SearchBar
           Positioned(
             top: size.height * 0.125,
@@ -84,7 +91,9 @@ class _UpperSectionState extends State<UpperSection> {
               height: 40,
               width: size.width,
               padding: const EdgeInsets.symmetric(horizontal: 28),
-              child: SearchBar(searchController: searchController,),
+              child: SearchBar(
+                searchController: searchController,
+              ),
             ),
           ),
         ],
@@ -92,7 +101,6 @@ class _UpperSectionState extends State<UpperSection> {
     );
   }
 }
-
 
 class _Title extends StatelessWidget {
   const _Title();

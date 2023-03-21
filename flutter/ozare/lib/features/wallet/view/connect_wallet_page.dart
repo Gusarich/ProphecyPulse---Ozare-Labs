@@ -4,6 +4,8 @@ import 'package:fastor_app_ui_widget/fastor_app_ui_widget.dart'
     if (dart.library.html) 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:authentication_repository/authentication_repository.dart'
+    as auth;
 import 'package:ozare/features/auth/auth.dart';
 import 'package:ozare/features/wallet/bloc/wallet_bloc.dart' as wallet;
 import 'package:ozare/features/wallet/models/models.dart';
@@ -58,9 +60,7 @@ class _ConnectWalletPageState extends State<ConnectWalletPage> {
   Widget _buildWebView(BuildContext context) {
     return webViewPlatformWebsite(
       webviewId: 12,
-      url: kDebugMode
-          ? 'http://localhost:3000/?connect=true'
-          : 'https://ozare-final.vercel.app/?connect=true',
+      url: 'https://ozare-final.vercel.app/?connect=true',
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
     );
@@ -108,21 +108,9 @@ class _ConnectWalletPageState extends State<ConnectWalletPage> {
     print('Received event: $event');
     if (event is html.MessageEvent) {
       final data = event.data;
-      print('Received data: $data');
-      final from = data['from'];
-      print('From: $from');
+
       if (data['address'] != null) {
-        context.read<AuthBloc>().add(
-              AuthWalletLoginCompleted(
-                oUser: {
-                  'uid': null,
-                  'email': 'anonymous@pulse.xyz',
-                  'email': 'anonymous@pulse.xyz',
-                  'firstName': data['address'].toString(),
-                  'lastName': data['address'].toString(),
-                },
-              ),
-            );
+        //Do something here.
       }
     }
   }

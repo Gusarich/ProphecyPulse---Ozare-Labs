@@ -142,3 +142,6 @@ class LogInWithPhoneFailure implements Exception {}
 
 /// Thrown when reset password fails.
 class ResetPasswordFailure implements Exception {}
+
+/// Thrown when anonymously login fails.
+class LoginAnonymouslyFailure implements Exception {}

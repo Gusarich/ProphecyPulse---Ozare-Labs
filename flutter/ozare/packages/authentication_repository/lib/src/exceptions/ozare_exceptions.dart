@@ -29,3 +29,9 @@ class OzareSignWithGoogleException extends OzareException {
   /// Thrown when fails to sign in with google.
   const OzareSignWithGoogleException(super.errorMessage);
 }
+
+/// Thrown when fails to sign in anonymously.
+class OzareSignAnonymouslyException extends OzareException {
+  /// Thrown when fails to sign in anonymously.
+  const OzareSignAnonymouslyException(super.errorMessage);
+}

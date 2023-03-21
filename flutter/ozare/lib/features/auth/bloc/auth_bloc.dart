@@ -23,8 +23,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthOnboardingCompleted>(_onAuthOnboardingCompletedToState);
     on<AuthSignUpRequested>(_onAuthSignUpRequestedToState);
     on<AuthSignUpPageRequested>(_onAuthSignUpPageRequestedToState);
-    on<AuthWalletLoginPageRequested>(_onAuthWalletLoginPageRequestedToState);
-    on<AuthWalletLoginCompleted>(_onAuthWalletLoginCompleted);
     on<AuthLoginPageRequested>(_onAuthLoginPageRequestedToState);
     on<AuthLogoutRequested>(_onAuthLogoutRequested);
     on<AuthGoogleLoginRequested>(_onAuthGoogleLoginRequested);
@@ -160,21 +158,4 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  Future<void> _onAuthWalletLoginPageRequestedToState(
-    AuthWalletLoginPageRequested event,
-    Emitter<AuthState> emit,
-  ) async {
-    emit(const WalletLogin());
-  }
-
-  Future<void> _onAuthWalletLoginCompleted(
-    AuthWalletLoginCompleted event,
-    Emitter<AuthState> emit,
-  ) async {
-    emit(
-      AuthLoggedIn(
-        oUser: auth.OUser.fromJson(event.oUser),
-      ),
-    );
-  }
 }
