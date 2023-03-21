@@ -7,6 +7,14 @@ const API_TOKEN = process.env.BOT_API_TOKEN || "";
 
 const bot = new Telegraf(API_TOKEN);
 
+Object.defineProperty(String.prototype, "capitalize", {
+  value: function () {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+  },
+  enumerable: false,
+});
+
+
 const languages = [
   { code: "en", name: "English" },
   { code: "hi", name: "हिंदी" },
@@ -243,7 +251,8 @@ async function checkForSportsTerms(input: string): Promise<string[]> {
       const dataString = JSON.stringify(data);
       const lowerCaseDataString = dataString.toLocaleLowerCase();
       for (let i = 0; i < words.length; i++) {
-        const index = lowerCaseDataString.indexOf(words[i].toLocaleLowerCase());
+        let word = (words[i].toLocaleLowerCase() as any).capitalize();
+        const index = dataString.indexOf(word);
         if (index !== -1) {
           // check if that is an actual word i.e not a substring of another word
           // previous letter should not be a letter and next letter should not be a letter
@@ -290,12 +299,6 @@ async function checkForSportsTerms(input: string): Promise<string[]> {
   return [];
 }
 
-Object.defineProperty(String.prototype, "capitalize", {
-  value: function () {
-    return this.charAt(0).toUpperCase() + this.slice(1);
-  },
-  enumerable: false,
-});
 
 function getDate(match_time: number | string): Date {
   // yyyymmddhhmmss
@@ -380,8 +383,12 @@ bot.command("list_soccer", async (ctx) => {
 
 async function checkMessageForBets(input: string): Promise<any[]> {
   // check for sports terms in the message
-  const sportsTerms = await checkForSportsTerms(input);
-  return sportsTerms;
+  try {
+    const sportsTerms = await checkForSportsTerms(input);
+    return sportsTerms;
+  } catch (err) {
+    return [];
+  }
 }
 
 bot.hears(/.*/, async (ctx) => {
