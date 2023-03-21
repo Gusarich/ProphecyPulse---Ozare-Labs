@@ -75,14 +75,18 @@ function Home() {
     if (urlParams.get("connect")) {
       setShowSendTransaction(false);
     }
- 
+
+    let type = urlParams.get("type");
+    if (!type) type = "create_event";
     let amount: any = urlParams.get("amount") ;
-    if (amount) {
-      amount = parseFloat(amount);
-    }
     let outcome: any = urlParams.get("outcome");
-    if (outcome) {
-      outcome = outcome === '0';
+    if (type === "create_event") {    
+      if (amount) {
+        amount = parseFloat(amount);
+      }
+      if (outcome) {
+        outcome = outcome === '0';
+      }
     }
     let uid: any = urlParams.get("uid");
   
@@ -90,21 +94,25 @@ function Home() {
       uid = parseInt(uid);
     }
     const payload: Payload = {
-      type: 'create_event',
+      type,
       amount,
       outcome,
       uid,
     };
 
-    if (amount && outcome && uid) {
+    if (type === "create_event" && amount && outcome && uid) {
       setPayload(payload);
     }
-    // sample url: http://localhost:3000/?amount=0.1&outcome=0&uid=1
+    if (type === "claim_bet" && uid) {
+      setPayload(payload);
+    }
+    // sample url: http://localhost:3000/?type=create_event&amount=1&outcome=0&uid=9741
+    // bet_claim_url: http://localhost:3000/?type=claim_bet&uid=9741
     return () => {
       window.removeEventListener("message", first);
     };
   }, [userFriendlyAddress, tonConnectUI, wallet?.name]);
-
+ // create a contract & place a bet, start event from API, finish event from API, claim bet 
   return transactionComplete ? (
     <div className="flex bg-white justify-center items-center h-screen w-screen">
       <div className="flex flex-col">

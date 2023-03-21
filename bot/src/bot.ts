@@ -220,44 +220,59 @@ function getDate(match_time: number | string): Date {
 }
 
 bot.command("list_basketball", async (ctx) => {
-  // find all basketball matches /list_basketball x
-  const database = await saveDataAndReturn();
-  const data = database["basketball"];
-  let message = "";
-  // find all basketball matches in the next x days
-  const days = parseInt(ctx.message?.text.split(" ")[1] || "0");
-  const today = new Date();
-  const tomorrow = new Date();
-  tomorrow.setDate(today.getDate() + days);
-  for (const match of data) {
-    const match_time = new Date(getDate(match.match_time));
-    if (match_time > today && match_time < tomorrow) {
-      message += `${match.T1} vs ${match.T2} at ${match_time.toLocaleString()}
-`;
+  try {
+    console.log("list_basketball");
+    const database = await saveDataAndReturn();
+    const data = database["basketball"];
+    // find all basketball matches in the next x days
+    const textPresent = !!ctx.message?.text;
+    console.log(ctx.message?.text.split(" ")[1]);
+    const days = parseInt(!textPresent ? "1" : (ctx.message?.text.split(" ")[1] || "1"));
+    let message = `Showing matches of cricket in the next ${days} ${days > 1 ? "days" : "day"}`;
+    const today = new Date();
+    const tomorrow = new Date();
+    tomorrow.setDate(today.getDate() + days);
+    for (const match of data) {
+      const match_time = new Date(getDate(match.match_time));
+      if (match_time > today && match_time < tomorrow) {
+        message += `\n${match.T1} vs ${match.T2} at ${match_time.toLocaleString()}`;
+      }
     }
+    // console.log(message);
+    if (message.length)
+      ctx.reply(message, {
+        parse_mode: "Markdown",
+      });
+  } catch (e) {
+    console.log(e);
   }
-  ctx.reply(message);
+  // find all basketball matches /list_basketball x
 });
 
 bot.command("list_cricket", async (ctx) => {
   // find all cricket matches /list_cricket x
-  const database = await saveDataAndReturn();
-  const data = database["cricket"];
-  let message = "";
-  // find all cricket matches in the next x days
-  const days = parseInt(ctx.message?.text.split(" ")[1] || "0");
-  const today = new Date();
-  const tomorrow = new Date();
-  tomorrow.setDate(today.getDate() + days);
-  for (const match of data) {
-    const match_time = new Date(getDate(match.match_time));
-    if (match_time > today && match_time < tomorrow) {
-      message += `${match.T1} vs ${match.T2} at ${match_time.toLocaleString()}
-`;
-
+  try {
+    const database = await saveDataAndReturn();
+    const data = database["cricket"];
+    const empty = !!ctx.message?.text;
+    const days = parseInt(empty ? "1" : ctx.message?.text.split(" ")[0] || "1");
+    let message = `Showing matches of cricket in the next ${days} days`;
+    console.log(days)
+    const today = new Date();
+    const tomorrow = new Date();
+    tomorrow.setDate(today.getDate() + days);
+    for (const match of data) {
+      const match_time = new Date(getDate(match.match_time));
+      if (match_time > today && match_time < tomorrow) {
+        message += `${match.T1} vs ${match.T2} at ${match_time.toLocaleString()}
+  `;
+      }
     }
+    if (message.length)
+      ctx.reply(message);
+  } catch (e) {
+    console.log(e);
   }
-  ctx.reply(message);
 });
 
 bot.command("list_soccer", async (ctx) => {
