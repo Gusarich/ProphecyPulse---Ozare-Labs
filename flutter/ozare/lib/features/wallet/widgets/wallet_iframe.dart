@@ -42,16 +42,10 @@ class _WebViewIFrameState extends State<WebViewIFrame> {
   @override
   Widget build(BuildContext context) {
     final child = HtmlElementView(viewType: 'webpage${widget.webviewId}');
-    return DraggableScrollableSheet(
-      initialChildSize: 0.7,
-      minChildSize: 0.5,
-      builder: (context, scrollController) {
-        return SizedBox(
-          width: widget.width,
-          height: widget.height,
-          child: child,
-        );
-      },
+    return SizedBox(
+      width: widget.width,
+      height: widget.height,
+      child: child,
     );
   }
 
@@ -59,8 +53,8 @@ class _WebViewIFrameState extends State<WebViewIFrame> {
     return html.IFrameElement()
       ..src = url
       ..style.border = 'none'
-      ..style.width = '100%'
-      ..style.height = '100%';
+      ..style.width = '20%'
+      ..style.height = '20%';
   }
 
   void _registerIFrameMessageListener(html.IFrameElement iFrameElement) {
