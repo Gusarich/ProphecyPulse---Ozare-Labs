@@ -55,9 +55,23 @@ function Home() {
         setPayload(event.data);
       }
     });
+    const urlParams = new URLSearchParams(window.location.search);
+
+    tonConnectUI.onStatusChange((wallet) => {
+      if (urlParams.get('connect') && wallet?.connectItems?.tonProof && 'proof' in wallet?.connectItems?.tonProof) {
+        window.parent.postMessage(
+          {
+            from: "ozare-react",
+            status: "connected",
+            address: userFriendlyAddress,
+            walletName: wallet?.name,
+          },
+          "*"
+        );
+      }
+    });
 
     // if there are any query params, set them as the payload
-    const urlParams = new URLSearchParams(window.location.search);
     // if the url has a connect param, hide the send transaction button
     // url sample: http://localhost:3000/?connect=true
     if (urlParams.get("connect")) {
@@ -91,7 +105,7 @@ function Home() {
     return () => {
       window.removeEventListener("message", first);
     };
-  }, []);
+  }, [userFriendlyAddress, tonConnectUI]);
 
   return transactionComplete ? (
     <div className="flex bg-white justify-center items-center h-screen w-screen">
