@@ -1,6 +1,7 @@
 import { Telegraf } from "telegraf";
 import axios from "axios";
 import { saveDataAndReturn } from "./getDatabase";
+import { basicWords, basketballTerms, cricketTerms, soccerTerms } from "./wordsDatabase";
 require("dotenv").config();
 
 const API_TOKEN = process.env.BOT_API_TOKEN || "";
@@ -118,109 +119,7 @@ bot.command("docs", (ctx) => {
 async function checkForSportsTerms(input: string): Promise<string[]> {
   // check for sports terms in the message
   const database = await saveDataAndReturn();
-  const cricketTerms = [
-    "cricket",
-    "century",
-    "wicket",
-    "six",
-    "four",
-    "ball",
-    "over",
-    "run",
-    "bat",
-    "bowl",
-    "stump",
-    "umpire",
-    "fielder",
-    "win",
-    "lose",
-    "draw",
-    "keeper",
-    "out",
-    "catch",
-    "batsman",
-  ];
-  const soccerTerms = [
-    "scores",
-    "soccer",
-    "goal",
-    "penalty",
-    "red card",
-    "yellow card",
-    "offside",
-    "corner",
-    "free kick",
-    "throw in",
-    "foul",
-    "keeper",
-    "defender",
-    "striker",
-    "midfielder",
-    "winger",
-    "fullback",
-    "goalkeeper",
-    "forward",
-    "attack",
-    "defend",
-    "win",
-    "lose",
-    "draw",
-  ];
-  const basketballTerms = [
-    "win",
-    "basketball",
-    "lose",
-    "draw",
-    "Airball",
-    "Alley-oop",
-    "Assist",
-    "Backboard",
-    "Backcourt",
-    "Backdoor",
-    "Ball handler",
-    "Bank shot",
-    "Baseline",
-    "Block",
-    "Board",
-    "Bounce pass",
-    "Box out",
-    "Brick",
-    "Buzzer beater",
-    "Charge",
-    "Dribble",
-    "Dunk",
-    "Fastbreak",
-    "Field goal",
-    "Foul",
-    "Free throw",
-    "Guard",
-    "Half-court",
-    "High post",
-    "Hook shot",
-    "Inbounds",
-    "Jump ball",
-    "Jump shot",
-    "Layup",
-    "Low post",
-    "Man-to-man defense",
-    "Offense",
-    "Outlet pass",
-    "Overtime",
-    "Pass",
-    "Perimeter",
-    "Pick",
-    "Pick and roll",
-    "Post-up",
-    "Rebound",
-    "Screen",
-    "Shot clock",
-    "Slam dunk",
-    "Steal",
-    "Three-point line",
-    "Traveling",
-    "Turnover",
-    "Zone defense",
-  ];
+  
   let sports = [];
   if (
     basketballTerms.some((term) =>
@@ -251,6 +150,7 @@ async function checkForSportsTerms(input: string): Promise<string[]> {
       const dataString = JSON.stringify(data);
       const lowerCaseDataString = dataString.toLocaleLowerCase();
       for (let i = 0; i < words.length; i++) {
+        if (basicWords.includes(words[i].toLocaleLowerCase())) continue;
         let word = (words[i].toLocaleLowerCase() as any).capitalize();
         const index = dataString.indexOf(word);
         if (index !== -1) {
