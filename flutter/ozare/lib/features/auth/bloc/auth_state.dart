@@ -23,7 +23,6 @@ class AuthInitial extends AuthState {
 }
 
 class AuthLoading extends AuthState {
-
   const AuthLoading({
     required this.message,
   });
@@ -35,6 +34,13 @@ class AuthLoading extends AuthState {
 
 class AuthSignUp extends AuthState {
   const AuthSignUp();
+
+  @override
+  List<Object> get props => [];
+}
+
+class WalletLogin extends AuthState {
+  const WalletLogin();
 
   @override
   List<Object> get props => [];

@@ -20,7 +20,7 @@ class PaymentsPage extends StatelessWidget {
             onTap: () async {
               //REVIEW - Muted the route to adding wallets.
 
-              await Navigator.pushNamed(context, Routes.addWallet);
+              await Navigator.pushNamed(context, Routes.signTransaction);
               // await launchUrl(Uri.parse('https://ozare-react.vercel.app/'));
             },
             child: const CircleAvatar(

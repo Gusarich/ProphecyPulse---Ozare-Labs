@@ -61,3 +61,18 @@ class AuthLoginPageRequested extends AuthEvent {
 class AuthGoogleLoginRequested extends AuthEvent {
   const AuthGoogleLoginRequested();
 }
+
+class AuthWalletLoginPageRequested extends AuthEvent {
+  const AuthWalletLoginPageRequested();
+}
+
+class AuthWalletLoginCompleted extends AuthEvent {
+  const AuthWalletLoginCompleted({
+    required this.oUser,
+  });
+
+  final Map<String, dynamic> oUser;
+
+  @override
+  List<Object> get props => [oUser];
+}

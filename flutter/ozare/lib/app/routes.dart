@@ -6,9 +6,10 @@ import 'package:ozare/features/auth/auth.dart';
 import 'package:ozare/features/dash/view/view.dart';
 import 'package:ozare/features/home/home.dart';
 import 'package:ozare/features/livebet/livebet.dart';
-import 'package:ozare/features/profile/view/add_wallet_page.dart';
 import 'package:ozare/features/profile/view/view.dart';
 import 'package:ozare/features/splash/splash.dart';
+import 'package:ozare/features/wallet/view/sign_wallet_page.dart';
+import 'package:ozare/features/wallet/view/view.dart';
 
 class Routes {
   static const home = '/';
@@ -22,7 +23,8 @@ class Routes {
   static const profile = '/profile';
   static const notifications = '/notifications';
   static const dash = '/dash';
-  static const addWallet = '/addWallet';
+  static const signTransaction = '/signTransaction';
+  static const connectWallet = '/connectWallet';
 
   static String currentRoute = splash;
 
@@ -49,8 +51,14 @@ class Routes {
         );
       case wallets:
         return MaterialPageRoute(builder: (context) => const PaymentsPage());
-      case addWallet:
-        return MaterialPageRoute(builder: (context) => const AddWallet());
+      case signTransaction:
+        return MaterialPageRoute(
+          builder: (context) => const SignTransactionPage(),
+        );
+      case connectWallet:
+        return MaterialPageRoute(
+          builder: (context) => const ConnectWalletPage(),
+        );
       case liveBets:
         return MaterialPageRoute(builder: (context) => const LiveBetsView());
 

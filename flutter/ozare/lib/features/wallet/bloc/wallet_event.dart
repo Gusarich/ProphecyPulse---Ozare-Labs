@@ -4,25 +4,18 @@ part of 'wallet_bloc.dart';
 abstract class WalletEvent {}
 
 class CreateEventRequested extends WalletEvent {
-  CreateEventRequested(this.payload);
+  CreateEventRequested({
+    required this.payload,
+    required this.bet,
+    required this.event,
+  });
 
   final Payload payload;
+  final Map<String, dynamic> bet;
+  final Map<String, dynamic> event;
 }
 
-class StartEventRequested extends WalletEvent {
-  StartEventRequested(this.payload);
-
-  final Payload payload;
-}
-
-class FinishEventRequested extends WalletEvent {
-  FinishEventRequested(this.payload);
-
-  final Payload payload;
-}
-
-class PlaceBetRequested extends WalletEvent {
-  PlaceBetRequested(this.payload);
-
-  final Payload payload;
+class PayloadSubmitted extends WalletEvent {
+  PayloadSubmitted(this.response);
+  final Response response;
 }

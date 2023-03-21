@@ -7,17 +7,18 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ozare/features/wallet/bloc/wallet_bloc.dart' as wallet;
+import 'package:ozare/features/wallet/bloc/wallet_bloc.dart';
 import 'package:ozare/features/wallet/models/models.dart';
 import 'package:ozare/styles/common/widgets/dialogs/dialogs.dart';
 
-class AddWallet extends StatefulWidget {
-  const AddWallet({Key? key}) : super(key: key);
+class SignTransactionPage extends StatefulWidget {
+  const SignTransactionPage({super.key});
 
   @override
-  State<AddWallet> createState() => _AddWalletState();
+  State<SignTransactionPage> createState() => _SignTransactionPageState();
 }
 
-class _AddWalletState extends State<AddWallet> {
+class _SignTransactionPageState extends State<SignTransactionPage> {
   @override
   void initState() {
     super.initState();
@@ -33,7 +34,6 @@ class _AddWalletState extends State<AddWallet> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<wallet.WalletBloc, wallet.WalletState>(
-      buildWhen: (previous, current) => previous.betStatus != current.betStatus,
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
@@ -54,9 +54,7 @@ class _AddWalletState extends State<AddWallet> {
           ),
           body: webViewPlatformWebsite(
             webviewId: 12,
-            url: kDebugMode
-                ? 'http://localhost:3000/'
-                : 'https://ozare-final.vercel.app/',
+            url: 'https://ozare-final.vercel.app/',
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             payload: state.payload,
@@ -115,6 +113,12 @@ class _AddWalletState extends State<AddWallet> {
         final innerData = dataJson['data'] as Map<dynamic, dynamic>;
         final dataAddress = innerData['address'].toString();
         final dataUid = innerData['uid'] as int;
+
+        context.read<WalletBloc>().add(
+              PayloadSubmitted(
+                Response(status: status, message: message, data: innerData),
+              ),
+            );
 
         Navigator.pop(context);
         showAlertDialog(context: context, title: status, content: message);
