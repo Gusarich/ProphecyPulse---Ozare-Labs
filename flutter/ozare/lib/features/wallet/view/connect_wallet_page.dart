@@ -8,6 +8,7 @@ import 'package:ozare/features/auth/auth.dart';
 import 'package:ozare/features/wallet/bloc/wallet_bloc.dart' as wallet;
 import 'package:ozare/features/wallet/models/models.dart';
 import 'package:ozare/styles/common/widgets/dialogs/dialogs.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
 
 class ConnectWalletPage extends StatefulWidget {
   const ConnectWalletPage({Key? key}) : super(key: key);
@@ -57,7 +58,9 @@ class _ConnectWalletPageState extends State<ConnectWalletPage> {
   Widget _buildWebView(BuildContext context) {
     return webViewPlatformWebsite(
       webviewId: 12,
-      url: 'https://ozare-final.vercel.app/?connect=true',
+      url: kDebugMode
+          ? 'http://localhost:3000/?connect=true'
+          : 'https://ozare-final.vercel.app/?connect=true',
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
     );
@@ -89,9 +92,7 @@ class _ConnectWalletPageState extends State<ConnectWalletPage> {
   }
 
   void _registerIFrameMessageListener(html.IFrameElement iFrameElement) {
-    iFrameElement.onLoad.listen((event) {
-      iFrameElement.addEventListener('message', handleMessage);
-    });
+    html.window.addEventListener('message', handleMessage);
   }
 
   void _registerViewFactory(
@@ -107,7 +108,9 @@ class _ConnectWalletPageState extends State<ConnectWalletPage> {
     print('Received event: $event');
     if (event is html.MessageEvent) {
       final data = event.data;
-
+      print('Received data: $data');
+      final from = data['from'];
+      print('From: $from');
       if (data['address'] != null) {
         context.read<AuthBloc>().add(
               AuthWalletLoginCompleted(
