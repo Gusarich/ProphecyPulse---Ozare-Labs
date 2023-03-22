@@ -113,8 +113,8 @@ function Home() {
     }
     // sample url: http://localhost:3000/?type=create_event&amount=1&outcome=0&uid=9741
     // bet_claim_url: http://localhost:3000/?type=claim_bet&uid=9741
-    // sample url: https://ozare-final.vercel.app/?type=create_event&amount=1&outcome=0&uid=9741
-    // bet_claim_url: https://ozare-final.vercel.app/?type=claim_bet&uid=9741
+    // sample url: https://ozare-final.vercel.app/ton/?type=create_event&amount=1&outcome=0&uid=9741
+    // bet_claim_url: https://ozare-final.vercel.app/ton/?type=claim_bet&uid=9741
     return () => {
       window.removeEventListener("message", first);
     };

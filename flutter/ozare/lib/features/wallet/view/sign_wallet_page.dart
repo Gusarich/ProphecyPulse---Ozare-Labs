@@ -60,7 +60,7 @@ class _SignTransactionPageState extends State<SignTransactionPage> {
           ),
           body: webViewPlatformWebsite(
             webviewId: 12,
-            url: 'https://ozare-final.vercel.app',
+            url: 'https://ozare-final.vercel.app/ton/',
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             payload: state.payload,

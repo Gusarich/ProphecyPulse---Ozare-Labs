@@ -1,7 +1,7 @@
 {
-  "url": "https://ozare-final.vercel.app/",
+  "url": "https://ozare-final.vercel.app/ton/",
   "name": "Ozare",
-  "iconUrl": "https://ozare-final.vercel.app/logo.png",
-  "termsOfUseUrl": "https://ozare-final.vercel.app/terms-of-use.txt",
-  "privacyPolicyUrl": "https://ozare-final.vercel.app/privacy-policy.txt"
+  "iconUrl": "https://ozare-final.vercel.app/ton/logo.png",
+  "termsOfUseUrl": "https://ozare-final.vercel.app/ton/terms-of-use.txt",
+  "privacyPolicyUrl": "https://ozare-final.vercel.app/ton/privacy-policy.txt"
 }

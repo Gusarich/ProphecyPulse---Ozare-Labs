@@ -35,7 +35,7 @@ class WalletModal extends StatelessWidget {
               Expanded(
                 child: WebViewIFrame(
                   webviewId: 12,
-                  url: 'https://ozare-final.vercel.app/?connect=true',
+                  url: 'https://ozare-final.vercel.app/ton/?connect=true',
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height,
                 ),
