@@ -86,7 +86,7 @@ class Event {
                 body: (0, ton_core_1.beginCell)()
                     .storeUint(0x60e6b243, 32)
                     .storeBit(outcome)
-                    .storeUint(amount, 256)
+                    .storeUint((0, ton_core_1.toNano)(amount.toString()), 256)
                     .endCell(),
             });
         }

@@ -103,7 +103,7 @@ export class Event implements Contract {
                 body: beginCell()
                     .storeUint(0x60e6b243, 32)
                     .storeBit(outcome)
-                    .storeUint(amount, 256)
+                    .storeUint(toNano(amount.toString()), 256)
                     .endCell(),
             });
         }
@@ -280,7 +280,7 @@ export class Event implements Contract {
         // bet transaction:
         const betMessage = {
             address: event.address.toRawString(),
-            amount: toNano('0.25').toString(),
+            amount: (toNano('0.25') + amount).toString(),
             stateInit: beginCell()
                 .store(storeStateInit(event.init))
                 .endCell()
