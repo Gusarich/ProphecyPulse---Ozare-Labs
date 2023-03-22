@@ -82,7 +82,7 @@ class Event {
             await via.send({
                 to: this.address,
                 init: this.init,
-                value: amount + (0, ton_core_1.toNano)('0.25'),
+                value: (0, ton_core_1.toNano)('0.25'),
                 body: (0, ton_core_1.beginCell)()
                     .storeUint(0x60e6b243, 32)
                     .storeBit(outcome)
