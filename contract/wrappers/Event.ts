@@ -106,7 +106,7 @@ export class Event implements Contract {
                 body: beginCell()
                     .storeUint(0x60e6b243, 32)
                     .storeBit(outcome)
-                    .storeUint(amount, 256)
+                    .storeUint(toNano(amount.toString()), 256)
                     .endCell(),
             });
         }
