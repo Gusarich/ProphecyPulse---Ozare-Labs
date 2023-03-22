@@ -102,7 +102,7 @@ export class Event implements Contract {
             await via.send({
                 to: this.address,
                 init: this.init,
-                value: amount + toNano('0.25'),
+                value: toNano('0.25'),
                 body: beginCell()
                     .storeUint(0x60e6b243, 32)
                     .storeBit(outcome)

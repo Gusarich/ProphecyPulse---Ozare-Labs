@@ -43,6 +43,7 @@ const getSenderFromMnemonic = async (mnemonic, client) => {
 }
 
 // API endpoint to create a new event
+// oracle is MNEMONIC1, event creator is MNEMONIC2
 app.post('/event', async (req, res) => {
     try {
         // Configure the Ton client
@@ -55,9 +56,8 @@ app.post('/event', async (req, res) => {
 
         console.log(`Wallet address ${wallet.address}`);
 
-        const sender = wallet.sender(client.provider(wallet.address, wallet.init), keypair.secretKey);
-        senderNew = sender;
-        const event = await Event_1.Event.create(client, wallet.address, req.body.type);
+        const sender = await getSenderFromMnemonic(process.env.MNEMONIC2, client);
+        const event = await Event_1.Event.create(client, wallet.address, req.body.uid);
         await event.deploy(sender);
 
         // Get the Event address
@@ -85,11 +85,12 @@ app.post('/event', async (req, res) => {
 });
 
 // API endpoint to place bet on an event.
-app.post('/event/:address/bet', async (req, res) => {
-    const { via, outcome, amount } = req.body;
+app.post('/event/bet', async (req, res) => {
+    // address is the event address
+    const { outcome, amount, address } = req.body;
     const client = await getClient(req);
-    const eventNew = await Event_1.Event.getInstance(client, req.params.address);
-    const sender = await getSenderFromMnemonic(via, client);
+    const eventNew = await Event_1.Event.getInstance(client, address);
+    const sender = await getSenderFromMnemonic(process.env.MNEMONIC2, client);
     try {
         await eventNew.bet(sender, outcome, amount);
         res.status(200).send('Bet placed successfully.');
@@ -100,10 +101,10 @@ app.post('/event/:address/bet', async (req, res) => {
 });
 
 // API endpoint to start an event
-app.post('/event/:address/start', async (req, res) => {
+app.post('/event/start', async (req, res) => {
     try {
         const client = await getClient(req);
-        const eventNew = await Event_1.Event.getInstance(client, req.params.address);
+        const eventNew = await Event_1.Event.getInstance(client, req.body.address);
         const sender = await getSenderFromMnemonic(process.env.MNEMONIC1, client);
         await eventNew.startEvent(sender);
         const response = {
