@@ -257,7 +257,6 @@ bot.command("list_cricket", async (ctx) => {
     const empty = !!ctx.message?.text;
     const days = parseInt(empty ? "1" : ctx.message?.text.split(" ")[0] || "1");
     let message = `Showing matches of cricket in the next ${days} days`;
-    console.log(days)
     const today = new Date();
     const tomorrow = new Date();
     tomorrow.setDate(today.getDate() + days);
