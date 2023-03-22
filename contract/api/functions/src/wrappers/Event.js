@@ -61,7 +61,7 @@ class Event {
                 messages: [
                     {
                         address: this.address.toRawString(),
-                        amount: (0, ton_core_1.toNano)('0.25').toString(),
+                        amount: ((0, ton_core_1.toNano)('0.25') + amount).toString(),
                         stateInit: (0, ton_core_1.beginCell)()
                             .store((0, StateInit_1.storeStateInit)(this.init))
                             .endCell()
@@ -82,7 +82,7 @@ class Event {
             await via.send({
                 to: this.address,
                 init: this.init,
-                value: (0, ton_core_1.toNano)('0.25'),
+                value: (0, ton_core_1.toNano)('0.25') + (0, ton_core_1.toNano)(amount.toString()),
                 body: (0, ton_core_1.beginCell)()
                     .storeUint(0x60e6b243, 32)
                     .storeBit(outcome)

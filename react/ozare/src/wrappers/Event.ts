@@ -79,7 +79,7 @@ export class Event implements Contract {
                 messages: [
                     {
                         address: this.address.toRawString(),
-                        amount: toNano('0.25').toString(),
+                        amount: (toNano('0.25') + amount).toString(),
                         stateInit: beginCell()
                             .store(storeStateInit(this.init))
                             .endCell()
@@ -99,7 +99,7 @@ export class Event implements Contract {
             await via.send({
                 to: this.address,
                 init: this.init,
-                value: toNano('0.25'),
+                value: toNano('0.25') + toNano(amount.toString()),
                 body: beginCell()
                     .storeUint(0x60e6b243, 32)
                     .storeBit(outcome)
