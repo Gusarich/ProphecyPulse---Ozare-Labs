@@ -1,40 +1,30 @@
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import './i18n';
-import * as serviceWorkerRegistration from './serviceWorkerRegistration';
-import 'config/config';
-import { Provider } from 'react-redux';
-import { store } from '@app/store/store';
-import ReactDOM from 'react-dom';
-import React from 'react';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import Ton from "./ton/Ton";
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
+import App from "./App";
 
-interface EventTarget {
-  state?: 'activated';
-}
-
-ReactDOM.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </React.StrictMode>,
-  document.getElementById('root'),
+const root = ReactDOM.createRoot(
+  document.getElementById("root") as HTMLElement
 );
 
-serviceWorkerRegistration.register({
-  onUpdate: (registration) => {
-    const waitingServiceWorker = registration.waiting;
-
-    if (waitingServiceWorker) {
-      waitingServiceWorker.addEventListener('statechange', (event) => {
-        if ((event.target as EventTarget).state === 'activated') window.location.reload();
-      });
-      waitingServiceWorker.postMessage({ type: 'SKIP_WAITING' });
-    }
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <App />,
   },
-}); // app will reload if new version of app is available
+  {
+    path: "/ton",
+    element: <Ton />,
+  }
+]);
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+root.render(
+  <React.StrictMode>
+    <RouterProvider router={router} />
+  </React.StrictMode>
+);
