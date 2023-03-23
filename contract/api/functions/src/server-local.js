@@ -4,7 +4,8 @@ const index_1 = require("ton-crypto");
 const index_2 = require("ton");
 const index_3 = require("ton-core")
 const Event_1 = require("./wrappers/Event");
-const Bet = require('./wrappers/Bet');
+const Bet_1 = require('./wrappers/Bet');
+const { Address } = require('ton-core');
 const Livescore_1 = require("./wrappers/Livescore");
 const cors = require("cors");
 const corsOptions = {
@@ -55,9 +56,9 @@ app.post('/event', async (req, res) => {
         const wallet = index_2.WalletContractV3R2.create({ publicKey: keypair.publicKey, workchain: 0 });
 
         console.log(`Wallet address ${wallet.address}`);
-
+        const oracle = wallet.address;
         const sender = await getSenderFromMnemonic(process.env.MNEMONIC2, client);
-        const event = await Event_1.Event.create(client, wallet.address, req.body.uid);
+        const event = await Event_1.Event.create(client, oracle, req.body.uid);
         await event.deploy(sender);
 
         // Get the Event address
@@ -100,7 +101,7 @@ app.post('/event/bet', async (req, res) => {
     }
 });
 
-// API endpoint to start an event
+// API endpoint to start an event, always called by oracle
 app.post('/event/start', async (req, res) => {
     try {
         const client = await getClient(req);
@@ -124,7 +125,7 @@ app.post('/event/start', async (req, res) => {
     }
 });
 
-// API endpoint to finish an event
+// API endpoint to finish an event, always called by oracle
 app.post('/event/finish', async (req, res) => {
     try {
         const client = await getClient(req);
@@ -148,6 +149,32 @@ app.post('/event/finish', async (req, res) => {
         res.status(400).json(response);
     }
 });
+
+// API endpoint to close bet
+app.post('/event/close_bet', async (req, res) => {
+    try {
+        const client = await getClient(req);
+        const sender = await getSenderFromMnemonic(process.env.MNEMONIC2, client);
+        const address = Address.parse(req.body.address);
+        const bet = new Bet_1.Bet(address, client);
+        await bet.close(sender);
+        const response = {
+            status: 'success',
+            message: 'Bet closed successfully',
+            data: null,
+        };
+        res.status(200).json(response);
+    } catch (error) {
+        console.log(error);
+        const response = {
+            status: 'error',
+            message: error.message,
+            data: null,
+        };
+        res.status(400).json(response);
+    }
+});
+
 
 // API endpoint to get total bets
 app.get('/event/total_bets', async (req, res) => {
