@@ -118,8 +118,53 @@ app.post("/api/contract/finish", async (req, res) => {
   }
 });
 
+app.get("/api/livescore/matches", async (req, res) => {
+  try {
+    const date = req.body.date;
+    const sport = req.body.sport;
+    const listByDateResponse = await axios({
+      method: "GET",
+      url: "https://livescore6.p.rapidapi.com/matches/v2/list-by-date",
+      params: { Category: sport, Date: date, Timezone: "+0" },
+      headers: {
+        "X-RapidAPI-Key": process.env.RAPIDAPI_KEY,
+        "X-RapidAPI-Host": "livescore6.p.rapidapi.com",
+      },
+    });
+
+    const events = listByDateResponse.data.Stages.flatMap(
+      (stage) => stage.Events
+    );
+    
+    const results = [];
+
+    for (const event of events) {
+      const eid = event.Eid;
+      const t1 = event.T1[0].Nm;
+      const t2 = event.T2[0].Nm;
+      results.push({
+        Eid: eid,
+        T1: t1,
+        T2: t2,
+        match_time: event.Esd,
+      });
+    }
+
+    res.send(results);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Internal server error");
+  }
+});
+
+app.get("/", (req, res) => {
+  res.send("This server is an API for contracts");
+});
+
 // Start the server
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
+
+module.exports = app;
