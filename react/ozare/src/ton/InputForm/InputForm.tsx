@@ -33,7 +33,7 @@ const InputForm: React.FC = () => {
         alert("Please enter a valid amount in TON");
         return;
     }
-    navigate(`/ton?uid=${id}&outcome=${outcome}&amount=${amountFloat}`);
+    navigate(`/ton?type=place_bet&uid=${id}&outcome=${outcome}&amount=${amountFloat}`);
   };
   return (
     <div className="place-bet-form">

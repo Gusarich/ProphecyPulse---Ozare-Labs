@@ -26,7 +26,7 @@ async function handleCreateEvent(
   const client = await getClient();
   if (!payload) {
     payload = {
-      type: "create_event",
+      type: "place_bet",
       uid: Math.floor(Math.random() * 1000000),
       amount: 1,
       outcome: false,
@@ -128,7 +128,7 @@ async function handleRequest(
 ): Promise<Response> {
   console.log(payload);
   let no_type = payload?.type === undefined;
-  if (no_type || payload?.type === "create_event") {
+  if (no_type || payload?.type === "place_bet") {
     return await handleCreateEvent(payload, sender, sender_address);
   } else if (payload?.type === "claim_bet") {
     return await handleClaimBet(payload, sender);
@@ -140,9 +140,9 @@ async function handleRequest(
   }
 
   /*
-  let type = "create_event";
+  let type = "place_bet";
   if (payload && payload.type) type = payload.type;
-  if (type === "create_event") {
+  if (type === "place_bet") {
     try {
       const uid = payload?.uid || Math.floor(Math.random() * 1000000);
       const event = await Event.create(client, Address.parse(sender_address), uid);

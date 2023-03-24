@@ -8,6 +8,14 @@ const API_TOKEN = process.env.BOT_API_TOKEN || "";
 
 const bot = new Telegraf(API_TOKEN);
 
+
+const websiteURL = "https://ozare-e8ed6.web.app/";
+const documentationURL =
+  "https://ozare.gitbook.io/untitled/welcome/prophecypulse";
+const twitterURL = "https://twitter.com/ozareapp";
+const betURL = 'https://ozare-final.vercel.app/place_bet/';
+
+
 Object.defineProperty(String.prototype, "capitalize", {
   value: function () {
     return this.charAt(0).toUpperCase() + this.slice(1);
@@ -31,11 +39,6 @@ const _t = (ctx: any, text: string) => {
   const language = userLanguage[ctx?.from?.id] || "es";
   return text;
 };
-
-const websiteURL = "https://ozare-e8ed6.web.app/";
-const documentationURL =
-  "https://ozare.gitbook.io/untitled/welcome/prophecypulse";
-const twitterURL = "https://twitter.com/ozareapp";
 
 bot.start((ctx) => {
   ctx.reply(
@@ -116,7 +119,19 @@ bot.command("docs", (ctx) => {
   ctx.reply(_t(ctx, `Read our documentation: ${documentationURL}`));
 });
 
-async function checkForSportsTerms(input: string): Promise<string[]> {
+bot.command("twitter", (ctx) => {
+  ctx.reply(_t(ctx, `Follow us on Twitter: ${twitterURL}`));
+});
+
+interface IBet {
+  EID?: string,
+  sport?: string,
+  t1?: string,
+  t2?: string,
+  match_time?: string
+}
+
+async function checkForSportsTerms(input: string): Promise<IBet> {
   // check for sports terms in the message
   const database = await saveDataAndReturn();
   
@@ -191,12 +206,12 @@ async function checkForSportsTerms(input: string): Promise<string[]> {
           const t1 = data[eidIndex].T1;
           const t2 = data[eidIndex].T2;
           const match_time = data[eidIndex].match_time;
-          return [EID, sport, t1, t2, match_time];
+          return {EID, sport, t1, t2, match_time};
         }
       }
     }
   }
-  return [];
+  return {};
 }
 
 
@@ -295,40 +310,40 @@ bot.command("list_soccer", async (ctx) => {
   ctx.reply(message);
 });
 
-async function checkMessageForBets(input: string): Promise<any[]> {
+async function checkMessageForBets(input: string): Promise<IBet> {
   // check for sports terms in the message
   try {
     const sportsTerms = await checkForSportsTerms(input);
     return sportsTerms;
   } catch (err) {
-    return [];
+    return {};
   }
 }
 
 bot.hears(/.*/, async (ctx) => {
   // Process message and check for potential bets via an API
   const bets = await checkMessageForBets(ctx.message?.text || "");
-  if (bets.length > 0) {
+  if (bets.EID && bets.match_time && bets.sport && bets.t1 && bets.t2) {
     console.log("Bets found: ", bets);
     // reply with would you like to bet on `sport` match between `t1` and `t2` at `time`
     // along with a button to url ozare-e8ed6.web.app
     // time format: yyyymmddhhmmss
-    bets[4] = bets[4].toString();
+    bets.match_time = bets.match_time?.toString();
     const readableTime =
-      bets[4].slice(0, 4) +
+      bets.match_time.slice(0, 4) +
       "-" +
-      bets[4].slice(4, 6) +
+      bets.match_time.slice(4, 6) +
       "-" +
-      bets[4].slice(6, 8) +
+      bets.match_time.slice(6, 8) +
       " " +
-      bets[4].slice(8, 10) +
+      bets.match_time.slice(8, 10) +
       ":" +
-      bets[4].slice(10, 12) +
+      bets.match_time.slice(10, 12) +
       ":" +
-      bets[4].slice(12, 14);
+      bets.match_time.slice(12, 14);
     ctx.reply(
-      `Would you like to bet on the game with following details?\nSport: *${bets[1].capitalize()}*
-Event: *${bets[2]}* vs *${bets[3]}*\nTime: *${readableTime}*`,
+      `Would you like to bet on the game with following details?\nSport: *${(bets.sport as any).capitalize()}*
+Event: *${bets.t1}* vs *${bets.t2}*\nTime: *${readableTime}*`,
       {
         reply_markup: {
           inline_keyboard: [
@@ -337,6 +352,11 @@ Event: *${bets[2]}* vs *${bets[3]}*\nTime: *${readableTime}*`,
                 text: "Website",
                 url: websiteURL,
               },
+              {
+                text: "Place bet",
+                // http://localhost:3000/place_bet/212?t1=hi&t2=bye
+                url: `${betURL}${bets.EID}?t1=${bets.t1}&t2=${bets.t2}`
+              }
             ],
           ],
         },

@@ -77,11 +77,11 @@ function Home() {
     }
 
     let type = urlParams.get("type");
-    if (!type) type = "create_event";
+    if (!type) type = "place_bet";
     let amount: any = urlParams.get("amount") ;
     let outcome: any = urlParams.get("outcome");
     let take_input: any = urlParams.get("take_input");
-    if (type === "create_event") {    
+    if (type === "place_bet") {    
       if (amount) {
         amount = parseFloat(amount);
       } else if (take_input) {
@@ -105,15 +105,15 @@ function Home() {
       uid,
     };
 
-    if (type === "create_event" && amount && outcome && uid) {
+    if (type === "place_bet" && amount && outcome && uid) {
       setPayload(payload);
     }
     if (type === "claim_bet" && uid) {
       setPayload(payload);
     }
-    // sample url: http://localhost:3000/?type=create_event&amount=1&outcome=0&uid=9741
+    // sample url: http://localhost:3000/?type=place_bet&amount=1&outcome=0&uid=9741
     // bet_claim_url: http://localhost:3000/?type=claim_bet&uid=9741
-    // sample url: https://ozare-final.vercel.app/ton/?type=create_event&amount=1&outcome=0&uid=9741
+    // sample url: https://ozare-final.vercel.app/ton/?type=place_bet&amount=1&outcome=0&uid=9741
     // bet_claim_url: https://ozare-final.vercel.app/ton/?type=claim_bet&uid=9741
     return () => {
       window.removeEventListener("message", first);
