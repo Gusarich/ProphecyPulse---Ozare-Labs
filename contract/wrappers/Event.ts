@@ -37,6 +37,22 @@ export class Event implements Contract {
         }
     }
 
+    async getBetAddress(better: Address, outcome: boolean, amount: bigint) {
+        let stateInit = beginCell()
+            .storeUint(6, 5)
+            .storeRef(await Bet.getCode())
+            .storeRef(
+                beginCell()
+                    .storeAddress(better)
+                    .storeAddress(this.address)
+                    .storeBit(outcome)
+                    .storeUint(0, 256)
+                    .endCell()
+            )
+            .endCell();
+        return new Address(0, stateInit.hash());
+    }
+
     static async create(
         system: ContractSystem | TonClient,
         oracle: Address,
@@ -75,7 +91,12 @@ export class Event implements Contract {
         }
     }
 
-    async bet(via: Sender | TonConnect, outcome: boolean, amount: bigint) {
+    async bet(
+        via: Sender | TonConnect,
+        outcome: boolean,
+        amount: bigint
+    ): Promise<Bet> {
+        let betAddress: Address;
         if ('sendTransaction' in via) {
             await via.sendTransaction({
                 validUntil: Math.floor(Date.now() / 1000) + 600,
@@ -98,6 +119,11 @@ export class Event implements Contract {
                     },
                 ],
             });
+            betAddress = await this.getBetAddress(
+                Address.parse(via.wallet!.account.address),
+                outcome,
+                amount
+            );
         } else {
             await via.send({
                 to: this.address,
@@ -109,7 +135,14 @@ export class Event implements Contract {
                     .storeUint(toNano(amount.toString()), 256)
                     .endCell(),
             });
+            betAddress = await this.getBetAddress(
+                via.address!,
+                outcome,
+                amount
+            );
         }
+
+        return new Bet(betAddress, (this.executor || this.client)!);
     }
 
     async startEvent(via: Sender | TonConnect) {
@@ -247,4 +280,7 @@ export class Event implements Contract {
         const contract = new Event(address, init, client);
         return new Event(contract.address, contract.init, client);
     }
+}
+function cell_hash(state_init: any): any {
+    throw new Error('Function not implemented.');
 }
