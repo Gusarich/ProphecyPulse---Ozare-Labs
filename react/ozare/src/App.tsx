@@ -5,6 +5,7 @@ import Home from "./Pages/Home/Home";
 import Notifications from "./Pages/Notifications";
 import Bets from "./Pages/Bets";
 import Profile from "./Pages/Profile";
+import Match from "./Pages/Match/Match";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/bets" element={<Bets />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/match/:category/:id" element={<Match />} />
         </Routes>
       </Layout>
     </BrowserRouter>

@@ -6,25 +6,33 @@ import SoccerBackground from "../../assets/images/soccer.jpg";
 import CricketBackground from "../../assets/images/cricket.jpg";
 import BasketballBackground from "../../assets/images/basketball.jpg";
 
+import { Link } from "react-router-dom";
+
 function Matches({ data, category }: MatchesProps) {
   return (
     <div className="flex flex-col">
       {data.Stages.map((stage) => (
         <div key={stage.Sid} className=" py-4 my-2 ">
-          <div className="flex px-4 font-bold flex-row items-center justify-start">
-            <div className="pr-4 text-2xl">
-              {category === "soccer" && <BiFootball />}
-              {category === "cricket" && <BiCricketBall />}
-              {category === "basketball" && <BiBasketball />}
+          {stage.Events.filter((event) => event.Eps !== "FT").length > 0 && (
+            <div className="flex px-4 font-bold flex-row items-center justify-start">
+              <div className="pr-4 text-2xl">
+                {category === "soccer" && <BiFootball />}
+                {category === "cricket" && <BiCricketBall />}
+                {category === "basketball" && <BiBasketball />}
+              </div>
+              <div className="w-full  flex items-center flex-row justify-between">
+                <span>{stage.Snm}</span>
+                <span>
+                  ({stage.Events.filter((event) => event.Eps !== "FT").length})
+                </span>
+              </div>
             </div>
-            <div className="w-full  flex items-center flex-row justify-between">
-              <span>{stage.Snm}</span>
-              <span>({stage.Events.length})</span>
-            </div>
-          </div>
+          )}
+
           <div className="flex w-full flex-row justify-start overflow-x-auto scrollbar-hide">
-            {stage.Events.map((event) => (
-              <div
+            {stage.Events.filter((event) => event.Eps !== "FT").map((event) => (
+              <Link
+                to={`/match/${category}/${event.Eid}`}
                 key={event.Eid}
                 className="overflow-hidden relative  bg-black min-w-[250px] mx-4 rounded-2xl shadow-sm mt-4 h-40 "
               >
@@ -44,7 +52,7 @@ function Matches({ data, category }: MatchesProps) {
 
                 <div className="absolute h-full w-full top-0 left-0">
                   <div className="relative h-full w-full">
-                    <div className="h-full grid grid-cols-3">
+                    <div className="h-full grid grid-cols-3 px-2">
                       <div className="flex flex-col items-center text-xs text-center text-white font-bold justify-center">
                         {event.T1[0].Nm}
                       </div>
@@ -68,7 +76,7 @@ function Matches({ data, category }: MatchesProps) {
                     </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
