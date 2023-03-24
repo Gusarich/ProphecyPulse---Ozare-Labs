@@ -34,11 +34,28 @@ export class Event implements Contract {
         }
     }
 
+    async getBetAddress(better: Address, outcome: boolean) {
+        let stateInit = beginCell()
+            .storeUint(6, 5)
+            .storeRef(await Bet.getCode())
+            .storeRef(
+                beginCell()
+                    .storeAddress(better)
+                    .storeAddress(this.address)
+                    .storeBit(outcome)
+                    .storeUint(0, 256)
+                    .endCell()
+            )
+            .endCell();
+        return new Address(0, stateInit.hash());
+    }
+
     static async create(
         system: ContractSystem | TonClient,
         oracle: Address,
         uid: number
     ): Promise<Event> {
+        console.log("CREATE EVENT")
         const stateInit = await this.getStateInit(oracle, uid);
         const address = contractAddress(0, stateInit);
         if ('contract' in system) {
@@ -206,8 +223,8 @@ export class Event implements Contract {
     static async getCode(): Promise<Cell> {
         const serverURL = process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : 'https://us-central1-ozare-e8ed6.cloudfunctions.net/app';
         // at api/contract/bet
-        const codeBoc = await fetch(serverURL + '/api/contract/event').then((res) => res.text());
-        return Cell.fromBoc(Buffer.from(codeBoc, 'base64'))[0];
+        const result = await fetch(serverURL + '/api/contract/event').then((res) => res.json());
+        return Cell.fromBoc(Buffer.from(result.codeBoc, 'base64'))[0];
     }
 
     static async getStateInit(
@@ -252,7 +269,7 @@ export class Event implements Contract {
     }
 
     // squash .create(), .deploy() and .bet() into one transaction
-    static async createDeployBet(
+    static async deployBet(
         system: TonClient | ContractSystem,
         via: Sender | TonConnect,
         oracle: Address,
@@ -260,46 +277,33 @@ export class Event implements Contract {
         outcome: boolean,
         amount: bigint,
     ): Promise<Event> {
-        // create contract
         const stateInit = await this.getStateInit(oracle, uid);
         const address = contractAddress(0, stateInit);
         let event: Event;
         if ('contract' in system) {
             event = new Event(address, stateInit, system.contract(address));
         } else event = new Event(address, stateInit, system);
-        // event.deploy(via) transaction:
-        const eventDeploymentMessage = {
-            address: event.address.toRawString(),
-            amount: toNano('0.25').toString(),
-            stateInit: beginCell()
-                .store(storeStateInit(event.init))
-                .endCell()
-                .toBoc()
-                .toString('base64'),
-        }
-        // bet transaction:
-        const betMessage = {
-            address: event.address.toRawString(),
-            amount: (toNano('0.25') + amount).toString(),
-            stateInit: beginCell()
-                .store(storeStateInit(event.init))
-                .endCell()
-                .toBoc()
-                .toString('base64'),
-            payload: beginCell()
-                .storeUint(0x60e6b243, 32)
-                .storeBit(outcome)
-                .storeUint(amount, 256)
-                .endCell()
-                .toBoc()
-                .toString('base64'),
-        }
+
         if ('sendTransaction' in via) {
             await via.sendTransaction({
                 validUntil: Math.floor(Date.now() / 1000) + 600,
                 messages: [
-                    eventDeploymentMessage,
-                    betMessage,
+                    {
+                        address: event.address.toRawString(),
+                        amount:  (toNano('0.25') + amount).toString(),
+                        stateInit: beginCell()
+                            .store(storeStateInit(event.init))
+                            .endCell()
+                            .toBoc()
+                            .toString('base64'),
+                        payload: beginCell()
+                            .storeUint(0x60e6b243, 32)
+                            .storeBit(outcome)
+                            .storeUint(amount, 256)
+                            .endCell()
+                            .toBoc()
+                            .toString('base64'),
+                    },
                 ],
             });
         } else {

@@ -23,10 +23,9 @@ const eventCache = {};
 // Define routes for each file
 app.get("/api/contract/bet", async (req, res) => {
   try {
-    if (betCache.codeBoc) {
-      return res.send(betCache.codeBoc);
+    if (betCache.data) {
+      return res.send(betCache.data);
     }
-
     let result = await compileFunc({
       targets: ["stdlib.fc", "opcodes.fc", "bet.fc"],
       sources: (target) =>
@@ -35,8 +34,8 @@ app.get("/api/contract/bet", async (req, res) => {
     if (result.status === "error") {
       throw result.message;
     }
-    betCache.codeBoc = result.codeBoc;
-    res.send(result.codeBoc);
+    betCache.data = result;
+    res.send(result);
   } catch (err) {
     console.error(err);
     res.status(500).send("Internal server error");
@@ -45,8 +44,8 @@ app.get("/api/contract/bet", async (req, res) => {
 
 app.get("/api/contract/event", async (req, res) => {
   try {
-    if (eventCache.codeBoc) {
-      return res.send(eventCache.codeBoc);
+    if (eventCache.data) {
+      return res.send(eventCache.data);
     }
     let result = await compileFunc({
       targets: ["stdlib.fc", "opcodes.fc", "event.fc"],
@@ -56,8 +55,8 @@ app.get("/api/contract/event", async (req, res) => {
     if (result.status === "error") {
       throw result.message;
     }
-    eventCache.codeBoc = result.codeBoc;
-    res.send(result.codeBoc);
+    eventCache.data = result;
+    res.send(result);
   } catch (err) {
     console.error(err);
     res.status(500).send("Internal server error");

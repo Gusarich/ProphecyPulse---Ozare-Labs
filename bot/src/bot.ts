@@ -1,11 +1,22 @@
 import { Telegraf } from "telegraf";
 import { saveDataAndReturn } from "./getDatabase";
-import { basicWords, basketballTerms, cricketTerms, soccerTerms } from "./wordsDatabase";
+import {
+  basicWords,
+  basketballTerms,
+  cricketTerms,
+  soccerTerms,
+} from "./wordsDatabase";
 require("dotenv").config();
 
-const API_TOKEN = process.env.TELEGRAM_BOT_API_TOKEN || "";
+const API_TOKEN = process.env.BOT_API_TOKEN || "";
 
-export const bot = new Telegraf(API_TOKEN);
+const bot = new Telegraf(API_TOKEN);
+
+const websiteURL = "https://ozare-e8ed6.web.app/";
+const documentationURL =
+  "https://ozare.gitbook.io/untitled/welcome/prophecypulse";
+const twitterURL = "https://twitter.com/ozareapp";
+const betURL = "https://ozare-final.vercel.app/place_bet/";
 
 Object.defineProperty(String.prototype, "capitalize", {
   value: function () {
@@ -13,7 +24,6 @@ Object.defineProperty(String.prototype, "capitalize", {
   },
   enumerable: false,
 });
-
 
 const languages = [
   { code: "en", name: "English" },
@@ -30,11 +40,6 @@ const _t = (ctx: any, text: string) => {
   const language = userLanguage[ctx?.from?.id] || "es";
   return text;
 };
-
-const websiteURL = "https://ozare-e8ed6.web.app/";
-const documentationURL =
-  "https://ozare.gitbook.io/untitled/welcome/prophecypulse";
-const twitterURL = "https://twitter.com/ozareapp";
 
 bot.start((ctx) => {
   ctx.reply(
@@ -115,10 +120,22 @@ bot.command("docs", (ctx) => {
   ctx.reply(_t(ctx, `Read our documentation: ${documentationURL}`));
 });
 
-async function checkForSportsTerms(input: string): Promise<string[]> {
+bot.command("twitter", (ctx) => {
+  ctx.reply(_t(ctx, `Follow us on Twitter: ${twitterURL}`));
+});
+
+interface IBet {
+  EID?: string;
+  sport?: string;
+  t1?: string;
+  t2?: string;
+  match_time?: string;
+}
+
+async function checkForSportsTerms(input: string): Promise<IBet> {
   // check for sports terms in the message
   const database = await saveDataAndReturn();
-  
+
   let sports = [];
   if (
     basketballTerms.some((term) =>
@@ -139,7 +156,6 @@ async function checkForSportsTerms(input: string): Promise<string[]> {
   )
     sports.push("soccer");
 
-
   console.log(sports);
 
   if (sports.length) {
@@ -158,13 +174,13 @@ async function checkForSportsTerms(input: string): Promise<string[]> {
           // or number
           if (
             (lowerCaseDataString[index - 1] >= "a" &&
-            lowerCaseDataString[index - 1] <= "z") ||
+              lowerCaseDataString[index - 1] <= "z") ||
             (lowerCaseDataString[index - 1] >= "0" &&
-            lowerCaseDataString[index - 1] <= "9") ||
+              lowerCaseDataString[index - 1] <= "9") ||
             (lowerCaseDataString[index + words[i].length] >= "a" &&
-            lowerCaseDataString[index + words[i].length] <= "z") ||
+              lowerCaseDataString[index + words[i].length] <= "z") ||
             (lowerCaseDataString[index + words[i].length] >= "0" &&
-            lowerCaseDataString[index + words[i].length] <= "9")
+              lowerCaseDataString[index + words[i].length] <= "9")
           ) {
             continue;
           }
@@ -186,17 +202,17 @@ async function checkForSportsTerms(input: string): Promise<string[]> {
               break;
             }
           }
+          console.log(EID);
           const t1 = data[eidIndex].T1;
           const t2 = data[eidIndex].T2;
           const match_time = data[eidIndex].match_time;
-          return [EID, sport, t1, t2, match_time];
+          return { EID, sport, t1, t2, match_time };
         }
       }
     }
   }
-  return [];
+  return {};
 }
-
 
 function getDate(match_time: number | string): Date {
   // yyyymmddhhmmss
@@ -225,15 +241,21 @@ bot.command("list_basketball", async (ctx) => {
     // find all basketball matches in the next x days
     const textPresent = !!ctx.message?.text;
     console.log(ctx.message?.text.split(" ")[1]);
-    const days = parseInt(!textPresent ? "1" : (ctx.message?.text.split(" ")[1] || "1"));
-    let message = `Showing matches of cricket in the next ${days} ${days > 1 ? "days" : "day"}`;
+    const days = parseInt(
+      !textPresent ? "1" : ctx.message?.text.split(" ")[1] || "1"
+    );
+    let message = `Showing matches of cricket in the next ${days} ${
+      days > 1 ? "days" : "day"
+    }`;
     const today = new Date();
     const tomorrow = new Date();
     tomorrow.setDate(today.getDate() + days);
     for (const match of data) {
       const match_time = new Date(getDate(match.match_time));
       if (match_time > today && match_time < tomorrow) {
-        message += `\n${match.T1} vs ${match.T2} at ${match_time.toLocaleString()}`;
+        message += `\n${match.T1} vs ${
+          match.T2
+        } at ${match_time.toLocaleString()}`;
       }
     }
     // console.log(message);
@@ -265,8 +287,7 @@ bot.command("list_cricket", async (ctx) => {
   `;
       }
     }
-    if (message.length)
-      ctx.reply(message);
+    if (message.length) ctx.reply(message);
   } catch (e) {
     console.log(e);
   }
@@ -287,46 +308,47 @@ bot.command("list_soccer", async (ctx) => {
     if (match_time > today && match_time < tomorrow) {
       message += `${match.T1} vs ${match.T2} at ${match_time.toLocaleString()}
 `;
-
     }
   }
   ctx.reply(message);
 });
 
-async function checkMessageForBets(input: string): Promise<any[]> {
+async function checkMessageForBets(input: string): Promise<IBet> {
   // check for sports terms in the message
   try {
     const sportsTerms = await checkForSportsTerms(input);
     return sportsTerms;
   } catch (err) {
-    return [];
+    return {};
   }
 }
 
 bot.hears(/.*/, async (ctx) => {
   // Process message and check for potential bets via an API
   const bets = await checkMessageForBets(ctx.message?.text || "");
-  if (bets.length > 0) {
+  if (bets.EID && bets.match_time && bets.sport && bets.t1 && bets.t2) {
     console.log("Bets found: ", bets);
     // reply with would you like to bet on `sport` match between `t1` and `t2` at `time`
     // along with a button to url ozare-e8ed6.web.app
     // time format: yyyymmddhhmmss
-    bets[4] = bets[4].toString();
+    bets.match_time = bets.match_time?.toString();
     const readableTime =
-      bets[4].slice(0, 4) +
+      bets.match_time.slice(0, 4) +
       "-" +
-      bets[4].slice(4, 6) +
+      bets.match_time.slice(4, 6) +
       "-" +
-      bets[4].slice(6, 8) +
+      bets.match_time.slice(6, 8) +
       " " +
-      bets[4].slice(8, 10) +
+      bets.match_time.slice(8, 10) +
       ":" +
-      bets[4].slice(10, 12) +
+      bets.match_time.slice(10, 12) +
       ":" +
-      bets[4].slice(12, 14);
+      bets.match_time.slice(12, 14);
     ctx.reply(
-      `Would you like to bet on the game with following details?\nSport: *${bets[1].capitalize()}*
-Event: *${bets[2]}* vs *${bets[3]}*\nTime: *${readableTime}*`,
+      `Would you like to bet on the game with following details?\nSport: *${(
+        bets.sport as any
+      ).capitalize()}*
+Event: *${bets.t1}* vs *${bets.t2}*\nTime: *${readableTime}*`,
       {
         reply_markup: {
           inline_keyboard: [
@@ -334,6 +356,11 @@ Event: *${bets[2]}* vs *${bets[3]}*\nTime: *${readableTime}*`,
               {
                 text: "Website",
                 url: websiteURL,
+              },
+              {
+                text: "Place Bet",
+                // http://localhost:3000/place_bet/212?t1=hi&t2=bye
+                url: `${betURL}${bets.EID}?t1=${bets.t1}&t2=${bets.t2}`,
               },
             ],
           ],
@@ -343,7 +370,7 @@ Event: *${bets[2]}* vs *${bets[3]}*\nTime: *${readableTime}*`,
       }
     );
   }
-  console.log("Message received from: ", ctx.from, ctx.message?.text);
+  console.log("Message received: ", ctx.message?.text);
 });
 
 bot.launch();
