@@ -34,9 +34,19 @@ function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      {width > 768 && <SideNavigation navList={navList} />}
-      {children}
-      {width < 768 && <BottomNavigation navList={navList} />}
+      {width > 768 && (
+        <>
+          <SideNavigation navList={navList} />
+          <div className="ml-[160px]">{children}</div>
+        </>
+      )}
+
+      {width < 768 && (
+        <>
+          {children}
+          <BottomNavigation navList={navList} />
+        </>
+      )}
     </>
   );
 }

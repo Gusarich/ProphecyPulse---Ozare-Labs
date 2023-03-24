@@ -18,18 +18,14 @@ function SideNavigation({
         >
           <div
             className={`${
-              location.pathname === item.href
-                ? "text-blue-500"
-                : "text-gray-500"
+              location.pathname === item.href ? "text-sky-500" : "text-gray-500"
             } text-2xl pr-4  `}
           >
             {item.icon}
           </div>
           <span
             className={`${
-              location.pathname === item.href
-                ? "text-blue-500"
-                : "text-gray-500"
+              location.pathname === item.href ? "text-sky-500" : "text-gray-500"
             } text-xs`}
           >
             {item.title}

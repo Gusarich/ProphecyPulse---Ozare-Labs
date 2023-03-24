@@ -57,7 +57,11 @@ function Home() {
     });
     const urlParams = new URLSearchParams(window.location.search);
 
-    if (urlParams.get('connect') && userFriendlyAddress?.length > 0 && wallet?.name) {
+    if (
+      urlParams.get("connect") &&
+      userFriendlyAddress?.length > 0 &&
+      wallet?.name
+    ) {
       window.parent.postMessage(
         {
           from: "ozare-react",
@@ -78,23 +82,23 @@ function Home() {
 
     let type = urlParams.get("type");
     if (!type) type = "create_event";
-    let amount: any = urlParams.get("amount") ;
+    let amount: any = urlParams.get("amount");
     let outcome: any = urlParams.get("outcome");
     let take_input: any = urlParams.get("take_input");
-    if (type === "create_event") {    
+    if (type === "create_event") {
       if (amount) {
         amount = parseFloat(amount);
       } else if (take_input) {
         amount = parseFloat(prompt("Enter amount in TON") as string);
       }
       if (outcome) {
-        outcome = outcome === '0';
+        outcome = outcome === "0";
       } else if (take_input) {
-        outcome = prompt("Enter outcome") === '0';
+        outcome = prompt("Enter outcome") === "0";
       }
     }
     let uid: any = urlParams.get("uid");
-  
+
     if (uid) {
       uid = parseInt(uid);
     }
@@ -119,7 +123,7 @@ function Home() {
       window.removeEventListener("message", first);
     };
   }, [userFriendlyAddress, tonConnectUI, wallet?.name]);
- // create a contract & place a bet, start event from API, finish event from API, claim bet 
+  // create a contract & place a bet, start event from API, finish event from API, claim bet
   return transactionComplete ? (
     <div className="flex bg-white justify-center items-center h-screen w-screen">
       <div className="flex flex-col">
@@ -148,13 +152,15 @@ function Home() {
           </span>
           <div className="flex justify-center">
             {showSendTransaction && (
-            <button
-              disabled={!(userFriendlyAddress?.length > 0) || transactionOnGoing}
-              onClick={handleClick}
-              className="px-8 rounded-2xl py-4 bg-blue-500 text-white disabled:bg-gray-300"
-            >
-              {transactionOnGoing ? "Processing..." : "Send transaction"}
-            </button>
+              <button
+                disabled={
+                  !(userFriendlyAddress?.length > 0) || transactionOnGoing
+                }
+                onClick={handleClick}
+                className="px-8 rounded-2xl py-4 bg-sky-500 text-white disabled:bg-gray-300"
+              >
+                {transactionOnGoing ? "Processing..." : "Send transaction"}
+              </button>
             )}
           </div>
         </div>
