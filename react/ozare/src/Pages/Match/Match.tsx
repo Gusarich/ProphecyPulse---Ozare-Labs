@@ -9,7 +9,6 @@ import CricketBackground from "../../assets/images/cricket.jpg";
 import BasketballBackground from "../../assets/images/basketball.jpg";
 import { MatchInfoResponseType } from "./types";
 import BackButton from "../../components/BackButton";
-import Button from "../../components/Button";
 import { Tab } from "@headlessui/react";
 
 import Chat from "./Chat";
