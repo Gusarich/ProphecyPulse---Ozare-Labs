@@ -1,11 +1,12 @@
 import { Telegraf } from "telegraf";
+import axios from "axios";
 import { saveDataAndReturn } from "./getDatabase";
 import { basicWords, basketballTerms, cricketTerms, soccerTerms } from "./wordsDatabase";
 require("dotenv").config();
 
-const API_TOKEN = process.env.TELEGRAM_BOT_API_TOKEN || "";
+const API_TOKEN = process.env.BOT_API_TOKEN || "";
 
-export const bot = new Telegraf(API_TOKEN);
+const bot = new Telegraf(API_TOKEN);
 
 Object.defineProperty(String.prototype, "capitalize", {
   value: function () {
@@ -186,6 +187,7 @@ async function checkForSportsTerms(input: string): Promise<string[]> {
               break;
             }
           }
+          console.log(EID);
           const t1 = data[eidIndex].T1;
           const t2 = data[eidIndex].T2;
           const match_time = data[eidIndex].match_time;
@@ -343,7 +345,7 @@ Event: *${bets[2]}* vs *${bets[3]}*\nTime: *${readableTime}*`,
       }
     );
   }
-  console.log("Message received from: ", ctx.from, ctx.message?.text);
+  console.log("Message received: ", ctx.message?.text);
 });
 
 bot.launch();
