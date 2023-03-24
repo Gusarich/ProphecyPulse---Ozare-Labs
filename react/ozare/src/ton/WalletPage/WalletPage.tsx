@@ -5,8 +5,8 @@ import {
   useTonAddress,
   useTonConnectUI,
 } from "@tonconnect/ui-react";
-import handleRequest from "./HandleRequests";
-import { Payload, Response } from "./IPayloadResponse";
+import handleRequest from "../HandleRequests";
+import { Payload, Response } from "../IPayloadResponse";
 
 function Home() {
   const userFriendlyAddress = useTonAddress();

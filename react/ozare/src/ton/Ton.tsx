@@ -1,6 +1,6 @@
 import { TonConnectUIProvider } from "@tonconnect/ui-react";
 // import { Routes, Route } from "react-router-dom";
-import Home from "./Home";
+import Home from "./WalletPage/WalletPage";
 
 function Ton() {
   return (
