@@ -60,7 +60,7 @@ function Matches({ data, category }: MatchesProps) {
                         VS
                       </div>
                       <div className="flex flex-col justify-center text-xs text-white font-bold items-center text-center">
-                        {event.T1[0].Nm}
+                        {event.T2[0].Nm}
                       </div>
                     </div>
                     <div className="absolute top-0 w-full text-center text-xs text-white">

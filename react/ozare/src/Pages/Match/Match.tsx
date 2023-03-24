@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import TonCoin from "../../assets/images/ton-coin.svg";
 
@@ -9,23 +9,33 @@ import CricketBackground from "../../assets/images/cricket.jpg";
 import BasketballBackground from "../../assets/images/basketball.jpg";
 import { MatchInfoResponseType } from "./types";
 import BackButton from "../../components/BackButton";
+import Button from "../../components/Button";
+import { Tab } from "@headlessui/react";
+
+import Chat from "./Chat";
+import Bets from "../Bets";
 
 export default function Match() {
   let { id, category } = useParams();
 
   const [event, setEvent] = useState<MatchInfoResponseType>();
 
-  const getDetails = async () => {
+  const getDetails = useCallback(async () => {
     if (id === undefined || category === undefined) {
       return;
     }
     const response = await getMatchDetails(id, category);
     setEvent(response);
-  };
+  }, [id, category]);
 
   useEffect(() => {
     getDetails();
-  }, []);
+  }, [getDetails]);
+
+  const tabs = [
+    { title: "Chat", content: <Chat /> },
+    { title: "Bets", content: <Bets /> },
+  ];
 
   return (
     <div>
@@ -67,7 +77,7 @@ export default function Match() {
                       VS
                     </div>
                     <div className="flex flex-col justify-center text-xs text-white font-bold items-center text-center">
-                      {event.T1[0].Nm}
+                      {event.T2[0].Nm}
                     </div>
                   </div>
                   <div className="absolute top-0 w-full text-center text-xs text-white">
@@ -87,9 +97,35 @@ export default function Match() {
           </div>
         )}
       </section>
-      <div className="w-full bg-red-500 mt-20 h-10 sticky top-[264px]"></div>
-      Match {id}
-      Category {category}
+      <Tab.Group defaultIndex={0}>
+        <Tab.List
+          className={
+            "flex  flex-row py-4 px-4 justify-start w-full mt-20  sticky top-[264px]"
+          }
+        >
+          {tabs.map((item) => (
+            <Tab
+              key={item.title}
+              className={({ selected }) =>
+                selected
+                  ? "bg-sky-400 outline-none text-white shadow-sky-100 shadow-lg flex flex-row justify-start px-4 py-2 items-center rounded-full mr-2"
+                  : "text-sky-400 bg-white shadow-sky-100 shadow-lg flex flex-row justify-start px-4 py-2 items-center rounded-full mr-2"
+              }
+            >
+              <div className={"text-sm font-bold"}>{item.title}</div>
+            </Tab>
+          ))}
+        </Tab.List>
+        <Tab.Panels>
+          {tabs.map((item) => {
+            return (
+              <Tab.Panel key={item.title}>
+                <div className="px-4">{item.content}</div>
+              </Tab.Panel>
+            );
+          })}
+        </Tab.Panels>
+      </Tab.Group>
     </div>
   );
 }
