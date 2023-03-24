@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import TonCoin from "../../assets/images/ton-coin.svg";
-import { BsArrowLeftShort } from "react-icons/bs";
 
 import { getMatchDetails } from "../../ton/wrappers/Livescore";
 
@@ -9,6 +8,7 @@ import SoccerBackground from "../../assets/images/soccer.jpg";
 import CricketBackground from "../../assets/images/cricket.jpg";
 import BasketballBackground from "../../assets/images/basketball.jpg";
 import { MatchInfoResponseType } from "./types";
+import BackButton from "../../components/BackButton";
 
 export default function Match() {
   let { id, category } = useParams();
@@ -31,9 +31,7 @@ export default function Match() {
     <div>
       <section className="sticky z-10 top-0 px-4 bg-gradient-to-br from-sky-400 via-sky-300 to-sky-400">
         <div className="flex pt-4 pb-32 flex-row items-center justify-between">
-          <button className="text-sky-500 bg-white rounded-full bg-opacity-90 p-2 font-bold text-2xl">
-            <BsArrowLeftShort className="text-2xl" />
-          </button>
+          <BackButton />
           <button
             onClick={() => console.log(event)}
             className="bg-white px-2 items-center py-1 flex justify-start flex-row rounded-full"
