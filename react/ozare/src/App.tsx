@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./layout/Layout";
 
-import Home from "./Pages/Home";
+import Home from "./Pages/Home/Home";
 import Notifications from "./Pages/Notifications";
 import Bets from "./Pages/Bets";
 import Profile from "./Pages/Profile";

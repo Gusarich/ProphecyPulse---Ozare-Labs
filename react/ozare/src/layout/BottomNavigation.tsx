@@ -7,7 +7,7 @@ function BottomNavigation({
 }) {
   const location = useLocation();
   return (
-    <nav className="fixed py-4 bg-gray-100 bottom-0 w-full items-center flex flex-row justify-evenly">
+    <nav className="fixed py-4 z-10 bg-gray-100 bottom-0 w-full items-center flex flex-row justify-evenly">
       {navList.map((item) => (
         <Link
           to={item.href}
