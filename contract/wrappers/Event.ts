@@ -37,7 +37,7 @@ export class Event implements Contract {
         }
     }
 
-    async getBetAddress(better: Address, outcome: boolean, amount: bigint) {
+    async getBetAddress(better: Address, outcome: boolean) {
         let stateInit = beginCell()
             .storeUint(6, 5)
             .storeRef(await Bet.getCode())
@@ -122,7 +122,6 @@ export class Event implements Contract {
             betAddress = await this.getBetAddress(
                 Address.parse(via.wallet!.account.address),
                 outcome,
-                amount
             );
         } else {
             await via.send({
@@ -138,7 +137,6 @@ export class Event implements Contract {
             betAddress = await this.getBetAddress(
                 via.address!,
                 outcome,
-                amount
             );
         }
 

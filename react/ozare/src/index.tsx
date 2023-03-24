@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import App from "./App";
 import InputForm from "./ton/InputForm/InputForm";
+import StartFinish from "./ton/StartFinish/StartFinish";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
   {
     path: "/place_bet/:id",
     element: <InputForm />,
+  },
+  {
+    path: "/start_finish",
+    element: <StartFinish />,
   }
 ]);
 

@@ -21,6 +21,19 @@ class Event {
             this.client = executor;
         }
     }
+    async getBetAddress(better, outcome) {
+        let stateInit = (0, ton_core_1.beginCell)()
+            .storeUint(6, 5)
+            .storeRef(await Bet_1.Bet.getCode())
+            .storeRef((0, ton_core_1.beginCell)()
+            .storeAddress(better)
+            .storeAddress(this.address)
+            .storeBit(outcome)
+            .storeUint(0, 256)
+            .endCell())
+            .endCell();
+        return new ton_core_1.Address(0, stateInit.hash());
+    }
     static async create(system, oracle, uid) {
         const stateInit = await this.getStateInit(oracle, uid);
         const address = (0, ton_core_1.contractAddress)(0, stateInit);
@@ -55,6 +68,7 @@ class Event {
         }
     }
     async bet(via, outcome, amount) {
+        let betAddress;
         if ('sendTransaction' in via) {
             await via.sendTransaction({
                 validUntil: Math.floor(Date.now() / 1000) + 600,
@@ -77,6 +91,7 @@ class Event {
                     },
                 ],
             });
+            betAddress = await this.getBetAddress(ton_core_1.Address.parse(via.wallet.account.address), outcome);
         }
         else {
             await via.send({
@@ -89,7 +104,9 @@ class Event {
                     .storeUint((0, ton_core_1.toNano)(amount.toString()), 256)
                     .endCell(),
             });
+            betAddress = await this.getBetAddress(via.address, outcome);
         }
+        return new Bet_1.Bet(betAddress, (this.executor || this.client));
     }
     async startEvent(via) {
         if ('sendTransaction' in via) {
@@ -215,3 +232,6 @@ class Event {
     }
 }
 exports.Event = Event;
+function cell_hash(state_init) {
+    throw new Error('Function not implemented.');
+}

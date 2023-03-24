@@ -7,8 +7,9 @@ import {
 } from "@tonconnect/ui-react";
 import handleRequest from "../HandleRequests";
 import { Payload, Response } from "../IPayloadResponse";
+import Swal from "sweetalert2";
 
-function Home() {
+function WalletPage() {
   const userFriendlyAddress = useTonAddress();
   const wallet = useTonWallet();
   const [tonConnectUI] = useTonConnectUI();
@@ -16,6 +17,7 @@ function Home() {
   const [transactionComplete, setTransactionComplete] = useState(false);
   const [transactionOnGoing, setTransactionOnGoing] = useState(false);
   const [showSendTransaction, setShowSendTransaction] = useState(true);
+  const [response, setResponse] = useState<Response>();
 
   function redirect(response: Response) {
     if (userFriendlyAddress?.length > 0 && wallet?.name) {
@@ -40,9 +42,13 @@ function Home() {
     if (response.status === "success") {
       console.log(response);
       setTransactionComplete(true);
+      setResponse(response);
       redirect(response);
     } else {
-      alert("You have either cancelled the transaction or an error occured");
+      Swal.fire({
+        icon: "error",
+        text: "You have cancelled the transaction or an error has occured",
+      });
       console.log(response);
     }
     setTransactionOnGoing(false);
@@ -57,7 +63,11 @@ function Home() {
     });
     const urlParams = new URLSearchParams(window.location.search);
 
-    if (urlParams.get('connect') && userFriendlyAddress?.length > 0 && wallet?.name) {
+    if (
+      urlParams.get("connect") &&
+      userFriendlyAddress?.length > 0 &&
+      wallet?.name
+    ) {
       window.parent.postMessage(
         {
           from: "ozare-react",
@@ -78,23 +88,23 @@ function Home() {
 
     let type = urlParams.get("type");
     if (!type) type = "place_bet";
-    let amount: any = urlParams.get("amount") ;
+    let amount: any = urlParams.get("amount");
     let outcome: any = urlParams.get("outcome");
     let take_input: any = urlParams.get("take_input");
-    if (type === "place_bet") {    
+    if (type === "place_bet") {
       if (amount) {
         amount = parseFloat(amount);
       } else if (take_input) {
         amount = parseFloat(prompt("Enter amount in TON") as string);
       }
       if (outcome) {
-        outcome = outcome === '0';
+        outcome = outcome === "0";
       } else if (take_input) {
-        outcome = prompt("Enter outcome") === '0';
+        outcome = prompt("Enter outcome") === "0";
       }
     }
     let uid: any = urlParams.get("uid");
-  
+
     if (uid) {
       uid = parseInt(uid);
     }
@@ -119,7 +129,7 @@ function Home() {
       window.removeEventListener("message", first);
     };
   }, [userFriendlyAddress, tonConnectUI, wallet?.name]);
- // create a contract & place a bet, start event from API, finish event from API, claim bet 
+  // create a contract & place a bet, start event from API, finish event from API, claim bet
   return transactionComplete ? (
     <div className="flex bg-white justify-center items-center h-screen w-screen">
       <div className="flex flex-col">
@@ -127,6 +137,7 @@ function Home() {
         <span className="text-md text-center">
           Redirecting back to parent window...
         </span>
+        <pre>{JSON.stringify(response, null, 2)}</pre>
       </div>
     </div>
   ) : (
@@ -148,13 +159,15 @@ function Home() {
           </span>
           <div className="flex justify-center">
             {showSendTransaction && (
-            <button
-              disabled={!(userFriendlyAddress?.length > 0) || transactionOnGoing}
-              onClick={handleClick}
-              className="px-8 rounded-2xl py-4 bg-blue-500 text-white disabled:bg-gray-300"
-            >
-              {transactionOnGoing ? "Processing..." : "Send transaction"}
-            </button>
+              <button
+                disabled={
+                  !(userFriendlyAddress?.length > 0) || transactionOnGoing
+                }
+                onClick={handleClick}
+                className="px-8 rounded-2xl py-4 bg-blue-500 text-white disabled:bg-gray-300"
+              >
+                {transactionOnGoing ? "Processing..." : "Send transaction"}
+              </button>
             )}
           </div>
         </div>
@@ -163,4 +176,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default WalletPage;

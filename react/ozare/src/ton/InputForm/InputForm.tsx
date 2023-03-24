@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./InputForm.scss";
 import Logo from "./logo.png";
 import { useParams, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const InputForm: React.FC = () => {
   // get id from /place_bet/:id
@@ -19,18 +20,18 @@ const InputForm: React.FC = () => {
     // redirect to /ton?uid=id&outcome=outcome&amount=amount
     e.preventDefault();
     if (outcome !== 0 && outcome !== 1) {
-      alert("Please select an outcome");
+      Swal.fire({icon: "error", text: "Please select an outcome"});
       return;
     }
     let amountFloat: number;
     try {
         amountFloat = parseFloat(amount);
     } catch(err) {
-        alert("Please enter a valid amount in TON");
+        Swal.fire({icon: "error", text: "Please enter a valid amount in TON"});
         return;
     }
     if (amountFloat <= 0) {
-        alert("Please enter a valid amount in TON");
+        Swal.fire({icon: "error", text: "Please enter a valid amount in TON"});
         return;
     }
     navigate(`/ton?type=place_bet&uid=${id}&outcome=${outcome}&amount=${amountFloat}`);
