@@ -6,14 +6,7 @@ import SoccerBackground from "../../assets/images/soccer.jpg";
 import CricketBackground from "../../assets/images/cricket.jpg";
 import BasketballBackground from "../../assets/images/basketball.jpg";
 
-import { getTeamDetails } from "../../ton/wrappers/Livescore";
-
 function Matches({ data, category }: MatchesProps) {
-  const getTeam = async (teamId: string) => {
-    const response = await getTeamDetails(teamId);
-    console.log("Team", response);
-  };
-
   return (
     <div className="flex flex-col">
       {data.Stages.map((stage) => (

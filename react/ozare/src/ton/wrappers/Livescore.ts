@@ -60,26 +60,6 @@ export const getAllMatchesByDate = async (
   }
 };
 
-export const getTeamDetails = async (teamID: string) => {
-  const options = {
-    method: "GET",
-    headers: {
-      "X-RapidAPI-Key": `${rapidApiKey}`,
-      "X-RapidAPI-Host": "livescore6.p.rapidapi.com",
-    },
-  };
-
-  try {
-    const resp = await (
-      await fetch(`${liveScoreBaseUrl}/teams?id=${teamID}`, options)
-    ).json();
-    return resp as MatchesResponseType;
-  } catch (e) {
-    console.error(e);
-    return null;
-  }
-};
-
 export const getMatchDetails = async (eid: string, category: string) => {
   /// Returns a specific match's details
 
