@@ -55,31 +55,8 @@ function WalletPage() {
   };
 
   useEffect(() => {
-    // get the transaction details from the parent window
-    const first: any = window.addEventListener("message", (event) => {
-      if (event.data && event.data.from === "ozare") {
-        setPayload(event.data);
-      }
-    });
     const urlParams = new URLSearchParams(window.location.search);
 
-    if (
-      urlParams.get("connect") &&
-      userFriendlyAddress?.length > 0 &&
-      wallet?.name
-    ) {
-      window.parent.postMessage(
-        {
-          from: "ozare-react",
-          status: "connected",
-          address: userFriendlyAddress,
-          walletName: wallet?.name,
-        },
-        "*"
-      );
-    }
-
-    // if there are any query params, set them as the payload
     // if the url has a connect param, hide the send transaction button
     // url sample: http://localhost:3000/?connect=true
     if (urlParams.get("connect")) {
@@ -121,15 +98,10 @@ function WalletPage() {
     if (type === "claim_bet" && uid) {
       setPayload(payload);
     }
-    // sample url: http://localhost:3000/?type=place_bet&amount=1&outcome=0&uid=9741
-    // bet_claim_url: http://localhost:3000/?type=claim_bet&uid=9741
-    // sample url: https://ozare-final.vercel.app/ton/?type=place_bet&amount=1&outcome=0&uid=9741
+     // sample url: https://ozare-final.vercel.app/ton/?type=place_bet&amount=1&outcome=0&uid=9741
     // bet_claim_url: https://ozare-final.vercel.app/ton/?type=claim_bet&uid=9741
-    return () => {
-      window.removeEventListener("message", first);
-    };
   }, [userFriendlyAddress, tonConnectUI, wallet?.name]);
-  // create a contract & place a bet, start event from API, finish event from API, claim bet
+
   return transactionComplete ? (
     <div className="flex bg-white justify-center items-center h-screen w-screen">
       <div className="flex flex-col">
@@ -141,7 +113,7 @@ function WalletPage() {
       </div>
     </div>
   ) : (
-    <div className="flex bg-white justify-center items-center h-screen w-screen">
+    <div className="flex bg-sky-50 justify-center items-center h-screen">
       <div>
         <div className="flex my-10 justify-center w-full">
           <TonConnectButton />
