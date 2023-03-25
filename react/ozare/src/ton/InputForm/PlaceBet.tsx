@@ -69,8 +69,9 @@ const PlaceBet: React.FC = () => {
           </div>
           <div className="w-full flex flex-row justify-center">
             <button
+              disabled={amount === ""}
               onClick={handleSubmit}
-              className="bg-sky-500  my-4 outline-none text-white shadow-sky-100 shadow-lg flex flex-row justify-start px-4 py-2 items-center rounded-full"
+              className="bg-sky-500 disabled:bg-gray-300  my-4 outline-none text-white shadow-sky-100 shadow-lg flex flex-row justify-start px-4 py-2 items-center rounded-full"
               type="submit"
             >
               Place Bet
