@@ -155,7 +155,7 @@ class _BetDialogState extends State<BetDialog> {
                 wallet.add(
                   CreateEventRequested(
                     payload: Payload(
-                      type: 'create_event',
+                      type: 'place_bet',
                       uid: int.parse(widget.event.id),
                       from: 'ozare',
                       amount: int.parse(betController.text),

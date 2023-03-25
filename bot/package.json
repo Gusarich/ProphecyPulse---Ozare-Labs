@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "typescript",
+    "build": "tsc",
     "start": "ts-node src/bot.ts",
     "get_database": "ts-node src/getDatabase.ts",
     "dev": "nodemon"
