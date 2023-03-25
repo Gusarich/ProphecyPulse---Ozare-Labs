@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "start": "tsc src/bot.ts",
+    "start": "ts-node src/bot.ts",
     "get_database": "ts-node src/getDatabase.ts",
     "dev": "nodemon"
   },
