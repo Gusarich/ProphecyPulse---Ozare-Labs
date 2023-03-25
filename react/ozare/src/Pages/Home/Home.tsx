@@ -16,6 +16,7 @@ import Header from "../../components/Header";
 import MatchesUI from "./Matches/MatchesUI";
 import SearchResults from "./SearchResults";
 import { searchTeam } from "../../api/LivecoreApiClient";
+import { Team } from "./SearchResults/types";
 
 function Home() {
   const menuItems = [
@@ -36,7 +37,7 @@ function Home() {
   const [contentCategory, setContentCategory] = useState(menuItems[0].title);
   const [searchQuery, setSearchQuery] = useState("");
   const [matches, setMatches] = useState<MatchesResponseType>();
-  const [searchResults, setSearchResults] = useState();
+  const [searchResults, setSearchResults] = useState<Team[]>();
 
   const getMatches = async (category: string) => {
     const response = await getAllMatchesByDate(
@@ -89,17 +90,19 @@ function Home() {
         </div>
       </Header>
 
-      {!(searchQuery.length > 0) && (
+      {searchQuery.length > 0 ? (
+        <SearchResults
+          searchResults={searchResults}
+          searchCategory={searchCategory}
+          searchQuery={searchQuery}
+        />
+      ) : (
         <MatchesUI
           contentCategory={contentCategory}
           matches={matches}
           menuItems={menuItems}
           setContentCategory={setContentCategory}
         />
-      )}
-
-      {searchQuery.length > 0 && (
-        <SearchResults searchResults={searchResults} />
       )}
     </>
   );

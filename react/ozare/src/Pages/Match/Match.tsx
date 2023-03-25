@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 
 import { getMatchDetails } from "../../ton/wrappers/Livescore";
 
@@ -15,19 +14,32 @@ import "react-loading-skeleton/dist/skeleton.css";
 import Chat from "./Chat";
 import Bets from "./Bets";
 import Header from "../../components/Header";
+import { getTeamDetails } from "../../api/LivecoreApiClient";
 
 export default function Match() {
-  let { id, category } = useParams();
+  // let { id, category, match } = useParams();
+  const id = new URLSearchParams(window.location.search).get("id");
+  const category = new URLSearchParams(window.location.search).get("category");
+  const t1 = new URLSearchParams(window.location.search).get("t1");
+  const t2 = new URLSearchParams(window.location.search).get("t2");
 
   const [event, setEvent] = useState<MatchInfoResponseType>();
+  const [team1, setTeam1] = useState("");
+  const [team2, setTeam2] = useState("");
 
   const getDetails = useCallback(async () => {
-    if (id === undefined || category === undefined) {
-      return;
+    if (id && category) {
+      const response = await getMatchDetails(id, category);
+      setEvent(response);
+    } else if (t1 && t2 && category) {
+      const t1Response = await getTeamDetails(t1, category);
+      setTeam1(t1Response.team.fullName);
+
+      console.log(t1Response);
+      const t2Response = await getTeamDetails(t2, category);
+      setTeam2(t2Response.team.fullName);
     }
-    const response = await getMatchDetails(id, category);
-    setEvent(response);
-  }, [id, category]);
+  }, [id, category, t1, t2]);
 
   useEffect(() => {
     getDetails();
@@ -36,14 +48,24 @@ export default function Match() {
   const tabs = [
     { title: "Chat", content: <Chat /> },
     // @ts-ignore
-    { title: "Bets", content: <Bets match={event} /> },
+    {
+      title: "Bets",
+      content: (
+        <Bets
+          match={{
+            T1: event ? event.T1[0].Nm : team1,
+            T2: event ? event.T2[0].Nm : team2,
+          }}
+        />
+      ),
+    },
   ];
 
   return (
     <>
-      <Header paddingBottom="pb-32">
+      <Header paddingBottom="pb-32" title="match">
         <div>
-          {(event && (
+          {((event || (team1 && team2)) && (
             <div className="absolute top-20 w-full left-0">
               <div className="overflow-hidden relative  bg-black min-w-[250px] mx-4 rounded-2xl shadow-sm mt-4 h-40 ">
                 <div className="h-full w-full opacity-60">
@@ -64,40 +86,52 @@ export default function Match() {
                   <div className="relative h-full w-full">
                     <div className="h-full grid grid-cols-3 px-2">
                       <div className="flex flex-col items-center text-xs text-center text-white font-bold justify-center">
-                        {event.T1[0].Img && (
-                          <img
-                            src={`https://lsm-static-prod.livescore.com/medium/${event.T1[0].Img}`}
-                            alt=""
-                            className="h-10 w-auto object-cover"
-                          />
+                        {event && (
+                          <>
+                            {event.T1[0].Img && (
+                              <img
+                                src={`https://lsm-static-prod.livescore.com/medium/${event.T1[0].Img}`}
+                                alt=""
+                                className="h-10 w-auto object-cover"
+                              />
+                            )}
+                            {event.T1[0].Nm}
+                          </>
                         )}
-                        {event.T1[0].Nm}
+                        {team1 && <>{team1}</>}
                       </div>
                       <div className="text-white text-2xl flex flex-col text-center justify-center items-center font-bold mx-4">
                         VS
                       </div>
                       <div className="flex flex-col justify-center text-xs text-white font-bold items-center text-center">
-                        {event.T2[0].Img && (
-                          <img
-                            src={`https://lsm-static-prod.livescore.com/medium/${event.T2[0].Img}`}
-                            alt=""
-                            className="h-10 w-auto object-cover"
-                          />
+                        {event && (
+                          <>
+                            {event.T2[0].Img && (
+                              <img
+                                src={`https://lsm-static-prod.livescore.com/medium/${event.T2[0].Img}`}
+                                alt=""
+                                className="h-10 w-auto object-cover"
+                              />
+                            )}
+                            {event.T2[0].Nm}
+                          </>
                         )}
-                        {event.T2[0].Nm}
+                        {team2 && <>{team2}</>}
                       </div>
                     </div>
-                    <div className="absolute top-0 w-full text-center text-xs text-white">
-                      <span className="bg-sky-500 px-2 py-1 rounded-b-xl">
-                        {event.Eps === "NS"
-                          ? "Upcoming"
-                          : event.Eps === "HT"
-                          ? "Playing Now"
-                          : event.Eps === "FT"
-                          ? "Ended"
-                          : "Upcoming"}
-                      </span>
-                    </div>
+                    {event && (
+                      <div className="absolute top-0 w-full text-center text-xs text-white">
+                        <span className="bg-sky-500 px-2 py-1 rounded-b-xl">
+                          {event.Eps === "NS"
+                            ? "Upcoming"
+                            : event.Eps === "HT"
+                            ? "Playing Now"
+                            : event.Eps === "FT"
+                            ? "Ended"
+                            : "Upcoming"}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

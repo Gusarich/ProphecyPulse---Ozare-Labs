@@ -21,7 +21,7 @@ function MatchesUI({
       <Tab.Group>
         <Tab.List
           className={
-            "flex sticky top-[148px]  bg-white flex-row py-4 justify-center"
+            "flex sticky top-[136px]  bg-white flex-row py-4 justify-center"
           }
         >
           {menuItems.map((item) => (

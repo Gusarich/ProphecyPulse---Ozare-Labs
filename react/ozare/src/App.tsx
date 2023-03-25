@@ -9,6 +9,7 @@ import Match from "./Pages/Match/Match";
 import Edit from "./Pages/Profile/Edit";
 import PlaceBet from "./ton/InputForm/PlaceBet";
 import Ton from "./ton/Ton";
+import Schedule from "./Pages/Match/Schedule";
 
 function App() {
   return (
@@ -20,7 +21,8 @@ function App() {
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/edit" element={<Edit />} />
-          <Route path="/match/:category/:id" element={<Match />} />
+          <Route path="/match/*" element={<Match />} />
+          <Route path="/schedule/:category/:team/:id" element={<Schedule />} />
           <Route path="/place_bet/:id" element={<PlaceBet />} />
           <Route path="/transaction" element={<Ton />} />
         </Routes>

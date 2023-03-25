@@ -34,7 +34,10 @@ function Matches({ data, category }: MatchesProps) {
 
           <div className="flex w-full flex-row justify-start overflow-x-auto scrollbar-hide">
             {stage.Events.filter((event) => event.Eps !== "FT").map((event) => (
-              <Link to={`/match/${category}/${event.Eid}`} key={event.Eid}>
+              <Link
+                to={`/match/?t1=&t2=&category=${category}&id=${event.Eid}`}
+                key={event.Eid}
+              >
                 <div className="overflow-hidden relative -z-10 bg-black min-w-[250px] mx-4 rounded-2xl shadow-sm mt-4 h-40 ">
                   <div className="h-full w-full opacity-60">
                     <img

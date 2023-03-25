@@ -40,7 +40,7 @@ const PlaceBet: React.FC = () => {
   };
   return (
     <>
-      <Header showTonButton={false} />
+      <Header showTonButton={false} title={`${t1} VS ${t2}`} />
       <div className="w-full h-[calc(100vh-144px)]  flex justify-center items-center">
         <form className="px-6 py-8  shadow-lg flex flex-col gap-y-4 justify-center w-2/3 rounded-2xl">
           <div className="flex flex-row justify-center">
@@ -69,7 +69,7 @@ const PlaceBet: React.FC = () => {
           </div>
           <div className="w-full flex flex-row justify-center">
             <button
-              disabled={amount === ""}
+              disabled={amount === "" || parseFloat(amount) <= 0}
               onClick={handleSubmit}
               className="bg-sky-500 disabled:bg-gray-300  my-4 outline-none text-white shadow-sky-100 shadow-lg flex flex-row justify-start px-4 py-2 items-center rounded-full"
               type="submit"

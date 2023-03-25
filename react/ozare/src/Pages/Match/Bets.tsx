@@ -1,10 +1,16 @@
 import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { MatchInfoResponseType } from "./types";
 
-function Bets({ match }: { match: MatchInfoResponseType }) {
+interface BetsProps {
+  match: {
+    T1: string;
+    T2: string;
+  };
+}
+
+function Bets({ match }: BetsProps) {
   const { id } = useParams<{ id: string }>();
-  const [bets, setBets] = React.useState<any[]>([]);
+  const [bets] = React.useState<any[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -12,8 +18,8 @@ function Bets({ match }: { match: MatchInfoResponseType }) {
   }, []);
 
   const handleClick = () => {
-    const t1 = match.T1[0].Nm;
-    const t2 = match.T2[0].Nm;
+    const t1 = match.T1;
+    const t2 = match.T2;
     navigate(`/place_bet/${id}?type=place_bet&t1=${t1}&t2=${t2}`);
   };
 
