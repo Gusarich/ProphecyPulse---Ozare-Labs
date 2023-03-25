@@ -14,7 +14,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import Chat from "./Chat";
 import Bets from "./Bets";
 import Header from "../../components/Header";
-import { getTeamDetails } from "../../api/LivecoreApiClient";
+import { getTeamDetails, getTeamLogo } from "../../api/LivecoreApiClient";
 
 export default function Match() {
   // let { id, category, match } = useParams();
@@ -26,18 +26,18 @@ export default function Match() {
   const [event, setEvent] = useState<MatchInfoResponseType>();
   const [team1, setTeam1] = useState("");
   const [team2, setTeam2] = useState("");
+  const [t1Image, setT1Image] = useState<string>();
+  const [t2Image, setT2Image] = useState<string>();
 
   const getDetails = useCallback(async () => {
     if (id && category) {
       const response = await getMatchDetails(id, category);
       setEvent(response);
     } else if (t1 && t2 && category) {
-      const t1Response = await getTeamDetails(t1, category);
-      setTeam1(t1Response.team.fullName);
-
-      console.log(t1Response);
-      const t2Response = await getTeamDetails(t2, category);
-      setTeam2(t2Response.team.fullName);
+      getTeamDetails(t1, category).then((res) => setTeam1(res.team.fullName));
+      getTeamDetails(t2, category).then((res) => setTeam2(res.team.fullName));
+      getTeamLogo(Number(t1), category).then((res) => setT1Image(res));
+      getTeamLogo(Number(t2), category).then((res) => setT2Image(res));
     }
   }, [id, category, t1, t2]);
 
@@ -85,7 +85,7 @@ export default function Match() {
                 <div className="absolute h-full w-full top-0 left-0">
                   <div className="relative h-full w-full">
                     <div className="h-full grid grid-cols-3 px-2">
-                      <div className="flex flex-col items-center text-xs text-center text-white font-bold justify-center">
+                      <div className="flex flex-col items-center gap-4 text-xs text-center text-white font-bold justify-center">
                         {event && (
                           <>
                             {event.T1[0].Img && (
@@ -98,12 +98,23 @@ export default function Match() {
                             {event.T1[0].Nm}
                           </>
                         )}
-                        {team1 && <>{team1}</>}
+                        {team1 && (
+                          <>
+                            {t1Image && (
+                              <img
+                                src={t1Image}
+                                alt=""
+                                className="h-10 w-auto object-cover"
+                              />
+                            )}
+                            {team1}
+                          </>
+                        )}
                       </div>
                       <div className="text-white text-2xl flex flex-col text-center justify-center items-center font-bold mx-4">
                         VS
                       </div>
-                      <div className="flex flex-col justify-center text-xs text-white font-bold items-center text-center">
+                      <div className="flex flex-col justify-center gap-4 text-xs text-white font-bold items-center text-center">
                         {event && (
                           <>
                             {event.T2[0].Img && (
@@ -116,7 +127,18 @@ export default function Match() {
                             {event.T2[0].Nm}
                           </>
                         )}
-                        {team2 && <>{team2}</>}
+                        {team2 && (
+                          <>
+                            {t2Image && (
+                              <img
+                                src={t2Image}
+                                alt=""
+                                className="h-10 w-auto object-cover"
+                              />
+                            )}
+                            {team2}
+                          </>
+                        )}
                       </div>
                     </div>
                     {event && (

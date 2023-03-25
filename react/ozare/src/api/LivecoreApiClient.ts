@@ -55,26 +55,6 @@ export const getTeamLogo = async (teamID: number, category: string) => {
   }
 };
 
-export const getScheduleMatchByCategory = async (
-  teamID: string,
-  category: string
-) => {
-  const cat =
-    category.toLowerCase() !== "soccer" ? `/${category.toLowerCase()}` : "";
-  try {
-    const response = await fetch(
-      `${allSportsApi2BaseUrl}/api${cat}/team/${teamID}/matches/next/0`,
-      {
-        method: "GET",
-        headers: allSportsApi2BaseUrlHeaders,
-      }
-    );
-    return response.json();
-  } catch (e) {
-    console.error(e);
-  }
-};
-
 export const getLiveMatchByTeam = async (teamID: string) => {
   try {
     const response = await fetch(
@@ -101,6 +81,27 @@ export const getTeamDetails = async (teamID: string, category: string) => {
         headers: allSportsApi2BaseUrlHeaders,
       }
     );
+    return response.json();
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export const getScheduleMatchByCategory = async (
+  teamID: string,
+  category: string
+) => {
+  const cat =
+    category.toLowerCase() !== "soccer" ? `/${category.toLowerCase()}` : "";
+  try {
+    const response = await fetch(
+      `${allSportsApi2BaseUrl}/api${cat}/team/${teamID}/matches/next/0`,
+      {
+        method: "GET",
+        headers: allSportsApi2BaseUrlHeaders,
+      }
+    );
+
     return response.json();
   } catch (e) {
     console.error(e);

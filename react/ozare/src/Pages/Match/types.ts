@@ -19,19 +19,20 @@ interface TeamColors {
   text: string;
 }
 
-interface Team {
-  country: Country;
+export interface Team {
+  country?: Country;
   disabled: boolean;
   gender: string;
   id: number;
+  image?: string;
   name: string;
   nameCode: string;
   national: boolean;
   shortName: string;
   slug: string;
-  sport: Sport;
+  sport?: Sport;
   subTeams: any[];
-  teamColors: TeamColors;
+  teamColors?: TeamColors;
   type: number;
   userCount: number;
 }

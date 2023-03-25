@@ -20,9 +20,11 @@ function Schedule() {
     if (id === undefined || category === undefined) {
       return;
     }
-    const response = await getScheduleMatchByCategory(id, category);
-    setIsLoading(false);
-    setSchedule(response.events);
+    getScheduleMatchByCategory(id, category).then((res) => {
+      setIsLoading(false);
+      console.log(res.events);
+      setSchedule(res.events);
+    });
   }, [id, category]);
 
   useEffect(() => {
@@ -30,16 +32,13 @@ function Schedule() {
   }, [getDetails]);
 
   const getTime = (timestamp: number) => {
-    const date = new Date(timestamp * 1000); // convert Unix timestamp to JavaScript timestamp
+    const date = new Date(timestamp * 1000);
     const year = date.getFullYear();
-    const month = date.getMonth() + 1; // getMonth() returns 0-11, so add 1 to get 1-12
+    const month = date.getMonth() + 1;
     const day = date.getDate();
     const hours = date.getHours();
     const minutes = date.getMinutes();
 
-    // const formattedDate = `${year}-${month.toString().padStart(2, "0")}-${day
-    //   .toString()
-    //   .padStart(2, "0")}`;
     const formattedTime = `${hours.toString().padStart(2, "0")}:${minutes
       .toString()
       .padStart(2, "0")}`;
