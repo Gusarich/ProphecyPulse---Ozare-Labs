@@ -9,6 +9,6 @@ export interface MatchesResponseType {
 }
 
 export type MatchesProps = {
-  data: MatchesResponseType;
+  data?: MatchesResponseType;
   category: string;
 };

@@ -43,7 +43,8 @@ function Layout({ children }: { children: React.ReactNode }) {
 
       {width < 768 && (
         <>
-          {children}
+          <div className="mb-[88px]">{children}</div>
+
           <BottomNavigation navList={navList} />
         </>
       )}

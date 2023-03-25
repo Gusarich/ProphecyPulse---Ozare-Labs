@@ -1,7 +1,12 @@
 import React from "react";
+import Header from "../components/Header";
 
 function Notifications() {
-  return <div>Notifications</div>;
+  return (
+    <>
+      <Header showBack={false} title="Notifications" />
+    </>
+  );
 }
 
 export default Notifications;
