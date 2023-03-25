@@ -125,10 +125,7 @@ export class Event implements Contract {
                 ],
             });
         } else {
-            betAddress = await this.getBetAddress(
-                via.address!,
-                outcome,
-            );
+            betAddress = await this.getBetAddress(via.address!, outcome);
             await via.send({
                 to: betAddress,
                 init: this.init,
@@ -139,10 +136,6 @@ export class Event implements Contract {
                     .storeUint(toNano(amount.toString()), 256)
                     .endCell(),
             });
-            betAddress = await this.getBetAddress(
-                via.address!,
-                outcome,
-            );
         }
 
         return new Bet(betAddress, (this.executor || this.client)!);
