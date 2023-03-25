@@ -35,7 +35,8 @@ export default function Match() {
 
   const tabs = [
     { title: "Chat", content: <Chat /> },
-    { title: "Bets", content: <Bets /> },
+    // @ts-ignore
+    { title: "Bets", content: <Bets match={event} /> },
   ];
 
   return (

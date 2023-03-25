@@ -7,6 +7,8 @@ import Bets from "./Pages/Bets";
 import Profile from "./Pages/Profile/Profile";
 import Match from "./Pages/Match/Match";
 import Edit from "./Pages/Profile/Edit";
+import PlaceBet from "./ton/InputForm/PlaceBet";
+import Ton from "./ton/Ton";
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/edit" element={<Edit />} />
           <Route path="/match/:category/:id" element={<Match />} />
+          <Route path="/place_bet/:id" element={<PlaceBet />} />
+          <Route path="/transaction" element={<Ton />} />
         </Routes>
       </Layout>
     </BrowserRouter>
