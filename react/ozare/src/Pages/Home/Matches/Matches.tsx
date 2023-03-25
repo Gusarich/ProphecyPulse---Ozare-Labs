@@ -1,10 +1,10 @@
 import React from "react";
 import { BiBasketball, BiCricketBall, BiFootball } from "react-icons/bi";
-import { MatchesProps } from "./types";
+import { MatchesProps } from "../types";
 
-import SoccerBackground from "../../assets/images/soccer.jpg";
-import CricketBackground from "../../assets/images/cricket.jpg";
-import BasketballBackground from "../../assets/images/basketball.jpg";
+import SoccerBackground from "../../../assets/images/soccer.jpg";
+import CricketBackground from "../../../assets/images/cricket.jpg";
+import BasketballBackground from "../../../assets/images/basketball.jpg";
 
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";

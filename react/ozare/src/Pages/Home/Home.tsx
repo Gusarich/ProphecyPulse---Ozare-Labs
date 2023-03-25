@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 import { BiFootball } from "react-icons/bi";
 import { BiCricketBall } from "react-icons/bi";
@@ -11,10 +11,11 @@ import { getCurrentTimezone } from "../../utils/getCurrentTimeZone";
 import { MatchesResponseType } from "./types";
 
 import DropMenu from "../../components/DropMenu";
-import Matches from "./Matches";
-import { Tab } from "@headlessui/react";
 import { DebounceInput } from "react-debounce-input";
 import Header from "../../components/Header";
+import MatchesUI from "./Matches/MatchesUI";
+import SearchResults from "./SearchResults";
+import { searchTeam } from "../../api/LivecoreApiClient";
 
 function Home() {
   const menuItems = [
@@ -35,6 +36,7 @@ function Home() {
   const [contentCategory, setContentCategory] = useState(menuItems[0].title);
   const [searchQuery, setSearchQuery] = useState("");
   const [matches, setMatches] = useState<MatchesResponseType>();
+  const [searchResults, setSearchResults] = useState();
 
   const getMatches = async (category: string) => {
     const response = await getAllMatchesByDate(
@@ -45,11 +47,16 @@ function Home() {
     setMatches(() => (response ? response : undefined));
   };
 
-  // useEffect(() => {
-  //   if (searchQuery.length > 0 && matches) {
-  //     //search Matches
-  //   }
-  // }, [searchQuery]);
+  const search = useCallback(async (query: string, category: string) => {
+    const response = await searchTeam(query, category.toLowerCase());
+    setSearchResults(response ? response : []);
+  }, []);
+
+  useEffect(() => {
+    if (searchQuery.length > 0) {
+      search(searchQuery, searchCategory);
+    }
+  }, [searchQuery, searchCategory, search]);
 
   useEffect(() => {
     setMatches(undefined);
@@ -83,44 +90,16 @@ function Home() {
       </Header>
 
       {!(searchQuery.length > 0) && (
-        <section>
-          <Tab.Group>
-            <Tab.List
-              className={
-                "flex sticky top-[148px]  bg-white flex-row py-4 justify-center"
-              }
-            >
-              {menuItems.map((item) => (
-                <Tab
-                  key={item.title}
-                  onClick={() => setContentCategory(item.title)}
-                  className={({ selected }) =>
-                    selected
-                      ? "bg-sky-400 outline-none text-white shadow-sky-100 shadow-lg flex flex-row justify-start px-2 py-1 items-center rounded-full mx-2"
-                      : "text-sky-400 bg-white shadow-sky-100 shadow-lg flex flex-row justify-start px-2 py-1 items-center rounded-full mx-2"
-                  }
-                >
-                  <div className={"pr-2"}>{item.icon}</div>
-                  <div className={"text-sm font-bold pr-2"}>{item.title}</div>
-                </Tab>
-              ))}
-            </Tab.List>
-            <Tab.Panels>
-              {menuItems.map((item) => {
-                return (
-                  <Tab.Panel key={item.title}>
-                    {contentCategory === item.title && (
-                      <Matches
-                        data={matches}
-                        category={contentCategory.toLowerCase()}
-                      />
-                    )}
-                  </Tab.Panel>
-                );
-              })}
-            </Tab.Panels>
-          </Tab.Group>
-        </section>
+        <MatchesUI
+          contentCategory={contentCategory}
+          matches={matches}
+          menuItems={menuItems}
+          setContentCategory={setContentCategory}
+        />
+      )}
+
+      {searchQuery.length > 0 && (
+        <SearchResults searchResults={searchResults} />
       )}
     </>
   );
