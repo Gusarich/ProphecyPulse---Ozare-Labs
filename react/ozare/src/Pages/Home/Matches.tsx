@@ -12,7 +12,6 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { Link } from "react-router-dom";
 
 function Matches({ data, category }: MatchesProps) {
-  console.log(data);
   return (
     <div className="flex flex-col">
       {data?.Stages.map((stage) => (
