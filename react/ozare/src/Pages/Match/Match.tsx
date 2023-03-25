@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import TonCoin from "../../assets/images/ton-coin.svg";
 
 import { getMatchDetails } from "../../ton/wrappers/Livescore";
 
@@ -8,11 +7,11 @@ import SoccerBackground from "../../assets/images/soccer.jpg";
 import CricketBackground from "../../assets/images/cricket.jpg";
 import BasketballBackground from "../../assets/images/basketball.jpg";
 import { MatchInfoResponseType } from "./types";
-import BackButton from "../../components/BackButton";
 import { Tab } from "@headlessui/react";
 
 import Chat from "./Chat";
 import Bets from "../Bets";
+import Header from "../../components/Header";
 
 export default function Match() {
   let { id, category } = useParams();
@@ -37,18 +36,8 @@ export default function Match() {
   ];
 
   return (
-    <div>
-      <section className="sticky z-10 top-0 px-4 bg-gradient-to-br from-sky-400 via-sky-300 to-sky-400">
-        <div className="flex pt-4 pb-32 flex-row items-center justify-between">
-          <BackButton />
-          <button
-            onClick={() => console.log(event)}
-            className="bg-white px-2 items-center py-1 flex justify-start flex-row rounded-full"
-          >
-            <img src={TonCoin} className="h-8 w-8 pr-2" alt="ton-coin" />
-            <span className="text-sky-500 pr-2">Connect</span>
-          </button>
-        </div>
+    <>
+      <Header paddingBottom="pb-32">
         {event && (
           <div className="absolute top-20 w-full left-0">
             <div className="overflow-hidden relative  bg-black min-w-[250px] mx-4 rounded-2xl shadow-sm mt-4 h-40 ">
@@ -95,7 +84,8 @@ export default function Match() {
             </div>
           </div>
         )}
-      </section>
+      </Header>
+
       <Tab.Group defaultIndex={0}>
         <Tab.List
           className={
@@ -125,6 +115,6 @@ export default function Match() {
           })}
         </Tab.Panels>
       </Tab.Group>
-    </div>
+    </>
   );
 }

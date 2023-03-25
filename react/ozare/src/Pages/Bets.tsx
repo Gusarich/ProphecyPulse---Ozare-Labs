@@ -1,7 +1,12 @@
 import React from "react";
+import Header from "../components/Header";
 
 function Bets() {
-  return <div>Bets</div>;
+  return (
+    <>
+      <Header showBack={false} title="Bets" />
+    </>
+  );
 }
 
 export default Bets;

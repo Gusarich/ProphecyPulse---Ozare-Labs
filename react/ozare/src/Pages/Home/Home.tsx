@@ -4,8 +4,6 @@ import { BiFootball } from "react-icons/bi";
 import { BiCricketBall } from "react-icons/bi";
 import { BiBasketball } from "react-icons/bi";
 
-import TonCoin from "../../assets/images/ton-coin.svg";
-
 import { getAllMatchesByDate } from "../../ton/wrappers/Livescore";
 import { getCurrentDate } from "../../utils/getCurrentDate";
 import { getCurrentTimezone } from "../../utils/getCurrentTimeZone";
@@ -16,6 +14,7 @@ import DropMenu from "../../components/DropMenu";
 import Matches from "./Matches";
 import { Tab } from "@headlessui/react";
 import { DebounceInput } from "react-debounce-input";
+import Header from "../../components/Header";
 
 function Home() {
   const menuItems = [
@@ -59,14 +58,7 @@ function Home() {
 
   return (
     <>
-      <section className="sticky z-10 top-0 px-4 bg-gradient-to-br from-sky-400 via-sky-300 to-sky-400">
-        <div className="flex py-4 flex-row items-center justify-between">
-          <span className="text-white font-bold text-2xl">Ozare</span>
-          <button className="bg-white px-2 items-center py-1 flex justify-start flex-row rounded-full">
-            <img src={TonCoin} className="h-8 w-8 pr-2" alt="ton-coin" />
-            <span className="text-sky-500 pr-2">Connect</span>
-          </button>
-        </div>
+      <Header title="Ozare" showBack={false}>
         <div className="pt-6 px-4 pb-4">
           <div className="flex flex-row   justify-start shadow-sm rounded-full ">
             <DropMenu
@@ -88,7 +80,8 @@ function Home() {
             />
           </div>
         </div>
-      </section>
+      </Header>
+
       <section>
         <Tab.Group>
           <Tab.List
