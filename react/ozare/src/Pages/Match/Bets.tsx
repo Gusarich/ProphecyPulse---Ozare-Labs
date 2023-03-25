@@ -22,7 +22,7 @@ function Bets({ match }: { match: MatchInfoResponseType }) {
       Bets
       <button
         onClick={handleClick}
-        className="bg-sky-500 outline-none text-white shadow-sky-100 shadow-lg flex flex-row justify-start px-4 py-2 items-center rounded-full mr-2 absolute right-0 bottom-0 mr-4 mb-4"
+        className="bg-sky-500 outline-none text-white shadow-sky-100 shadow-lg flex flex-row justify-start px-4 py-2 items-center rounded-full  absolute right-0 bottom-[72px] mr-4 mb-4"
       >
         <span className="text-white-500">Place bet</span>
       </button>
