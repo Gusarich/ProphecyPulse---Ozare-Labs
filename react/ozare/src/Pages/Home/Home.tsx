@@ -74,7 +74,7 @@ function Home() {
               value={searchQuery}
               minLength={3}
               debounceTimeout={1500}
-              className="border-0 w-full rounded-r-full pl-4 outline-none"
+              className="border-0 w-full rounded-r-full px-4 outline-none"
               placeholder={`Search ${searchCategory.toLowerCase()} teams`}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
