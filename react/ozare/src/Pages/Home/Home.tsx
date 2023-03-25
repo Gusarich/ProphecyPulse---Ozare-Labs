@@ -73,7 +73,6 @@ function Home() {
               menuItems={menuItems}
               onMenuItemClick={(item) => {
                 setSearchCategory(item.title);
-                setContentCategory(item.title);
               }}
               title={searchCategory}
               className="rounded-l-full bg-sky-500 hover:bg-sky-600 text-white"
@@ -94,7 +93,7 @@ function Home() {
         <Tab.Group>
           <Tab.List
             className={
-              "flex sticky top-[148px] z-10 bg-white flex-row py-4 justify-center"
+              "flex sticky top-[148px]  bg-white flex-row py-4 justify-center"
             }
           >
             {menuItems.map((item) => (
