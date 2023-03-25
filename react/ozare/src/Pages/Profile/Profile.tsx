@@ -10,7 +10,10 @@ function Profile() {
         <div className="flex flex-col items-center text-white space-y-4 font-bold">
           <div className="flex justify-center w-full">
             <img
-              src="https://i.pravatar.cc/300"
+              src={
+                "https://i.pravatar.cc/300" ||
+                "https://brsc.sa.edu.au/wp-content/uploads/2018/09/placeholder-profile-sq.jpg"
+              }
               alt="Profile"
               className="w-20 h-20 border-2 border-white object-cover rounded-full"
             />
