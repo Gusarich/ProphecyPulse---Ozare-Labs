@@ -6,12 +6,15 @@ import SoccerBackground from "../../assets/images/soccer.jpg";
 import CricketBackground from "../../assets/images/cricket.jpg";
 import BasketballBackground from "../../assets/images/basketball.jpg";
 
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+
 import { Link } from "react-router-dom";
 
 function Matches({ data, category }: MatchesProps) {
   return (
     <div className="flex flex-col">
-      {data.Stages.map((stage) => (
+      {data?.Stages.map((stage) => (
         <div key={stage.Sid} className=" py-4 my-2 ">
           {stage.Events.filter((event) => event.Eps !== "FT").length > 0 && (
             <div className="flex px-4 font-bold flex-row items-center justify-start">
@@ -80,7 +83,23 @@ function Matches({ data, category }: MatchesProps) {
             ))}
           </div>
         </div>
-      ))}
+      )) ||
+        [1, 2, 3].map((item) => (
+          <div key={item} className="px-4 mb-8">
+            <Skeleton height={32} className="mt-3 mb-1 " />
+            <div className="flex w-full space-x-8 flex-row justify-start overflow-hidden">
+              {[1, 2, 3].map((item) => (
+                <Skeleton
+                  key={item}
+                  height={160}
+                  width={250}
+                  style={{ borderRadius: "1rem" }}
+                  className="mt-3 mb-1 "
+                />
+              ))}
+            </div>
+          </div>
+        ))}
     </div>
   );
 }

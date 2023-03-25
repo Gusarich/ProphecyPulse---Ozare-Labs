@@ -84,7 +84,7 @@ function Home() {
               minLength={3}
               debounceTimeout={1500}
               className="border-0 w-full rounded-r-full pl-4 outline-none"
-              placeholder={`Search ${searchCategory} teams`}
+              placeholder={`Search ${searchCategory.toLowerCase()} teams`}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
@@ -92,7 +92,11 @@ function Home() {
       </section>
       <section>
         <Tab.Group>
-          <Tab.List className={"flex flex-row py-4 justify-center"}>
+          <Tab.List
+            className={
+              "flex sticky top-[148px] z-10 bg-white flex-row py-4 justify-center"
+            }
+          >
             {menuItems.map((item) => (
               <Tab
                 key={item.title}
@@ -112,7 +116,7 @@ function Home() {
             {menuItems.map((item) => {
               return (
                 <Tab.Panel key={item.title}>
-                  {contentCategory === item.title && matches && (
+                  {contentCategory === item.title && (
                     <Matches
                       data={matches}
                       category={contentCategory.toLowerCase()}
