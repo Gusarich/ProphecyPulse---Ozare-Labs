@@ -4,11 +4,13 @@ import TonCoin from "../assets/images/ton-coin.svg";
 function Header({
   title,
   showBack = true,
+  showTonButton = true,
   paddingBottom = "pb-4",
   children,
 }: {
   title?: string;
   showBack?: boolean;
+  showTonButton?: boolean;
   paddingBottom?: `pb-${string}`;
   children?: React.ReactNode;
 }) {
@@ -24,13 +26,15 @@ function Header({
           {showBack && <BackButton />}
           {title && <h1 className="text-white font-bold text-xl">{title}</h1>}
         </div>
-        <button
-          onClick={(e) => console.log(e)}
-          className="bg-white px-2 items-center py-1 flex justify-start flex-row rounded-full"
-        >
-          <img src={TonCoin} className="h-8 w-8 pr-2" alt="ton-coin" />
-          <span className="text-sky-500 pr-2">Connect</span>
-        </button>
+        {showTonButton && (
+          <button
+            onClick={(e) => console.log(e)}
+            className="bg-white px-2 items-center py-1 flex justify-start flex-row rounded-full"
+          >
+            <img src={TonCoin} className="h-8 w-8 pr-2" alt="ton-coin" />
+            <span className="text-sky-500 pr-2">Connect</span>
+          </button>
+        )}
       </div>
       {children}
     </section>
