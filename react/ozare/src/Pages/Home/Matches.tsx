@@ -37,7 +37,7 @@ function Matches({ data, category }: MatchesProps) {
               <Link
                 to={`/match/${category}/${event.Eid}`}
                 key={event.Eid}
-                className="overflow-hidden relative  bg-black min-w-[250px] mx-4 rounded-2xl shadow-sm mt-4 h-40 "
+                className="overflow-hidden relative -z-10 bg-black min-w-[250px] mx-4 rounded-2xl shadow-sm mt-4 h-40 "
               >
                 <div className="h-full w-full opacity-60">
                   <img
@@ -85,7 +85,7 @@ function Matches({ data, category }: MatchesProps) {
         </div>
       )) ||
         [1, 2, 3].map((item) => (
-          <div key={item} className="px-4 mb-8">
+          <div key={item} className="px-4 mb-8 -z-10">
             <Skeleton height={32} className="mt-3 mb-1 " />
             <div className="flex w-full space-x-8 flex-row justify-start overflow-hidden">
               {[1, 2, 3].map((item) => (
