@@ -55,22 +55,27 @@ function Matches({ data, category }: MatchesProps) {
                     <div className="relative h-full w-full">
                       <div className="h-full grid grid-cols-3 px-2">
                         <div className="flex flex-col items-center text-xs text-center text-white font-bold justify-center">
-                          <img
-                            src={`https://lsm-static-prod.livescore.com/medium/${event.T1[0].Img}`}
-                            alt=""
-                            className="h-10 w-auto object-cover"
-                          />
+                          {event.T1[0].Img && (
+                            <img
+                              src={`https://lsm-static-prod.livescore.com/medium/${event.T1[0].Img}`}
+                              alt=""
+                              className="h-10 w-auto object-cover"
+                            />
+                          )}
+
                           {event.T1[0].Nm}
                         </div>
                         <div className="text-white text-2xl flex flex-col text-center justify-center items-center font-bold mx-4">
                           VS
                         </div>
                         <div className="flex flex-col justify-center text-xs text-white font-bold items-center text-center">
-                          <img
-                            src={`https://lsm-static-prod.livescore.com/medium/${event.T2[0].Img}`}
-                            alt=""
-                            className="h-10 w-auto object-cover"
-                          />
+                          {event.T2[0].Img && (
+                            <img
+                              src={`https://lsm-static-prod.livescore.com/medium/${event.T2[0].Img}`}
+                              alt=""
+                              className="h-10 w-auto object-cover"
+                            />
+                          )}
                           {event.T2[0].Nm}
                         </div>
                       </div>
