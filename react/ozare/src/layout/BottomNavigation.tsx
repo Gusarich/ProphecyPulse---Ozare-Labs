@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 function BottomNavigation({
   navList,
 }: {
-  navList: { href: string; title: string; icon: React.ReactNode }[];
+  navList: { href: string; title?: string; icon: React.ReactNode }[];
 }) {
   const location = useLocation();
   return (

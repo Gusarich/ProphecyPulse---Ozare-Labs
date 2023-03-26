@@ -4,7 +4,7 @@ import TonCoin from "../assets/images/ton-coin.svg";
 function Header({
   title,
   showBack = true,
-  showTonButton = true,
+  showTonButton = false,
   paddingBottom = "pb-4",
   children,
 }: {
@@ -24,7 +24,9 @@ function Header({
       <div className="flex px-4 flex-row items-center justify-between">
         <div className="flex items-center justify-start gap-x-4">
           {showBack && <BackButton />}
-          {title && <h1 className="text-white font-bold text-xl">{title}</h1>}
+          {title && (
+            <h1 className="text-white capitalize font-bold text-xl">{title}</h1>
+          )}
         </div>
         {showTonButton && (
           <button

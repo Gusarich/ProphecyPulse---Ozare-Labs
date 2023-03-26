@@ -98,7 +98,7 @@ function WalletPage() {
     if (type === "claim_bet" && uid) {
       setPayload(payload);
     }
-     // sample url: https://ozare-final.vercel.app/ton/?type=place_bet&amount=1&outcome=0&uid=9741
+    // sample url: https://ozare-final.vercel.app/ton/?type=place_bet&amount=1&outcome=0&uid=9741
     // bet_claim_url: https://ozare-final.vercel.app/ton/?type=claim_bet&uid=9741
   }, [userFriendlyAddress, tonConnectUI, wallet?.name]);
 
@@ -136,7 +136,7 @@ function WalletPage() {
                   !(userFriendlyAddress?.length > 0) || transactionOnGoing
                 }
                 onClick={handleClick}
-                className="px-8 rounded-2xl py-4 bg-blue-500 text-white disabled:bg-gray-300"
+                className="px-8 py-4 rounded-2xl  bg-sky-500 text-white disabled:bg-gray-300"
               >
                 {transactionOnGoing ? "Processing..." : "Send transaction"}
               </button>

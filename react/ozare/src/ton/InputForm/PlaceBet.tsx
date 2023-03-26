@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useState } from "react";
 // import "./PlaceBet.scss";
 import Logo from "./logo.png";
@@ -7,6 +8,7 @@ import Header from "../../components/Header";
 
 const PlaceBet: React.FC = () => {
   // get id from /place_bet/:id
+
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   // get t1 and t2 from query params
@@ -40,7 +42,7 @@ const PlaceBet: React.FC = () => {
   };
   return (
     <>
-      <Header showTonButton={false} />
+      <Header showTonButton={false} title={`${t1} VS ${t2}`} />
       <div className="w-full h-[calc(100vh-144px)]  flex justify-center items-center">
         <form className="px-6 py-8  shadow-lg flex flex-col gap-y-4 justify-center w-2/3 rounded-2xl">
           <div className="flex flex-row justify-center">
@@ -69,8 +71,9 @@ const PlaceBet: React.FC = () => {
           </div>
           <div className="w-full flex flex-row justify-center">
             <button
+              disabled={amount === "" || parseFloat(amount) <= 0}
               onClick={handleSubmit}
-              className="bg-sky-500  my-4 outline-none text-white shadow-sky-100 shadow-lg flex flex-row justify-start px-4 py-2 items-center rounded-full"
+              className="bg-sky-500 disabled:bg-gray-300  my-4 outline-none text-white shadow-sky-100 shadow-lg flex flex-row justify-start px-4 py-2 items-center rounded-full"
               type="submit"
             >
               Place Bet
