@@ -96,14 +96,17 @@ async function handleCreateEvent(
       };
     }
     try {
-      const event = await Event.deployBet(
-        client,
-        sender,
-        ORACLE,
-        uid,
-        outcome,
-        BigInt((amount || 0) * 1e9)
-      );
+      // const event = await Event.deployBet(
+      //   client,
+      //   sender,
+      //   ORACLE,
+      //   uid,
+      //   outcome,
+      //   BigInt((amount || 0) * 1e9)
+      // );
+      const event = await Event.create(client, ORACLE, uid);
+      await event.deploy(sender);
+      await event.bet(sender, outcome, BigInt(amount * 1e9));
       return {
         status: "success",
         message: "Event created and bet placed successfully",

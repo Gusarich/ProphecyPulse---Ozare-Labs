@@ -81,7 +81,7 @@ export class Bet implements Contract {
     }
 
     static async getCode(): Promise<Cell> {
-        const serverURL = process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : 'https://us-central1-ozare-e8ed6.cloudfunctions.net/app';
+        const serverURL = process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : 'http://159.223.250.48:8080/';
         // at api/contract/bet
         const result = await fetch(serverURL + '/api/contract/event').then((res) => res.json());
         return Cell.fromBoc(Buffer.from(result.codeBoc, 'base64'))[0];

@@ -89,13 +89,22 @@ export class Event implements Contract {
         }
     }
 
-    async bet(via: Sender | TonConnect, outcome: boolean, amount: bigint) {
+    async bet(
+        via: Sender | TonConnect,
+        outcome: boolean,
+        amount: bigint
+    ): Promise<Bet> {
+        let betAddress: Address;
         if ('sendTransaction' in via) {
+            betAddress = await this.getBetAddress(
+                Address.parse(via.wallet!.account.address),
+                outcome,
+            );
             await via.sendTransaction({
                 validUntil: Math.floor(Date.now() / 1000) + 600,
                 messages: [
                     {
-                        address: this.address.toRawString(),
+                        address: betAddress.toString(),
                         amount: (toNano('0.25') + amount).toString(),
                         stateInit: beginCell()
                             .store(storeStateInit(this.init))
@@ -113,8 +122,9 @@ export class Event implements Contract {
                 ],
             });
         } else {
+            betAddress = await this.getBetAddress(via.address!, outcome);
             await via.send({
-                to: this.address,
+                to: betAddress,
                 init: this.init,
                 value: toNano('0.25') + toNano(amount.toString()),
                 body: beginCell()
@@ -124,6 +134,8 @@ export class Event implements Contract {
                     .endCell(),
             });
         }
+
+        return new Bet(betAddress, (this.executor || this.client)!);
     }
 
     async startEvent(via: Sender | TonConnect) {
@@ -221,7 +233,7 @@ export class Event implements Contract {
     }
 
     static async getCode(): Promise<Cell> {
-        const serverURL = process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : 'https://us-central1-ozare-e8ed6.cloudfunctions.net/app';
+        const serverURL = process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : 'http://159.223.250.48:8080/';
         // at api/contract/bet
         const result = await fetch(serverURL + '/api/contract/event').then((res) => res.json());
         return Cell.fromBoc(Buffer.from(result.codeBoc, 'base64'))[0];

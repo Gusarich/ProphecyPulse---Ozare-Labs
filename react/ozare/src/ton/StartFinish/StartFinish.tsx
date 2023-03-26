@@ -9,7 +9,7 @@ const StartFinish: React.FC = () => {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.preventDefault();
-    const serverURL = process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : 'https://us-central1-ozare-e8ed6.cloudfunctions.net/app';
+    const serverURL = process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : 'http://159.223.250.48:8080/';
     try {
       const res = await axios.post(`${serverURL}/api/contract/start`, {
         address
@@ -25,7 +25,7 @@ const StartFinish: React.FC = () => {
   ) => {
     // redirect to /ton?uid=id&outcome=outcome&amount=amount
     e.preventDefault();
-    const serverURL = process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : 'https://us-central1-ozare-e8ed6.cloudfunctions.net/app';
+    const serverURL = process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : 'http://159.223.250.48:8080/';
     try {
       const res = await axios.post(`${serverURL}/api/contract/finish`, {
         address

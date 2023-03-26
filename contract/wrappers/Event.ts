@@ -101,7 +101,6 @@ export class Event implements Contract {
             betAddress = await this.getBetAddress(
                 Address.parse(via.wallet!.account.address),
                 outcome,
-                amount
             );
             await via.sendTransaction({
                 validUntil: Math.floor(Date.now() / 1000) + 600,
