@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   getRedirectResult,
   signInWithEmailAndPassword,
@@ -6,9 +6,16 @@ import {
 } from "firebase/auth";
 import { auth, googleAuthProvider } from "./firebase";
 import { useNavigate } from "react-router-dom";
+import { FcGoogle } from "react-icons/fc";
+import { AuthContext } from "./AuthContext";
 
-const Login = (): JSX.Element => {
+const Login = () => {
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
+  if (user) {
+    navigate("/");
+  }
+
   const [formValues, setFormValues] = useState<{
     email: string;
     password: string;
@@ -58,7 +65,6 @@ const Login = (): JSX.Element => {
     getRedirectResult(auth)
       .then((result) => {
         const user = result?.user ? result.user : null;
-        console.log(user);
         if (user) {
           navigate("/");
         }
@@ -70,7 +76,7 @@ const Login = (): JSX.Element => {
 
   return (
     <div className="flex flex-col w-full items-center justify-center h-screen">
-      <div className="w-2/3">
+      <div className="w-2/3 md:w-1/3 lg:w-1/4">
         <h1 className="text-3xl font-bold mb-8">Let's Get Started</h1>
 
         <form
@@ -88,7 +94,7 @@ const Login = (): JSX.Element => {
               placeholder="Enter your email address"
               value={formValues.email}
               onChange={handleInputChange}
-              className="mb-4 px-8 py-4   rounded-2xl bg-sky-100 text-sky-500  outline-none"
+              className="mb-4 px-8 py-4 shadow-sm  rounded-2xl bg-sky-100 text-sky-500  outline-none"
             />
           </div>
 
@@ -103,23 +109,23 @@ const Login = (): JSX.Element => {
               placeholder="Enter your password"
               value={formValues.password}
               onChange={handleInputChange}
-              className="mb-4 px-8 py-4  rounded-2xl bg-sky-100 text-sky-500  outline-none"
+              className="mb-4 px-8 py-4 shadow-sm  rounded-2xl bg-sky-100 text-sky-500  outline-none"
             />
           </div>
           {error && (
             <p className="text-red-500 text-xs text-center mb-4">{error}</p>
           )}
 
-          <button className="px-8 rounded-2xl py-4 bg-sky-500 text-white disabled:bg-gray-300">
+          <button className="px-8 shadow-lg rounded-2xl py-4 bg-sky-500 text-white disabled:bg-gray-300">
             Sign In
           </button>
         </form>
 
         <button
           onClick={handleGoogleSignIn}
-          className="px-8 w-full mt-6 rounded-2xl py-4 bg-sky-500 text-white disabled:bg-gray-300"
+          className="px-8 w-full mt-6 flex  gap-4 flex-row justify-center items-center rounded-2xl py-4 bg-sky-50 shadow-lg text-black disabled:bg-gray-300"
         >
-          Sign In With Google
+          <FcGoogle className="text-2xl" /> Sign In With Google
         </button>
         <div>
           <p className="text-center mt-4">

@@ -15,7 +15,8 @@ import { useEffect, useState } from "react";
 import Logo from "./assets/logo.png";
 import Login from "./Pages/auth/Login";
 import Register from "./Pages/auth/Register";
-import { AuthContextProvider } from "./Pages/auth/AuthContextProvider";
+
+import { AuthProvider } from "./Pages/auth/AuthContext";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -33,7 +34,7 @@ function App() {
           <img src={Logo} alt="" className="h-32 animate-pulse" />
         </div>
       ) : (
-        <AuthContextProvider>
+        <AuthProvider>
           <Layout>
             <Routes>
               <Route path="/auth/login" element={<Login />} />
@@ -53,7 +54,7 @@ function App() {
               <Route path="/transaction" element={<Ton />} />
             </Routes>
           </Layout>
-        </AuthContextProvider>
+        </AuthProvider>
       )}
     </BrowserRouter>
   );

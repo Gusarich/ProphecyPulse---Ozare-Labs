@@ -14,7 +14,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { AuthContext } from "../auth/AuthContext";
 
 function Schedule() {
-  const user = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
 
   if (!user) {
     return <Navigate replace to="/auth/login" />;

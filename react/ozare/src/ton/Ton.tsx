@@ -6,7 +6,7 @@ import { AuthContext } from "../Pages/auth/AuthContext";
 import WalletPage from "./WalletPage/WalletPage";
 
 function Ton() {
-  const user = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
 
   if (!user) {
     return <Navigate replace to="/auth/login" />;

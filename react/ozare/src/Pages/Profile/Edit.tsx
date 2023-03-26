@@ -5,7 +5,7 @@ import Header from "../../components/Header";
 import { AuthContext } from "../auth/AuthContext";
 
 function Edit() {
-  const user = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
 
   if (!user) {
     return <Navigate replace to="/auth/login" />;
