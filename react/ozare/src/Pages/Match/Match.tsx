@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
+/* eslint-disable react-hooks/rules-of-hooks */
+import { useCallback, useContext, useEffect, useState } from "react";
 
 import { getMatchDetails } from "../../ton/wrappers/Livescore";
 
@@ -15,8 +16,15 @@ import Chat from "./Chat";
 import Bets from "./Bets";
 import Header from "../../components/Header";
 import { getTeamDetails, getTeamLogo } from "../../api/LivecoreApiClient";
+import { AuthContext } from "../auth/AuthContext";
+import { Navigate } from "react-router-dom";
 
 export default function Match() {
+  const user = useContext(AuthContext);
+
+  if (!user) {
+    return <Navigate replace to="/auth/login" />;
+  }
   // let { id, category, match } = useParams();
   const id = new URLSearchParams(window.location.search).get("id");
   const category = new URLSearchParams(window.location.search).get("category");

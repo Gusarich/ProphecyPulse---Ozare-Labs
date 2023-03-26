@@ -1,9 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import Header from "../../components/Header";
 
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import { AuthContext } from "../auth/AuthContext";
 
 function Profile() {
+  const user = useContext(AuthContext);
+
+  if (!user) {
+    return <Navigate replace to="/auth/login" />;
+  }
   return (
     <>
       <Header showBack={false} showTonButton={false} title="Profile">

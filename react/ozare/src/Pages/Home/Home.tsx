@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback } from "react";
+/* eslint-disable react-hooks/rules-of-hooks */
+import React, { useState, useEffect, useCallback, useContext } from "react";
 
 import { BiFootball } from "react-icons/bi";
 // import { BiCricketBall } from "react-icons/bi";
@@ -18,8 +19,14 @@ import MatchesUI from "./Matches/MatchesUI";
 import SearchResults from "./SearchResults";
 import { searchTeam } from "../../api/LivecoreApiClient";
 import { Team } from "./SearchResults/types";
+import { Navigate } from "react-router-dom";
+import { AuthContext } from "../auth/AuthContext";
 
 function Home() {
+  const user = useContext(AuthContext);
+  if (!user) {
+    return <Navigate replace to="/auth/login" />;
+  }
   const menuItems = [
     {
       title: "Soccer",

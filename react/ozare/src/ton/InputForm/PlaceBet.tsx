@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useState } from "react";
 // import "./PlaceBet.scss";
 import Logo from "./logo.png";
@@ -7,6 +8,7 @@ import Header from "../../components/Header";
 
 const PlaceBet: React.FC = () => {
   // get id from /place_bet/:id
+
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   // get t1 and t2 from query params

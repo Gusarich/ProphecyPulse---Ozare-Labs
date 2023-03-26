@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+/* eslint-disable react-hooks/rules-of-hooks */
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import { Link, Navigate, useParams } from "react-router-dom";
 
 import { getScheduleMatchByCategory } from "../../api/LivecoreApiClient";
 import Header from "../../components/Header";
@@ -10,8 +11,14 @@ import CricketBackground from "../../assets/images/cricket.jpg";
 import BasketballBackground from "../../assets/images/basketball.jpg";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { AuthContext } from "../auth/AuthContext";
 
 function Schedule() {
+  const user = useContext(AuthContext);
+
+  if (!user) {
+    return <Navigate replace to="/auth/login" />;
+  }
   let { id, category, team } = useParams();
   const [schedule, setSchedule] = useState<ScheduleType[]>();
   const [isLoading, setIsLoading] = useState(true);

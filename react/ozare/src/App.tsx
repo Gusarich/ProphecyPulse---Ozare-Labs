@@ -13,6 +13,9 @@ import Schedule from "./Pages/Match/Schedule";
 import { useEffect, useState } from "react";
 
 import Logo from "./assets/logo.png";
+import Login from "./Pages/auth/Login";
+import Register from "./Pages/auth/Register";
+import { AuthContextProvider } from "./Pages/auth/AuthContextProvider";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -30,22 +33,27 @@ function App() {
           <img src={Logo} alt="" className="h-32 animate-pulse" />
         </div>
       ) : (
-        <Layout>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/bets" element={<Bets />} />
-            <Route path="/notifications" element={<Notifications />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/profile/edit" element={<Edit />} />
-            <Route path="/match/*" element={<Match />} />
-            <Route
-              path="/schedule/:category/:team/:id"
-              element={<Schedule />}
-            />
-            <Route path="/place_bet/:id" element={<PlaceBet />} />
-            <Route path="/transaction" element={<Ton />} />
-          </Routes>
-        </Layout>
+        <AuthContextProvider>
+          <Layout>
+            <Routes>
+              <Route path="/auth/login" element={<Login />} />
+              <Route path="/auth/register" element={<Register />} />
+
+              <Route path="/" element={<Home />} />
+              <Route path="/bets" element={<Bets />} />
+              <Route path="/notifications" element={<Notifications />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/profile/edit" element={<Edit />} />
+              <Route path="/match/*" element={<Match />} />
+              <Route
+                path="/schedule/:category/:team/:id"
+                element={<Schedule />}
+              />
+              <Route path="/place_bet/:id" element={<PlaceBet />} />
+              <Route path="/transaction" element={<Ton />} />
+            </Routes>
+          </Layout>
+        </AuthContextProvider>
       )}
     </BrowserRouter>
   );
