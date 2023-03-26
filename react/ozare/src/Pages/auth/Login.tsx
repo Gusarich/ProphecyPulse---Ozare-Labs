@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  getRedirectResult,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signInWithRedirect,
@@ -27,12 +26,12 @@ const Login = () => {
     event.preventDefault();
 
     try {
-      const userCredential = await signInWithEmailAndPassword(
+      await signInWithEmailAndPassword(
         auth,
         formValues.email,
         formValues.password
       );
-      const user = userCredential.user;
+      // const user = userCredential.user;
 
       return true;
     } catch (error: any) {
