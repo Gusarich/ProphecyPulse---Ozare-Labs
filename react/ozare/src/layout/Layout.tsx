@@ -4,9 +4,11 @@ import BottomNavigation from "./BottomNavigation";
 import { IoIosNotifications } from "react-icons/io";
 import { RiHomeFill } from "react-icons/ri";
 import { TiUser } from "react-icons/ti";
-import { IoTrophy } from "react-icons/io5";
+// import { IoTrophy } from "react-icons/io5";
 import SideNavigation from "./SideNavigation";
 import useWindowSize from "../hooks/useWindowSize";
+import Logo from "../assets/logo.png";
+
 function Layout({ children }: { children: React.ReactNode }) {
   const navList = [
     {
@@ -17,7 +19,7 @@ function Layout({ children }: { children: React.ReactNode }) {
     {
       href: "/bets",
       title: "Bets",
-      icon: <IoTrophy />,
+      icon: <img src={Logo} alt="" className="h-[24px]" />,
     },
     {
       href: "/notifications",

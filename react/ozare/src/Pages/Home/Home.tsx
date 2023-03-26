@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 
 import { BiFootball } from "react-icons/bi";
-import { BiCricketBall } from "react-icons/bi";
+// import { BiCricketBall } from "react-icons/bi";
+import { MdSportsCricket } from "react-icons/md";
 import { BiBasketball } from "react-icons/bi";
 
 import { getAllMatchesByDate } from "../../ton/wrappers/Livescore";
@@ -26,7 +27,7 @@ function Home() {
     },
     {
       title: "Cricket",
-      icon: <BiCricketBall />,
+      icon: <MdSportsCricket />,
     },
     {
       title: "Basketball",

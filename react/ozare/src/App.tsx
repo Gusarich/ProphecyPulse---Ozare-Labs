@@ -10,23 +10,43 @@ import Edit from "./Pages/Profile/Edit";
 import PlaceBet from "./ton/InputForm/PlaceBet";
 import Ton from "./ton/Ton";
 import Schedule from "./Pages/Match/Schedule";
+import { useEffect, useState } from "react";
+
+import Logo from "./assets/logo.png";
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 700);
+    });
+  }, []);
   return (
     <BrowserRouter>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/bets" element={<Bets />} />
-          <Route path="/notifications" element={<Notifications />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/profile/edit" element={<Edit />} />
-          <Route path="/match/*" element={<Match />} />
-          <Route path="/schedule/:category/:team/:id" element={<Schedule />} />
-          <Route path="/place_bet/:id" element={<PlaceBet />} />
-          <Route path="/transaction" element={<Ton />} />
-        </Routes>
-      </Layout>
+      {isLoading ? (
+        <div className="h-screen w-screen bg-gradient-to-br from-sky-500 via-sky-300  to-sky-900 flex flex-col justify-center items-center">
+          <img src={Logo} alt="" className="h-32 animate-pulse" />
+        </div>
+      ) : (
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/bets" element={<Bets />} />
+            <Route path="/notifications" element={<Notifications />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/profile/edit" element={<Edit />} />
+            <Route path="/match/*" element={<Match />} />
+            <Route
+              path="/schedule/:category/:team/:id"
+              element={<Schedule />}
+            />
+            <Route path="/place_bet/:id" element={<PlaceBet />} />
+            <Route path="/transaction" element={<Ton />} />
+          </Routes>
+        </Layout>
+      )}
     </BrowserRouter>
   );
 }
