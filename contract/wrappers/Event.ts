@@ -100,13 +100,13 @@ export class Event implements Contract {
         if ('sendTransaction' in via) {
             betAddress = await this.getBetAddress(
                 Address.parse(via.wallet!.account.address),
-                outcome,
+                outcome
             );
             await via.sendTransaction({
                 validUntil: Math.floor(Date.now() / 1000) + 600,
                 messages: [
                     {
-                        address: betAddress.toString(),
+                        address: this.address.toString(),
                         amount: (toNano('0.25') + amount).toString(),
                         stateInit: beginCell()
                             .store(storeStateInit(this.init))
@@ -126,7 +126,7 @@ export class Event implements Contract {
         } else {
             betAddress = await this.getBetAddress(via.address!, outcome);
             await via.send({
-                to: betAddress,
+                to: this.address,
                 init: this.init,
                 value: toNano('0.25') + toNano(amount.toString()),
                 body: beginCell()
