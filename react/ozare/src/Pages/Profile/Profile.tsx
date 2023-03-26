@@ -3,6 +3,9 @@ import Header from "../../components/Header";
 
 import { Link, Navigate } from "react-router-dom";
 import { AuthContext } from "../auth/AuthContext";
+import { BiLogOut } from "react-icons/bi";
+import { signOut } from "firebase/auth";
+import { auth } from "../auth/firebase";
 
 function Profile() {
   const { user } = useContext(AuthContext);
@@ -10,6 +13,16 @@ function Profile() {
   if (!user) {
     return <Navigate replace to="/auth/login" />;
   }
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+
   return (
     <>
       <Header showBack={false} showTonButton={false} title="Profile">
@@ -45,6 +58,15 @@ function Profile() {
           <span>Loss</span>
           <span className="font-bold">0</span>
         </div>
+      </section>
+      <section className="flex flex-col px-4 pt-4">
+        <button
+          onClick={handleSignOut}
+          className=" outline-none border-t-[1px] text-red-500 items-center border-gray-100 p-4 flex flex-row justify-start gap-4"
+        >
+          <BiLogOut />
+          Sign out
+        </button>
       </section>
     </>
   );
