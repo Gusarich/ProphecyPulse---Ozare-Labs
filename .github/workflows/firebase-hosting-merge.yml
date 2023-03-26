@@ -18,3 +18,4 @@ jobs:
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_OZARE_E8ED6 }}'
           channelId: live
           projectId: ozare-e8ed6
+          entryPoint: "./react/ozare"
