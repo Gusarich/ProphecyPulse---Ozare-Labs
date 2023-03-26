@@ -17,16 +17,16 @@ function Profile() {
           <div className="flex justify-center w-full">
             <img
               src={
-                "https://i.pravatar.cc/300" ||
-                "https://brsc.sa.edu.au/wp-content/uploads/2018/09/placeholder-profile-sq.jpg"
+                user.photoURL ||
+                `https://ui-avatars.com/api/?name=${user.displayName}&background=0D8ABC&color=fff&size=128&rounded=true&bold=true&length=2`
               }
               alt="Profile"
               className="w-20 h-20 border-2 border-white object-cover rounded-full"
             />
           </div>
           <div className="flex flex-col text-center">
-            <span className="text-2xl">Firstname Last</span>
-            <span className="text-xs">name@example.com</span>
+            <span className="text-2xl">{user.displayName}</span>
+            <span className="text-xs">{user.email}</span>
           </div>
 
           <Link to="/profile/edit">

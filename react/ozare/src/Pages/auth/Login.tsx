@@ -1,20 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
 import {
   getRedirectResult,
+  onAuthStateChanged,
   signInWithEmailAndPassword,
   signInWithRedirect,
 } from "firebase/auth";
 import { auth, googleAuthProvider } from "./firebase";
 import { useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
-import { AuthContext } from "./AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
-  if (user) {
-    navigate("/");
-  }
 
   const [formValues, setFormValues] = useState<{
     email: string;
@@ -37,7 +33,6 @@ const Login = () => {
         formValues.password
       );
       const user = userCredential.user;
-      console.log(user);
 
       return true;
     } catch (error: any) {
@@ -55,24 +50,15 @@ const Login = () => {
     }
   };
 
-  const [loading] = useState(true);
-
   useEffect(() => {
-    if (loading) {
-      return;
-    }
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        navigate("/");
+      }
+    });
 
-    getRedirectResult(auth)
-      .then((result) => {
-        const user = result?.user ? result.user : null;
-        if (user) {
-          navigate("/");
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, [loading, navigate]);
+    return unsubscribe;
+  }, [navigate]);
 
   return (
     <div className="flex flex-col w-full items-center justify-center h-screen">
