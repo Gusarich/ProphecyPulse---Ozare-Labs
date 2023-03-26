@@ -20,7 +20,7 @@ function Layout({ children }: { children: React.ReactNode }) {
     {
       href: "/bets",
       title: "Bets",
-      icon: <img src={Logo} alt="" className="h-[24px]" />,
+      icon: <img src={Logo} alt="" className="h-[24px]  " />,
     },
     {
       href: "/notifications",
